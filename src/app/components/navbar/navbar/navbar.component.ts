@@ -7,5 +7,15 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  isMenuOpen: boolean = false;
 
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+    const navLinks = document.querySelector('.navbar-links') as HTMLElement;
+    if (this.isMenuOpen) {
+      navLinks.classList.add('active');
+    } else {
+      navLinks.classList.remove('active');
+    }
+  }
 }

@@ -1,1 +1,60 @@
-<p>home works!</p>
+<div class="home-container">
+  <!-- Banner -->
+  <div class="banner">
+    <h1 class="banner-title">
+      Moda que valoriza cada curva, <br />
+      feita para você!
+    </h1>
+    <img src="/assets/banners/banner-principal.png" alt="Banner Principal" class="banner-image" />
+  </div>
+
+  <!-- Menu -->
+  <nav class="menu">
+    <ul>
+      <li>Moda Verão</li>
+      <li>Novidades</li>
+      <li>Moda Inverno</li>
+    </ul>
+  </nav>
+
+  <!-- Ofertas Especiais -->
+  <section class="special-offers">
+    <div class="special-header">
+      <h2>Especial para você</h2>
+      <a href="#">Ver tudo</a>
+    </div>
+    <div class="offers-content">
+      <div class="offer-text">
+        <h3>Descontos de <br><span>até 20%</span></h3>
+        <p class="notice">Válido somente para os produtos selecionados.</p>
+      </div>
+      <img src="/assets/banners/banner-segundario2.jpg" alt="Ofertas Especiais" class="offer-image" />
+      <img src="/assets/banners/banner-segundario1.jpg" alt="Ofertas Especiais" class="offer-image" />
+    </div>
+  </section>
+
+  <!-- Produtos -->
+  <section class="products">
+  <h2>Novidades</h2>
+  <div class="product-list">
+    <div class="card" *ngFor="let product of products">
+      <img [src]="product.image" alt="{{ product.name }}" />
+      <div class="card-body">
+        <h4>{{ product.name }}</h4>
+        <p class="sizes"><!-- Tamanhos: -->{{ product.sizes.join(' - ') }}</p>
+        <div class="colors">
+          <!-- Renderiza as cores -->
+          <span 
+            *ngFor="let color of product.colors" 
+            [style.backgroundColor]="color"
+            class="color-dot">
+          </span>
+        </div>
+        <p class="price">R$ {{ product.price }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+  
+</div>

@@ -1,0 +1,214 @@
+/* Container principal */
+.home-container {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Banner */
+.banner {
+  display: flex;
+  justify-content: space-between;
+  background-size: cover;
+  background-color: #d8d8d8;
+  height: 400px;
+  padding: 2.5vh;
+  margin-top: -1px;
+  color: #000;
+}
+
+.banner-title {
+  flex: 1;
+  text-shadow: 0px 6px 6px rgba(0, 0, 0, 0.25);
+  font-family: "Lexend Exa";
+  font-size: 2.5;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  text-align: left;
+  font-size: 5vh;
+  padding: 10vh;
+}
+
+.banner-image {
+  flex: 10px 10px 30%;
+  background: no-repeat center center;
+  max-width: auto;
+  height: auto;
+  object-fit: cover;
+}
+
+
+/* Menu */
+.menu {
+  background: #B5B5B5;
+  padding: 15px 0;
+  text-align: center;
+  color: #000;
+  font-family: "Lexend Exa";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 124.994%;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20%;
+}
+
+.menu li {
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Ofertas Especiais */
+.special-offers {
+  padding: 40px 10%;
+  text-align: center;
+}
+
+.special-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.special-header h2 {
+  font-size: 1.5rem;
+}
+
+.special-header a {
+  color: #000;
+  font-weight: bold;
+}
+
+.offers-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -10px;
+  padding: 20px;
+  border-radius: 10px;
+  background: #333;
+  color: #fff;
+  border-radius: 67px;
+  
+}
+span {
+  font-size: 90px;
+}
+
+.offer-text h3 {
+  font-size: 1.2rem;
+  margin-left: 70px;
+}
+
+.offer-text, h3, span {
+  text-align: left;  
+}
+
+.notice {
+  margin-left: 70px;
+}
+
+.offer-image {
+  width: 500px;
+  border-radius: 10px;
+}
+
+/* Produtos */
+.products {
+  padding: 40px 20px;
+}
+
+.products h2 {
+  color: #000;
+
+font-family: "Lexend Exa";
+font-size: 29px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;}
+
+.product-list {
+  display: flex;
+  flex-wrap: wrap; /* Permite os cards quebrarem linha */
+  justify-content: space-around;
+  gap: 20px; /* Espaçamento entre os cards */
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden; /* Garante que o conteúdo não transborde os limites do card */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px; /* Define um tamanho fixo para os cards */
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Animação ao passar o mouse */
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+  width: 100%; /* A imagem ocupa toda a largura do card */
+  height: 400px;
+  object-fit: cover; /* Ajusta a imagem sem distorções */
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-body h4 {
+  font-size: 1rem;
+  margin: 10px 0;
+  color: #333;
+}
+
+.card-body p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #000;
+}
+
+/* Corpo do card */
+.card-body {
+  text-align: center;
+  padding: 10px;
+}
+
+/* Tamanhos */
+.sizes {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 5px 0;
+}
+
+/* Container das cores */
+.colors {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+/* Bolinhas de cores */
+.color-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  display: inline-block;
+}
+
