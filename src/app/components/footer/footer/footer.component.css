@@ -1,0 +1,76 @@
+.footer {
+  background-color: #4F4F4F;
+  /* Cor de fundo do footer */
+  color: #FFFFFF;
+  font-family: Arial, sans-serif;
+  padding: 70px 5%;
+  position: relative;
+  /* Garante que o rodapé seja posicionado corretamente */
+}
+
+h3 {
+  padding: 5px;
+}
+
+p, a {
+  padding: 5px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footer-section {
+  flex: 1;
+  margin: 0 10px;
+  min-width: 150px;
+}
+
+.icon-social {
+  width: 25px;
+}
+
+.footer-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.footer-section h4 {
+  font-size: 1rem;
+  margin-top: 40px;
+  margin-bottom: 10px;
+}
+
+.footer-section p {
+  font-size: 0.9rem;
+  margin: 5px 0;
+}
+
+.footer-section a {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.footer-section a:hover {
+  text-decoration: underline;
+}
+
+.payment-methods img {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.footer-bottom {
+  text-align: center;
+  background-color: #333333;
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  width: 100%;
+  /* Ocupa toda a largura */
+  position: absolute;
+  /* Garante que fique no final do rodapé */
+  bottom: 0;
+  left: 0;
+}
