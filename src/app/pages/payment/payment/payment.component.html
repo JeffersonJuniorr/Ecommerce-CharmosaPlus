@@ -1,0 +1,58 @@
+<div class="container">
+  <!-- Informações do Produto -->
+  <div class="product-info">
+    <div class="product-details">
+      <img src="/assets/products/banner3.jpg" alt="Macaquinho Duna" class="product-image" />
+      <div class="info">
+        <h2>Macaquinho Duna</h2>
+        <p>Tamanho - G1</p>
+      </div>
+      <div class="quantity-control">
+        <button class="quantity-btn" (click)="decrementQuantity()">-</button>
+        <span class="quantity">{{ quantity }}</span>
+        <button class="quantity-btn" (click)="incrementQuantity()">+</button>
+      </div>
+      <p class="price">R$ {{ price.toFixed(2) }}</p>
+    </div>
+    
+  </div>
+
+  <!-- Frete + Cupom e Resumo do Pedido -->
+  <div class="frete-resumo-container">
+
+    <!-- Frete e Cupom -->
+    <div class="frete-cupom">
+      <div>
+        <label for="cep"><strong>Calcular frete</strong></label>
+        <input 
+          class="text-info"
+          id="cep" 
+          type="text" 
+          placeholder="Digite seu CEP"/>
+      </div>
+
+      <div class="cupom">
+        <input 
+          class="text-info"
+          id="cupom" 
+          type="text" 
+          placeholder="CUPOM:"/>
+      </div>
+
+    </div>
+
+    <!-- Resumo do Pedido -->
+    <div class="order-summary">
+      <h3>Resumo do Pedido</h3>
+      <p class="line">Subtotal: <span>R$ {{ total.toFixed(2) }}</span></p>
+      <p>Total do Pedido: <span>R$ {{ total.toFixed(2) }}</span></p>
+
+      <p class="discount-info">
+        <strong>R$ {{ (total - 10).toFixed(2) }}</strong> no Pix com desconto<br />
+        ou 5x sem juros de R$ {{ (total / 5).toFixed(2) }} no cartão de crédito
+      </p>
+
+      <button class="continue-button">Continuar</button>
+    </div>
+  </div>
+</div>

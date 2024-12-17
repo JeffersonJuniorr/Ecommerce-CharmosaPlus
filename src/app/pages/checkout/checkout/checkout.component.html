@@ -1,0 +1,44 @@
+<div class="checkout-container">
+  <!-- Informações do Produto -->
+  <div class="product-info">
+    <h2>Macaquinho Duna</h2>
+    <p>
+      Macaquinho duna elegante e confortável, ideal para diversos ocasiões. Confeccionado em tecido leve, com forro interno para maior conforto e acabamento impecável. Disponível nos tamanhos G1 e G2 e em cores versáteis para combinar com seu estilo.
+    </p>
+    <p><strong>Material:</strong> Tecido Duna - Forro Microfibra Branco</p>
+    <p class="line"><strong>Tamanhos disponíveis:</strong> G1 - G2</p>
+
+    <div class="product-options">
+      <!-- Cores -->
+      <div class="colors">
+        <span class="color" style="background-color: #D3C6B2;"></span>
+        <span class="color" style="background-color: #C0C0C0;"></span>
+        <span class="color" style="background-color: #000000;"></span>
+      </div>
+    </div>
+    
+    <!-- Tamanhos -->
+    <div class="sizes">
+      <button class="size-btn">G1</button>
+      <button class="size-btn">G2</button>
+    </div>
+
+    <div class="quantity-container">
+      <button class="quantity-btn" (click)="decreaseQuantity()">-</button>
+      <span class="quantity-btn">{{ quantity }}</span>
+      <button class="quantity-btn" (click)="increaseQuantity()">+</button>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn add-cart">Adicionar ao carrinho</button>
+      <button class="btn continue">Continuar</button>
+    </div>
+  </div>
+
+  <!-- Imagem do Produto -->
+  <div class="product-image">
+    <img src="/assets/products/banner3.jpg" alt="Macaquinho Duna">
+    <h3>Macaquinho Duna</h3>
+    <p>R$139,00</p>
+  </div>
+</div>

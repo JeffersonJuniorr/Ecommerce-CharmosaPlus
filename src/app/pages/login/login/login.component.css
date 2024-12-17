@@ -59,7 +59,7 @@
 
 .text-info::placeholder {
     color: #aaa;
-    font-style: italic;
+    font-style: normal;
 }
 
 .btn-login {

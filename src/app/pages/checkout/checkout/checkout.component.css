@@ -1,0 +1,135 @@
+.checkout-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 60px;
+  font-family: Arial, sans-serif;
+}
+
+.product-info {
+  width: 60%;
+  padding-left: 3%;
+}
+
+.product-info h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  padding-bottom: 19px;
+}
+
+.product-info p {
+  margin: 8px 0;
+  color: #000;
+  font-family: "Lexend Exa";
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-bottom: 19px;
+}
+
+.product-options {
+  display: flex;
+  margin-top: 16px;
+  justify-content: center;
+  padding-top: 4%;
+
+}
+
+.line {
+  border-bottom: 2px solid #ccc;
+  padding: 10px 0;
+}
+
+.colors {
+  display: flex;
+  gap: 90px;
+}
+
+.color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  cursor: pointer;
+
+}
+
+.sizes {
+  margin-left: 20px;
+  display: flex;
+  justify-content: center;
+  padding-top: 4%;
+  justify-content: space-evenly;
+}
+
+.size-btn {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  width: 87px;
+  height: 31px;
+  flex-shrink: 0;
+}
+
+.quantity-container {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  justify-content: center;
+  padding-top: 3%;
+}
+
+.quantity-btn {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: #F1F0F0;
+}
+
+.quantity {
+  margin: 0 10px;
+  font-size: 16px;
+}
+
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  padding-top: 2%;
+}
+
+.btn {
+  padding: 10px 20px;
+  margin-right: 10px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+}
+
+.add-cart {
+  background-color: #c6c6c6;
+  border-radius: 20px;
+  width: 310px;
+  height: 39px;
+}
+
+.continue {
+  background-color: #5e5e5e;
+  border-radius: 20px;
+  width: 300px;
+  height: 39px;
+}
+
+.product-image {
+  width: 30%;
+  text-align: center;
+}
+
+.product-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
