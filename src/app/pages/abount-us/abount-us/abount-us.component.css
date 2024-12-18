@@ -1,0 +1,75 @@
+.about-us {
+  font-family: 'Arial', sans-serif;
+  max-width: 1500px;
+  color: #000;
+  text-shadow: 0px 6px 6px rgba(0, 0, 0, 0.25);
+  font-family: "Lexend Exa";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/* .section {
+  margin-bottom: 20vh;
+} */
+
+.banner1, .banner3 {
+  display: flex;
+  align-items: center;
+  background-color: #d8d8d8;
+  border-radius: 0 1200px 1200px 0;
+}
+
+.banner1 {
+  margin-bottom: 20vh;
+}
+
+.banner2 {
+  display: flex;
+  align-items: center;
+  background-color: #d8d8d8;
+  border-radius: 1200px 0 0 1200px;
+  margin-right: -42.5vh;
+  margin-left: 22%;
+  margin-bottom: 20vh;
+}
+
+.text-content {
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
+}
+
+h2 {
+  font-size: 32px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.6;
+  text-align: justify;
+  margin-left: 60px;
+  margin-right: 80px;
+}
+
+ul {
+  list-style-type: disc;
+  margin-left: 40px;
+}
+
+.about-image {
+  max-width: 550px;
+  border-radius: 10px;
+}
+
+/* .footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 16px;
+  color: #777;
+} */

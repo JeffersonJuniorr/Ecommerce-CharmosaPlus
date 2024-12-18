@@ -6,6 +6,7 @@ import { LoginComponent } from './pages/login/login/login.component';
 import { RegisterComponent } from './pages/register/register/register.component'
 import { CheckoutComponent } from './pages/checkout/checkout/checkout.component'
 import { PaymentComponent } from './pages/payment/payment/payment.component'
+import { AbountUsComponent } from './pages/abount-us/abount-us/abount-us.component'
 
 import path from 'path'; // ??
 
@@ -32,8 +33,8 @@ export const routes: Routes = [
         path:"payment", component: PaymentComponent
     },
     {
-        path:"**", redirectTo: 'payment'
-    }
+        path:"abount-us", component: AbountUsComponent
+    },
     ];
 
 // @NgModule({
