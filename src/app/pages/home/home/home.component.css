@@ -30,11 +30,8 @@
 }
 
 .banner-image {
-  flex: 10px 10px 30%;
-  background: no-repeat center center;
-  max-width: auto;
-  height: auto;
-  object-fit: cover;
+  margin-top: -24px;
+  margin-bottom: -23px;
 }
 
 
@@ -97,7 +94,6 @@
   background: #333;
   color: #fff;
   border-radius: 67px;
-  
 }
 span {
   font-size: 90px;
@@ -118,7 +114,8 @@ span {
 
 .offer-image {
   width: 500px;
-  border-radius: 10px;
+  margin-top: -20px;
+  margin-bottom: -20px;
 }
 
 /* Produtos */

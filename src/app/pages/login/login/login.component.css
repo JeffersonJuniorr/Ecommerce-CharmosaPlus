@@ -3,6 +3,8 @@
     justify-content: center;
     align-items: center;
     margin: 50px;
+    margin-top: 7%;
+    margin-bottom: 15%;
 }
 
 .container-login-central {
@@ -74,6 +76,29 @@
     font-weight: 400;
     line-height: normal;
     background: none;
-    margin-top: 40px;
+    margin-top: 3%;
     cursor: pointer;
+}
+
+.subtitle {
+    display: flex;
+    justify-content: space-between;
+}
+
+.forgot-password {
+    text-align: left;
+    margin-top: 10px;
+}
+
+.register-link {
+    text-align: right;
+    margin-top: 13px;
+}
+
+a {
+    border-bottom: 1px solid;
+}
+
+a:hover {
+    text-decoration: underline;
 }

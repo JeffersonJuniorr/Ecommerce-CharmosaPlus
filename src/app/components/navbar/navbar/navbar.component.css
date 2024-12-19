@@ -19,8 +19,8 @@
   }
   
   .navbar-icon {
-    width: 20px;  /* Ajuste o tamanho do ícone conforme necessário */
-    height: 20px; /* Ajuste o tamanho do ícone conforme necessário */
+    width: 20px;
+    height: 20px;
   }
   
   .navbar-icons a {
@@ -28,6 +28,6 @@
   }
   
   .navbar-icons a:hover .navbar-icon {
-    opacity: 0.7; /* Para dar um efeito visual ao passar o mouse */
+    opacity: 0.7;
   }
   
