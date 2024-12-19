@@ -1,0 +1,36 @@
+<div class="faq-container">
+  <h1>Dúvidas Frequentes</h1>
+  <p class="contact-info">
+    Segunda a Sexta<br>
+    8:30 - 18:30 BR<br>
+    Envie um e-mail para: <a href="mailto:charmosaplus@gmail.com">charmosaplus&#64;gmail.com</a>
+  </p>
+
+  <div class="faq-section">
+    <h2 class="faq-category">Envio e Entrega</h2>
+    <div class="faq-item" *ngFor="let faq of faqs; let i = index">
+      <button class="faq-question" (click)="toggleAnswer(i)">{{ faq.question }}</button>
+      <div class="faq-answer" *ngIf="faq.isOpen">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="faq-section">
+    <h2 class="faq-category">Como consigo cupons?</h2>
+    <div class="faq-item" *ngFor="let faq of faqsTw; let i = index">
+      <button class="faq-question" (click)="toggleAnswerTw(i)">{{ faq.question }}</button>
+      <div class="faq-answer" *ngIf="faq.isOpen">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="faq-section">
+    <h2 class="faq-category">Outros</h2>
+    <div class="faq-item" *ngFor="let faq of faqsTr; let i = index">
+      <button class="faq-question" (click)="toggleAnswerTr(i)">{{ faq.question }}</button>
+      <div class="faq-answer" *ngIf="faq.isOpen">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+  </div>
+</div>

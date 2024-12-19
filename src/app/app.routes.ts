@@ -7,6 +7,7 @@ import { RegisterComponent } from './pages/register/register/register.component'
 import { CheckoutComponent } from './pages/checkout/checkout/checkout.component'
 import { PaymentComponent } from './pages/payment/payment/payment.component'
 import { AbountUsComponent } from './pages/abount-us/abount-us/abount-us.component'
+import { FaqComponent } from './pages/faq/faq/faq.component'
 
 import path from 'path'; // ??
 
@@ -34,6 +35,9 @@ export const routes: Routes = [
     },
     {
         path:"abount-us", component: AbountUsComponent
+    },
+    {
+        path:"faq", component: FaqComponent
     },
     ];
 
