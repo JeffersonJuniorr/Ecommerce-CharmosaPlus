@@ -22,6 +22,11 @@ p, a {
   flex-wrap: wrap;
 }
 
+.container-icon {
+  display: flex; 
+  align-items: center;
+}
+
 .footer-section {
   flex: 1;
   margin: 0 10px;

@@ -2,9 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 50px;
-    margin-top: 7%;
-    margin-bottom: 15%;
+    width: 100vw;
+    height: 100vh;
 }
 
 .container-login-central {
