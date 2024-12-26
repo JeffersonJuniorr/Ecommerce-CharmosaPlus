@@ -1,11 +1,9 @@
 .footer {
   background-color: #4F4F4F;
-  /* Cor de fundo do footer */
   color: #FFFFFF;
   font-family: Arial, sans-serif;
   padding: 70px 5%;
   position: relative;
-  /* Garante que o rodapé seja posicionado corretamente */
 }
 
 h3 {
