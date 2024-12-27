@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout',
@@ -9,6 +10,8 @@ import { Component } from '@angular/core';
 export class CheckoutComponent {
   quantity: number = 1;
 
+  constructor(private router: Router) {}
+
   increaseQuantity(): void {
     this.quantity++;
   }
@@ -17,5 +20,8 @@ export class CheckoutComponent {
     if (this.quantity > 1) {
       this.quantity--;
     }
+  }
+  goToPayment(): void {
+    this.router.navigate(['/payment']);
   }
 }

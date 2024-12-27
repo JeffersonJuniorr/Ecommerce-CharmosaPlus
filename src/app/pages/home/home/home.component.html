@@ -38,7 +38,7 @@
   <h2>Novidades</h2>
   <div class="product-list">
     <div class="card" *ngFor="let product of products">
-      <img [src]="product.image" alt="{{ product.name }}" />
+      <img [src]="product.image" alt="{{ product.name }}" (click)="goToCheckout(product.id)"/>
       <div class="card-body">
         <h4>{{ product.name }}</h4>
         <p class="sizes"><!-- Tamanhos: -->{{ product.sizes.join(' - ') }}</p>
