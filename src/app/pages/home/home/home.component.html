@@ -33,9 +33,23 @@
     </div>
   </section>
 
-  <!-- Produtos -->
+    <!-- Categorias -->
   <section class="products">
-  <h2>Novidades</h2>
+    <section class="categories">
+      <div class="categories-header">
+        <h2>Categorias</h2>
+        <a href="#" class="view-all">Ver tudo</a>
+      </div>
+      <div class="categories-buttons">
+        <button class="category-btn active">Tudo</button>
+        <button class="category-btn">Vestidos</button>
+        <button class="category-btn">Conjuntos</button>
+        <button class="category-btn">Macaquinhos</button>
+        <button class="category-btn">Moletom</button>
+      </div>
+    </section>
+
+  <!-- Produtos -->
   <div class="product-list">
     <div class="card" *ngFor="let product of products">
       <img [src]="product.image" alt="{{ product.name }}" (click)="goToCheckout(product.id)"/>

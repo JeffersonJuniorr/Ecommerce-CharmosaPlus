@@ -95,6 +95,7 @@
   color: #fff;
   border-radius: 67px;
 }
+
 span {
   font-size: 90px;
 }
@@ -104,8 +105,10 @@ span {
   margin-left: 70px;
 }
 
-.offer-text, h3, span {
-  text-align: left;  
+.offer-text,
+h3,
+span {
+  text-align: left;
 }
 
 .notice {
@@ -118,6 +121,58 @@ span {
   margin-bottom: -20px;
 }
 
+/* Categorias */
+.categories {
+  margin-bottom: 4vh;
+}
+
+.categories-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.categories-header h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.categories-header .view-all {
+  text-decoration: underline;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.view-all {
+  padding-right: 5.4vw;
+}
+
+.categories-buttons {
+  display: flex;
+  gap: 15.5vw;
+  padding-left: 5.5vw;
+}
+
+.category-btn {
+  padding: 11px 16px;
+  border: 1px solid #ccc;
+  background-color: #f3f3f3;
+  color: #333;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.category-btn.active {
+  background-color: #333;
+  color: #fff;
+}
+
+.category-btn:hover {
+  background-color: #ddd;
+}
+
 /* Produtos */
 .products {
   padding: 40px 20px;
@@ -125,12 +180,13 @@ span {
 
 .products h2 {
   color: #000;
-
-font-family: "Lexend Exa";
-font-size: 29px;
-font-style: normal;
-font-weight: 600;
-line-height: normal;}
+  font-family: "Lexend Exa";
+  font-size: 29px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-left: 5.4vw;
+}
 
 .product-list {
   display: flex;
@@ -203,4 +259,3 @@ line-height: normal;}
   border: 1px solid #ccc;
   display: inline-block;
 }
-
