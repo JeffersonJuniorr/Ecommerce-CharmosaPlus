@@ -3,7 +3,7 @@
   color: #FFFFFF;
   font-family: Arial, sans-serif;
   padding: 70px 5%;
-  position: relative;
+  margin-top: 18%;
 }
 
 h3 {
@@ -66,14 +66,10 @@ p, a {
 }
 
 .footer-bottom {
+  font-family: Arial, sans-serif;
   text-align: center;
   background-color: #333333;
   color: #FFFFFF;
-  font-size: 0.8rem;
   width: 100%;
-  /* Ocupa toda a largura */
-  position: absolute;
-  /* Garante que fique no final do rodapé */
-  bottom: 0;
-  left: 0;
+  padding: 2px 0;
 }

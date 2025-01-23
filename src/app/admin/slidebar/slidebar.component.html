@@ -1,0 +1,48 @@
+<div *ngIf="isAdmin" class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="logo">
+      <!-- <img src="assets/logo.png"/> -->
+      <span *ngIf="!isCollapsed">Charming-Admin</span>
+    </div>
+    <button class="toggle-button" (click)="toggleSidebar()">☰</button>
+    <nav>
+      <ul>
+        <li>
+          <a routerLink="/admin-dashboard">
+            <i class="icon-home"></i>
+            <span *ngIf="!isCollapsed">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/products">
+            <i class="icon-box"></i>
+            <span *ngIf="!isCollapsed">Products</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/statistics">
+            <i class="icon-chart"></i>
+            <span *ngIf="!isCollapsed">Statistics</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/coupons">
+            <i class="icon-tag"></i>
+            <span *ngIf="!isCollapsed">Coupons</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/media">
+            <i class="icon-image"></i>
+            <span *ngIf="!isCollapsed">Media</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/settings">
+            <i class="icon-settings"></i>
+            <span *ngIf="!isCollapsed">Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  

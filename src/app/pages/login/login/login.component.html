@@ -1,45 +1,46 @@
 <div class="container-login">
-    <div class="container-login-central">
-        <div class="container-header">
-            <div class="titulo-login">Charmosa Plus</div>
-            <div class="subtitulo-login">INICIAR SESSÃO</div>
+  <div class="container-login-central">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="container-header">
+        <div class="titulo-login">Charmosa Plus</div>
+      </div>
+
+      <div class="group-input">
+        <input
+          class="text-info"
+          type="text"
+          formControlName="username"
+          placeholder="E-MAIL"
+        />
+        <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+          <small *ngIf="loginForm.get('username')?.errors?.['required']">
+            E-mail é obrigatório.
+          </small>
+          <small *ngIf="loginForm.get('username')?.errors?.['username']">
+            Formato de e-mail inválido.
+          </small>
         </div>
+      </div>
 
-        <div class="container-form">
-            <form class="form-input">
-                <div class="group-input">
-                    <div class="text-input">
-                        <!-- E-MAIL -->
-                        <input class="text-info" type="text" name="email" id="email" placeholder="E-MAIL">
-                    </div>
-                </div>
-
-                <div class="group-input">
-                    <div class="text-input">
-                        <!-- SENHA -->
-                        <input class="text-info" type="password" name="senha" id="senha" placeholder="SENHA">
-                    </div>
-                </div>
-
-                <div class="subtitle">
-                    <div class="forgot-password">
-                        <a routerLink="/forgot-password">Esqueceu sua senha?</a>
-                    </div>
-
-                    <div class="register-link">
-                        <span>Não tem uma conta? </span>
-                        <a routerLink="/register">Crie uma aqui.</a>
-                    </div>
-                </div>
-
-
-                <div class="group-input">
-                    <input type="submit" class="btn-login" value="INICIAR SESSÃO">
-                </div>
-            </form>
-
+      <div class="group-input">
+        <input
+          class="text-info"
+          type="password"
+          formControlName="password"
+          placeholder="SENHA"
+        />
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <small *ngIf="loginForm.get('password')?.errors?.['required']">
+            Senha é obrigatória.
+          </small>
+          <small *ngIf="loginForm.get('password')?.errors?.['minlength']">
+            Senha deve ter no mínimo 6 caracteres.
+          </small>
         </div>
-
-
-    </div>
+      </div>
+      <button type="submit" class="btn-login" [disabled]="loginForm.invalid">
+        INICIAR SESSÃO
+      </button>
+    </form>
+  </div>
 </div>

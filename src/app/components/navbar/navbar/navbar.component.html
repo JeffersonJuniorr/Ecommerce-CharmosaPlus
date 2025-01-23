@@ -15,8 +15,16 @@
       <img src="/assets/icons/icon-user.png" alt="Usuário" class="navbar-icon">
     </a>
 
+    <a *ngIf="isAdmin" routerLink="/admin-dashboard" routerLinkActive="active" aria-label="Admin">
+      <img src="/assets/icons/icon-user.png" alt="Admin" class="navbar-icon">
+    </a>
+
     <a routerLink="/bag" routerLinkActive="active" aria-label="Sacola">
       <img src="/assets/icons/icon-bag.png" alt="Bag" class="navbar-icon">
     </a>
+
+    <a *ngIf="isLoggedIn" (click)="logout()" aria-label="Sair">
+      <img src="/assets/icons/icon-user.png" alt="Logout" class="navbar-icon">
+    </a>  
   </nav>
 </nav>

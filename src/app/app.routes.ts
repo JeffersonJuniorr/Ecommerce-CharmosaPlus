@@ -10,7 +10,13 @@ import { AbountUsComponent } from './pages/abount-us/abount-us/abount-us.compone
 import { FaqComponent } from './pages/faq/faq/faq.component'
 import { RefundPolicyComponent } from './pages/refund-policy/refund-policy/refund-policy.component'
 
-import path from 'path'; // ??
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { UsersComponent } from './admin/users/users.component';
+import { ProductsComponent } from './admin/products/products.component';
+import { StatsComponent } from './admin/stats/stats.component';
+import { OrdersComponent } from './admin/orders/orders.component';
+
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
     {
@@ -43,11 +49,15 @@ export const routes: Routes = [
     {
         path:"refund-policy", component: RefundPolicyComponent
     },
+    {
+        path: 'admin',
+        component: AdminDashboardComponent,
+        canActivate: [AdminGuard],
+        children: [
+          { path: 'users', component: UsersComponent },
+          { path: 'products', component: ProductsComponent },
+          { path: 'stats', component: StatsComponent },
+          { path: 'orders', component: OrdersComponent },
+        ],
+      },
     ];
-
-    
-// @NgModule({
-//     imports: [RouterModule.forRoot(routes)],
-//     exports: [RouterModule]
-// })
-

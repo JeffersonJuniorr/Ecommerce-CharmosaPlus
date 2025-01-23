@@ -1,20 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
-import {  NgModule  } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
-
-import { HomeComponent } from './pages/home/home/home.component'
 import { NavbarComponent } from './components/navbar/navbar/navbar.component'
 import { FooterComponent } from "./components/footer/footer/footer.component"
+import { SlidebarComponent } from './admin/slidebar/slidebar.component'
 
 @Component({
+  standalone: true,
   selector: 'app-root',
   imports: [
-    RouterOutlet, 
-    HomeComponent,
+    CommonModule,
+    RouterOutlet,
     NavbarComponent,
     FooterComponent,
+    SlidebarComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
