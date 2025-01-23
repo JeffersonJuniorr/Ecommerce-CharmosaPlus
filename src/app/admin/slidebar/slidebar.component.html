@@ -1,48 +1,68 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <div *ngIf="isAdmin" class="sidebar" [class.collapsed]="isCollapsed">
-    <div class="logo">
-      <!-- <img src="assets/logo.png"/> -->
-      <span *ngIf="!isCollapsed">Charming-Admin</span>
-    </div>
-    <button class="toggle-button" (click)="toggleSidebar()">☰</button>
-    <nav>
-      <ul>
-        <li>
-          <a routerLink="/admin-dashboard">
-            <i class="icon-home"></i>
-            <span *ngIf="!isCollapsed">Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a routerLink="/products">
-            <i class="icon-box"></i>
-            <span *ngIf="!isCollapsed">Products</span>
-          </a>
-        </li>
-        <li>
-          <a routerLink="/statistics">
-            <i class="icon-chart"></i>
-            <span *ngIf="!isCollapsed">Statistics</span>
-          </a>
-        </li>
-        <li>
-          <a routerLink="/coupons">
-            <i class="icon-tag"></i>
-            <span *ngIf="!isCollapsed">Coupons</span>
-          </a>
-        </li>
-        <li>
-          <a routerLink="/media">
-            <i class="icon-image"></i>
-            <span *ngIf="!isCollapsed">Media</span>
-          </a>
-        </li>
-        <li>
-          <a routerLink="/settings">
-            <i class="icon-settings"></i>
-            <span *ngIf="!isCollapsed">Settings</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+  <div class="logo">
+    <!-- <img src="assets/logo.png"/> -->
+    <span *ngIf="!isCollapsed">Charming-Admin</span>
   </div>
-  
+  <button class="toggle-button" (click)="toggleSidebar()">☰</button>
+  <nav class="menu">
+    <ul>
+      <li>
+        <a routerLink="admin-dashboard">
+          <i class="icon-home"></i>
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAgklEQVR4nN3PIQ7CUBCE4SY9CQLTVGDr8MgaRE/APVC9RW9Qx31AgKjiAB8hqXq88loEJIyZZHf+yW6WfVvYopsbziPw7elz4AoDejTYLYFLXFGPcD+WxWGc0KLACmfs370TFqxxxAV3HJJnThTl2HwExwRL5i+B0MN9EpDwfyr4qR6DMPyTS40M/wAAAABJRU5ErkJggg=="
+            alt="combo-chart">
+          <span *ngIf="!isCollapsed">Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/products">
+          <i class="icon-box"></i>
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAUUlEQVR4nO2TOwoAIAxDewavrOCV7fTEUSlSPzj5xhKSUFqRGwAZUHw0XRoNFAjOsACUcchi417PBvcbiCEy07wGM76BmDvQ00tMi78QPWFvqKLDATiZz5sPAAAAAElFTkSuQmCC"
+            alt="box">
+          <span *ngIf="!isCollapsed">Products</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/statistics">
+          <i class="icon-chart"></i>
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAYUlEQVR4nO2SQQqAIBBF5wyep0V4tcK7tnfhrF4ICkKaFhEtess/w2MYvsinABygHPHAPCJQwFTyyNaVALRyYEoSe1eQ8ZcFwzv8AnniB1orUjE3QDgTrI0qZ+Js6V35LjvjxLuhODki6QAAAABJRU5ErkJggg=="
+            alt="file">
+          <span *ngIf="!isCollapsed">Pages</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/coupons">
+          <i class="icon-tag"></i>
+          <!-- shoppingmode -->
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAn0lEQVR4nN3SvQ3CMBCG4ShFlAJGINQMwCoMQoPCMgxCoCBMwCrQwoMsG2EhKnfwNaf7+d47Wa6q3xfOyjS+AAoXR5+oA7ovQ+svtTmOOaBBjyHlNRZY4Z5iyOvUD+ZN8OXUKa5ZHoCPdF2Ifda7YZKbG2yx/zj1kgCXj/ohLYgXiBowy4Za7LBMsc16XYK8H7EqUA4YC//BqWRx9Yd6AvcbMd7PwicjAAAAAElFTkSuQmCC"
+            alt="starred-ticket">
+          <span *ngIf="!isCollapsed">Coupons</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/media">
+          <i class="icon-image"></i>
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAmklEQVR4nM3SQQrCMBQE0K4K3XZrPa1i9QB6EvU8LtQzWBCefIkYilRLN84mmcmfySc/RfGXwA53b8R+O2RYocsMJ1TZeZW0F6J2mQd0qEd0WOOWC3priQ2uuGAdWi/EZ1I8eRj2mKHBAe2YgEsYMz4PbWrAeUxAm9pukvkYkxoTUKaQ6OScxjz4iN3UMS57H+kbonbx64V/jgfeLDk3reLi9wAAAABJRU5ErkJggg=="
+            alt="camera">
+          <span *ngIf="!isCollapsed">Media</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/settings">
+          <i class="icon-settings"></i>
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAj0lEQVR4nL3SsQkCQRCF4UXsQC+1DTPrsANTOxDOxD4sQGzBw8zIMgQzwUOQT9bIYDlXZf3jef88mAmhJBhhhi0u2LwL9DHBCkecsMYUQ9y7wnOccUCNMXqf1L3Ko8UiJYhUGYuquCwpCPlt/V+APZpfBA12XwteKSZoMcgIx49MnnGJ2/MbuokzdW7b8jwAHnH/ES09IMYAAAAASUVORK5CYII="
+            alt="wallet">
+          <span *ngIf="!isCollapsed">Payment</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
