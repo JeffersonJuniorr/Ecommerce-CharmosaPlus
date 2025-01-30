@@ -1,40 +1,41 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
-  
-  // Salva um item no localStorage
-  setItem(key: string, value: any): void {
-    try {
-      const serializedValue =
-        typeof value === 'string' ? value : JSON.stringify(value);
-      localStorage.setItem(key, serializedValue);
-    } catch (error) {
-      console.error(`Erro ao salvar no localStorage (key: ${key}):`, error);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
+
+  getItem(key: string): any {
+    if (!this.isBrowser) {
+      console.warn(`Tentativa de acessar localStorage no servidor. Chave: ${key}`);
+      return null;
     }
-  }
 
-  // Recupera um item do localStorage
-  getItem<T>(key: string): T | null {
     try {
-      const value = localStorage.getItem(key);
-
-      // retorna o valor bruto se não for JSON
-      try {
-        return value ? JSON.parse(value) : null;
-      } catch {
-        return value as unknown as T;
-      }
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : null;
     } catch (error) {
       console.error(`Erro ao recuperar do localStorage (key: ${key}):`, error);
       return null;
     }
   }
 
-  // Remove um item do localStorage
+  setItem(key: string, value: any): void {
+    if (!this.isBrowser) return;
+
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Erro ao salvar no localStorage (key: ${key}):`, error);
+    }
+  }
+
   removeItem(key: string): void {
+    if (!this.isBrowser) return;
+
     try {
       localStorage.removeItem(key);
     } catch (error) {
@@ -42,22 +43,13 @@ export class StorageService {
     }
   }
 
-  // Limpa todo o localStorage
   clear(): void {
+    if (!this.isBrowser) return;
+
     try {
       localStorage.clear();
     } catch (error) {
       console.error('Erro ao limpar o localStorage:', error);
-    }
-  }
-
-  // Verifica se um item existe no localStorage
-  hasItem(key: string): boolean {
-    try {
-      return localStorage.getItem(key) !== null;
-    } catch (error) {
-      console.error(`Erro ao verificar a existência do item (key: ${key}):`, error);
-      return false;
     }
   }
 }

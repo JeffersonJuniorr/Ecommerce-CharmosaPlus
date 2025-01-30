@@ -1,14 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { StorageService } from '../storage/storage.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private baseUrl = 'http://localhost:8080/auth';
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   constructor(private http: HttpClient, private storageService: StorageService) {}
 
@@ -22,10 +25,10 @@ export class AuthService {
       }),
     }).pipe(
       tap((response: any) => {
-        // Salvar token e role no localStorage usando StorageService
-        if (response && response.token && response.role) {
+        // Salvar token e role no localStorage apenas no navegador
+        if (this.isBrowser && response?.token && response?.role) {
           this.storageService.setItem('authToken', response.token);
-          this.storageService.setItem('userRole', response.role);
+          this.storageService.setItem('userRole', response.role); // Role do usuário
         }
       })
     );
@@ -50,13 +53,20 @@ export class AuthService {
 
   // Método para logout
   logout(): void {
-    // Limpar localStorage ao fazer logout
-    this.storageService.clear();
+    if (this.isBrowser) {
+      this.storageService.clear();
+    }
   }
 
   // Método para verificar autenticação
   isAuthenticated(): boolean {
-    const token = this.storageService.getItem('authToken');
-    return !!token; // Retorna true se o token estiver presente
+    if (!this.isBrowser) return false;
+    return !!this.storageService.getItem('authToken');
+  }
+
+  // Método para verificar se o usuário é administrador
+  isAdmin(): boolean {
+    if (!this.isBrowser) return false;
+    return this.storageService.getItem('userRole') === 'admin';
   }
 }

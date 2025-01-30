@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth.service';
-import { StorageService } from '../../../services/storage/storage.service'; // Importe o StorageService
+import { StorageService } from '../../../services/storage/storage.service';
 
 @Component({
   selector: 'app-login',

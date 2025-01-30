@@ -27,7 +27,7 @@
         </a>
       </li>
       <li>
-        <a routerLink="/statistics">
+        <a routerLink="/adm-pages">
           <i class="icon-chart"></i>
           <img
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAYUlEQVR4nO2SQQqAIBBF5wyep0V4tcK7tnfhrF4ICkKaFhEtess/w2MYvsinABygHPHAPCJQwFTyyNaVALRyYEoSe1eQ8ZcFwzv8AnniB1orUjE3QDgTrI0qZ+Js6V35LjvjxLuhODki6QAAAABJRU5ErkJggg=="
@@ -38,7 +38,6 @@
       <li>
         <a routerLink="/coupons">
           <i class="icon-tag"></i>
-          <!-- shoppingmode -->
           <img
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAn0lEQVR4nN3SvQ3CMBCG4ShFlAJGINQMwCoMQoPCMgxCoCBMwCrQwoMsG2EhKnfwNaf7+d47Wa6q3xfOyjS+AAoXR5+oA7ovQ+svtTmOOaBBjyHlNRZY4Z5iyOvUD+ZN8OXUKa5ZHoCPdF2Ifda7YZKbG2yx/zj1kgCXj/ohLYgXiBowy4Za7LBMsc16XYK8H7EqUA4YC//BqWRx9Yd6AvcbMd7PwicjAAAAAElFTkSuQmCC"
             alt="starred-ticket">
@@ -55,12 +54,19 @@
         </a>
       </li>
       <li>
-        <a routerLink="/settings">
+        <a routerLink="/extract">
           <i class="icon-settings"></i>
           <img
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAj0lEQVR4nL3SsQkCQRCF4UXsQC+1DTPrsANTOxDOxD4sQGzBw8zIMgQzwUOQT9bIYDlXZf3jef88mAmhJBhhhi0u2LwL9DHBCkecsMYUQ9y7wnOccUCNMXqf1L3Ko8UiJYhUGYuquCwpCPlt/V+APZpfBA12XwteKSZoMcgIx49MnnGJ2/MbuokzdW7b8jwAHnH/ES09IMYAAAAASUVORK5CYII="
             alt="wallet">
-          <span *ngIf="!isCollapsed">Payment</span>
+          <span *ngIf="!isCollapsed">Extrato</span>
+        </a>
+        <a routerLink="users">
+          <i class="icon-settings"></i>
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAj0lEQVR4nL3SsQkCQRCF4UXsQC+1DTPrsANTOxDOxD4sQGzBw8zIMgQzwUOQT9bIYDlXZf3jef88mAmhJBhhhi0u2LwL9DHBCkecsMYUQ9y7wnOccUCNMXqf1L3Ko8UiJYhUGYuquCwpCPlt/V+APZpfBA12XwteKSZoMcgIx49MnnGJ2/MbuokzdW7b8jwAHnH/ES09IMYAAAAASUVORK5CYII="
+            alt="wallet">
+          <span *ngIf="!isCollapsed">Usuários</span>
         </a>
       </li>
     </ul>

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { StorageService } from '../../services/storage/storage.service';
 
 @Component({
+  standalone: true,
   selector: 'app-slidebar',
   imports: [CommonModule, RouterModule],
   templateUrl: './slidebar.component.html',
@@ -13,7 +14,11 @@ export class SlidebarComponent implements OnInit {
   isCollapsed: boolean = false;
   isAdmin: boolean = false;
 
-  constructor(private storageService: StorageService) {}
+  constructor(private router: Router, private storageService: StorageService) {}
+  
+  navigate(route: string): void {
+    this.router.navigate([route]);
+  }
 
   ngOnInit() {
     const userRole = this.storageService.getItem('userRole');

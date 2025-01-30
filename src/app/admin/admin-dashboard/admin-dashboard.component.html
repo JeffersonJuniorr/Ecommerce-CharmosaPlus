@@ -1,0 +1,56 @@
+<div class="container">
+    <div class="cards">
+        <div class="card">
+            <img src="../../../assets/dashboard/addbox.png">
+            <h2>{{ orderSummary?.novosPedidos }}</h2>
+            <p>Novos Pedidos</p>
+            <small>Total de Pedidos: {{ orderSummary?.totalPedidos }}</small>
+        </div>
+
+        <div class="card">
+            <img src="../../../assets/dashboard/searchbox.PNG">
+            <h2>{{ orderSummary?.processamento }}</h2>
+            <p>Processamento de Pedidos</p>
+            <small>Total de Processamento: {{ orderSummary?.totalProcessamento }}</small>
+        </div>
+
+        <div class="card">
+            <img src="../../../assets/dashboard/van.png">
+            <h2>{{ orderSummary?.aCaminho }}</h2>
+            <p>A Caminho</p>
+            <small>Pronto para Enviar: {{ orderSummary?.prontoParaEnviar }}</small>
+        </div>
+
+        <div class="card">
+            <img src="../../../assets/dashboard/checklist.png">
+            <h2>{{ orderSummary?.pedidosConcluidos }}</h2>
+            <p>Pedidos Concluídos</p>
+            <small>Total de Pedidos: {{ orderSummary?.totalPedidosConcluidos }}</small>
+        </div>
+    </div>
+
+    <div class="graphics">
+        <app-charts></app-charts>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- 
+    <header class="dashboard-header">
+      <h1>Admin Dashboard</h1>
+      <button (click)="toglleTheme()">
+        Switch to {{ isDarkMode ? 'Light' : 'Dark' }} Mode
+      </button>
+    </header>
+  
+    <div class="dashboard-content">
+        <app-statistics-cards></app-statistics-cards>
+        <app-transactions-table></app-transactions-table>
+      </div> -->

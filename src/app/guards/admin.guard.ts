@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
+import { StorageService } from '../services/storage/storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(private storageService: StorageService, private router: Router) {}
 
   canActivate(): boolean {
-    const role = localStorage.getItem('userRole');
+    const role = this.storageService.getItem('userRole');
     if (role === 'ADMIN') {
       return true;
     }
-
-    alert('Acesso negado! Você não é um administrador.');
-    this.router.navigate(['/home']); 
+    this.router.navigate(['/login']);
     return false;
   }
 }

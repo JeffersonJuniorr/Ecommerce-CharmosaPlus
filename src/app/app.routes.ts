@@ -13,8 +13,10 @@ import { RefundPolicyComponent } from './pages/refund-policy/refund-policy/refun
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { UsersComponent } from './admin/users/users.component';
 import { ProductsComponent } from './admin/products/products.component';
-import { StatsComponent } from './admin/stats/stats.component';
-import { OrdersComponent } from './admin/orders/orders.component';
+import { CouponsComponent } from './admin/coupons/coupons.component';
+import { ExtractComponent } from './admin/extract/extract.component';
+import { MediaComponent } from './admin/media/media.component';
+import { AdmPagesComponent } from './admin/adm-pages/adm-pages.component';
 
 import { AdminGuard } from './guards/admin.guard';
 
@@ -50,14 +52,16 @@ export const routes: Routes = [
         path:"refund-policy", component: RefundPolicyComponent
     },
     {
-        path: 'admin',
+        path: 'admin-dashboard',
         component: AdminDashboardComponent,
         canActivate: [AdminGuard],
         children: [
           { path: 'users', component: UsersComponent },
           { path: 'products', component: ProductsComponent },
-          { path: 'stats', component: StatsComponent },
-          { path: 'orders', component: OrdersComponent },
+          { path: 'coupons', component: CouponsComponent },
+          { path: 'extract', component: ExtractComponent },
+          { path: 'media', component: MediaComponent },
+          { path: 'adm-pages', component: AdmPagesComponent },
         ],
       },
     ];
