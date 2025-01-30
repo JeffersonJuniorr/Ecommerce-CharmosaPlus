@@ -11,6 +11,18 @@
   align-items: center;
   transition: width 0.3s ease;
   overflow: hidden;
+  z-index: 100;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 15px;
+}
+
+.active {
+  background-color: #34495e;
 }
 
 .sidebar.collapsed {
