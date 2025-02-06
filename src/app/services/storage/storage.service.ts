@@ -9,11 +9,7 @@ export class StorageService {
   private isBrowser = isPlatformBrowser(this.platformId);
 
   getItem(key: string): any {
-    if (!this.isBrowser) {
-      console.warn(`Tentativa de acessar localStorage no servidor. Chave: ${key}`);
-      return null;
-    }
-
+    if (!this.isBrowser) return null;
     try {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : null;
@@ -25,7 +21,6 @@ export class StorageService {
 
   setItem(key: string, value: any): void {
     if (!this.isBrowser) return;
-
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
@@ -35,7 +30,6 @@ export class StorageService {
 
   removeItem(key: string): void {
     if (!this.isBrowser) return;
-
     try {
       localStorage.removeItem(key);
     } catch (error) {
@@ -45,7 +39,6 @@ export class StorageService {
 
   clear(): void {
     if (!this.isBrowser) return;
-
     try {
       localStorage.clear();
     } catch (error) {

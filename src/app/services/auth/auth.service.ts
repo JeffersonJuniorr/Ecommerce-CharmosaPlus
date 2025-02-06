@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { StorageService } from '../storage/storage.service';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/auth';
+  private baseUrl = `${environment.apiUrl}/auth`;
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 

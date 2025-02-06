@@ -1,0 +1,50 @@
+<div class="container">
+  <h1>Gerenciamento de Produtos</h1>
+
+  <!-- Formulário de Adição -->
+  <form [formGroup]="productForm" (ngSubmit)="addProduct()">
+    <label>Nome:</label>
+    <input type="text" formControlName="name" required />
+
+    <label>Descrição:</label>
+    <input type="text" formControlName="description" required />
+
+    <label>Preço:</label>
+    <input type="number" formControlName="price" required />
+
+    <label>Cores (separadas por vírgula):</label>
+    <input type="text" formControlName="colors" />
+
+    <label>Tamanhos (separados por vírgula):</label>
+    <input type="text" formControlName="sizes" />
+
+    <label>Imagens:</label>
+    <input type="file" multiple (change)="onFileChange($event)" />
+
+    <button type="submit">Adicionar Produto</button>
+  </form>
+
+  <!-- Lista de Produtos -->
+  <h2>Produtos Cadastrados</h2>
+  <div class="product-list">
+    <div *ngFor="let product of products" class="product-card">
+      <div class="product-header">
+        <h3>{{ product.name }}</h3>
+        <button 
+          class="delete-button" 
+          (click)="deleteProduct(product.id!)"
+          [disabled]="deletingProductId === product.id"
+        >
+          {{ deletingProductId === product.id ? 'Excluindo...' : 'Excluir' }}
+        </button>
+      </div>
+      <p>{{ product.description }}</p>
+      <p>Preço: R$ {{ product.price }}</p>
+      <p>Cores: {{ product.colors.join(', ') }}</p>
+      <p>Tamanhos: {{ product.sizes.join(', ') }}</p>
+      <div class="images">
+        <img *ngFor="let imgUrl of product.imageUrls" [src]="imgUrl" alt="Imagem do Produto" />
+      </div>
+    </div>
+  </div>
+</div>

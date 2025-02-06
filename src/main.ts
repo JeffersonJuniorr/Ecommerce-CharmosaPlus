@@ -2,6 +2,8 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
+import { ProductService } from './app/services/products/products.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { HomeComponent } from './app/pages/home/home/home.component';
 import { LoginComponent } from './app/pages/login/login/login.component';
@@ -14,7 +16,7 @@ import { PaymentComponent } from './app/pages/payment/payment/payment.component'
 
 import { AdminDashboardComponent } from './app/admin/admin-dashboard/admin-dashboard.component';
 import { AdminGuard } from './app/guards/admin.guard';
-import { ProductsComponent } from './app/admin/products/products.component';
+import { ProductManagementComponent } from './app/admin/products/productmanagement/product-management.component';
 import { CouponsComponent } from './app//admin/coupons/coupons.component';
 import { UsersComponent } from './app/admin/users/users.component';
 
@@ -39,13 +41,16 @@ bootstrapApplication(AppComponent, {
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
           // { path: 'admdashboard', component: AdminDashboardComponent },
-          { path: 'admin-products', component: ProductsComponent },
+          // { path: 'admin-products', component: ProductManagementComponent },
           { path: 'coupons', component: CouponsComponent },
           { path: 'users', component: UsersComponent },
         ],
       },
+      { path: 'products-management', component: ProductManagementComponent },
     ]),
     provideHttpClient(),
+    ProductService,
+    ReactiveFormsModule,
   ],
   
 }).catch((err) => console.error(err));;

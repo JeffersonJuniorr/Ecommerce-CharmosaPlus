@@ -12,7 +12,7 @@ import { RefundPolicyComponent } from './pages/refund-policy/refund-policy/refun
 
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { UsersComponent } from './admin/users/users.component';
-import { ProductsComponent } from './admin/products/products.component';
+import { ProductManagementComponent } from './admin/products/productmanagement/product-management.component';
 import { CouponsComponent } from './admin/coupons/coupons.component';
 import { ExtractComponent } from './admin/extract/extract.component';
 import { MediaComponent } from './admin/media/media.component';
@@ -57,7 +57,7 @@ export const routes: Routes = [
         canActivate: [AdminGuard],
         children: [
           { path: 'users', component: UsersComponent },
-          { path: 'products', component: ProductsComponent },
+          { path: 'products-management', component: ProductManagementComponent },
           { path: 'coupons', component: CouponsComponent },
           { path: 'extract', component: ExtractComponent },
           { path: 'media', component: MediaComponent },
