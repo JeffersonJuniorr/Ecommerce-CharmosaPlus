@@ -1,0 +1,27 @@
+<div class="container">
+    <h1>Gerenciamento de Produtos</h1>
+
+    <!-- Lista de Produtos -->
+    <h2>Produtos Cadastrados</h2>
+    <div class="product-list">
+        <div *ngFor="let product of products" class="product-card">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>Preço: R$ {{ product.price }}</p>
+            <p>Cores: {{ product.colors.join(', ') }}</p>
+            <p>Tamanhos: {{ product.sizes.join(', ') }}</p>
+            <div class="images">
+                <img *ngFor="let imgUrl of product.imageUrls" [src]="imgUrl" alt="Imagem do Produto" />
+            </div>
+
+            <!-- Seletor de Categoria -->
+            <label for="category-{{ product.id }}">Categoria:</label>
+            <select [value]="product.category" (change)="updateProductCategory(product, $event)">
+                <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+            </select>
+
+
+            <button *ngIf="product.id !== undefined" (click)="deleteProduct(product.id)">Excluir</button>
+        </div>
+    </div>
+</div>

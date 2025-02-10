@@ -17,8 +17,9 @@ import { PaymentComponent } from './app/pages/payment/payment/payment.component'
 import { AdminDashboardComponent } from './app/admin/admin-dashboard/admin-dashboard.component';
 import { AdminGuard } from './app/guards/admin.guard';
 import { ProductManagementComponent } from './app/admin/products/productmanagement/product-management.component';
-import { CouponsComponent } from './app//admin/coupons/coupons.component';
+import { AdminCouponsComponent } from './app/admin/admin-coupons/admin-coupons.component';
 import { UsersComponent } from './app/admin/users/users.component';
+import { AdminPagesComponent } from './app/admin/adm-pages/admin-pages.component';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -42,11 +43,13 @@ bootstrapApplication(AppComponent, {
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
           // { path: 'admdashboard', component: AdminDashboardComponent },
           // { path: 'admin-products', component: ProductManagementComponent },
-          { path: 'coupons', component: CouponsComponent },
+          //{ path: 'coupons', component: CouponsComponent },
           { path: 'users', component: UsersComponent },
         ],
       },
+      { path: 'admin-coupons', component: AdminCouponsComponent },
       { path: 'products-management', component: ProductManagementComponent },
+      { path: 'admin-pages', component: AdminPagesComponent },
     ]),
     provideHttpClient(),
     ProductService,

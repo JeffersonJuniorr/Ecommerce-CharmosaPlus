@@ -14,6 +14,7 @@ export interface Product {
   sizes: string[];
   images?: File[];
   imageUrls?: (string | SafeUrl)[];
+  category?: string;
 }
 
 @Injectable({
@@ -48,5 +49,10 @@ export class ProductService {
   // Deletar Produto
   deleteProduct(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
+  // Aqui, Partial<Product> permite que a API receba apenas os campos que estão sendo atualizados, como category
+  updateProduct(id: number, updateData: Partial<Product>): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}`, updateData, { headers: this.getHeaders() });
   }
 }

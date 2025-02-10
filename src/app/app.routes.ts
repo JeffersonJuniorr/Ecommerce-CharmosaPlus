@@ -13,10 +13,10 @@ import { RefundPolicyComponent } from './pages/refund-policy/refund-policy/refun
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { UsersComponent } from './admin/users/users.component';
 import { ProductManagementComponent } from './admin/products/productmanagement/product-management.component';
-import { CouponsComponent } from './admin/coupons/coupons.component';
+import { AdminCouponsComponent } from './admin/admin-coupons/admin-coupons.component';
 import { ExtractComponent } from './admin/extract/extract.component';
 import { MediaComponent } from './admin/media/media.component';
-import { AdmPagesComponent } from './admin/adm-pages/adm-pages.component';
+import { AdminPagesComponent } from './admin/adm-pages/admin-pages.component';
 
 import { AdminGuard } from './guards/admin.guard';
 
@@ -58,10 +58,10 @@ export const routes: Routes = [
         children: [
           { path: 'users', component: UsersComponent },
           { path: 'products-management', component: ProductManagementComponent },
-          { path: 'coupons', component: CouponsComponent },
+          { path: 'admin-coupons', component: AdminCouponsComponent },
           { path: 'extract', component: ExtractComponent },
           { path: 'media', component: MediaComponent },
-          { path: 'adm-pages', component: AdmPagesComponent },
+          { path: 'adm-pages', component: AdminPagesComponent },
         ],
       },
     ];

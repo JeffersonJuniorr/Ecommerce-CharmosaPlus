@@ -1,0 +1,32 @@
+<div class="container">
+    <h1>Gerenciamento de Cupons</h1>
+  
+    <!-- Formulário de Cadastro -->
+    <h2>Adicionar Novo Cupom</h2>
+    <div class="coupon-form">
+      <label for="code">Código:</label>
+      <input id="code" [(ngModel)]="newCoupon.code" type="text" placeholder="Ex: DESCONTO20" />
+  
+      <label for="discount">Desconto (%):</label>
+      <input id="discount" [(ngModel)]="newCoupon.discount" type="number" placeholder="Ex: 20" />
+  
+      <label for="expiration">Data de Expiração:</label>
+      <input id="expiration" [(ngModel)]="newCoupon.expirationDate" type="date" />
+  
+      <button (click)="addCoupon()">Cadastrar Cupom</button>
+    </div>
+  
+    <!-- Lista de Cupons -->
+    <h2>Cupons Ativos</h2>
+    <div class="coupon-list">
+      <div *ngFor="let coupon of coupons" class="coupon-card">
+        <h3>{{ coupon.code }}</h3>
+        <p>Desconto: {{ coupon.discount }}%</p>
+        <p>Expira em: {{ coupon.expirationDate }}</p>
+        <p>Status: {{ coupon.isActive ? 'Ativo' : 'Inativo' }}</p>
+  
+        <button (click)="deleteCoupon(coupon.id!)">Excluir</button>
+      </div>
+    </div>
+  </div>
+  

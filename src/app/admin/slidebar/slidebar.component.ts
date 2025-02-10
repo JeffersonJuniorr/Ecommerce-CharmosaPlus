@@ -8,17 +8,13 @@ import { StorageService } from '../../services/storage/storage.service';
   selector: 'app-slidebar',
   imports: [CommonModule, RouterModule],
   templateUrl: './slidebar.component.html',
-  styleUrl: './slidebar.component.css'
+  styleUrl: './slidebar.component.css',
 })
 export class SlidebarComponent implements OnInit {
   isCollapsed: boolean = true;
   isAdmin: boolean = false;
 
   constructor(private router: Router, private storageService: StorageService) {}
-  
-  navigate(route: string): void {
-    this.router.navigate([route]);
-  }
 
   ngOnInit() {
     const userRole = this.storageService.getItem('userRole');
@@ -28,6 +24,9 @@ export class SlidebarComponent implements OnInit {
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
-    document.querySelector('.main-content')?.classList.toggle('collapsed'); // colapso para que o slidebar inicie fechado
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+      mainContent.classList.toggle('collapsed');
+    }
   }
 }
