@@ -1,20 +1,33 @@
 <div class="home-container">
-  <!-- Banner -->
+  <!-- Banner / Carrossel -->
   <div class="banner">
-    <h1 class="banner-title">
-      Moda que valoriza cada curva, <br />
-      feita para você!
-    </h1>
-    <img src="/assets/banners/banner-principal.png" alt="Banner Principal" class="banner-image" />
+    <div class="carousel-container">
+      <div class="carousel" [style.transform]="'translateX(' + (-currentIndex * 100) + '%)'">
+        <div class="slide" *ngFor="let banner of banners">
+          <img [src]="banner.image" alt="Slide">
+        </div>
+      </div>
+      <button class="prev-btn" (click)="prevSlide()">&#10094;</button>
+      <button class="next-btn" (click)="nextSlide()">&#10095;</button>
+      <div class="dots">
+        <span *ngFor="let banner of banners; let i = index" 
+              [class.active]="i === currentIndex" 
+              (click)="goToSlide(i)">
+        </span>
+      </div>
+    </div>
   </div>
 
   <!-- Menu -->
   <nav class="menu">
-    <ul>
-      <li>Moda Verão</li>
-      <li>Novidades</li>
-      <li>Moda Inverno</li>
-    </ul>
+    <div class="cards-banner">
+      <div class="card-banner" *ngFor="let cardsproducts of cardsproducts; let i = index">
+        <img [src]="cardsproducts.image" alt="{{ cardsproducts.name }}" (click)="goToCheckout(cardsproducts.id)" />
+        <div class="overlay">
+          <span>{{ getCategory(i) }}</span>
+        </div>
+      </div>
+    </div>
   </nav>
 
   <!-- Ofertas Especiais -->
@@ -24,16 +37,11 @@
       <a href="#">Ver tudo</a>
     </div>
     <div class="offers-content">
-      <div class="offer-text">
-        <h3>Descontos de <br><span>até 20%</span></h3>
-        <p class="notice">Válido somente para os produtos selecionados.</p>
-      </div>
-      <img src="/assets/banners/banner-segundario2.jpg" alt="Ofertas Especiais" class="offer-image" />
-      <img src="/assets/banners/banner-segundario1.jpg" alt="Ofertas Especiais" class="offer-image" />
+      <img [src]="offerBanner" alt="Oferta Especial" class="offer-banner" />
     </div>
   </section>
 
-    <!-- Categorias -->
+  <!-- Categorias -->
   <section class="products">
     <section class="categories">
       <div class="categories-header">
@@ -49,26 +57,66 @@
       </div>
     </section>
 
-  <!-- Produtos -->
-  <div class="product-list">
-    <div class="card" *ngFor="let product of products">
-      <img [src]="product.image" alt="{{ product.name }}" (click)="goToCheckout(product.id)"/>
-      <div class="card-body">
-        <h4>{{ product.name }}</h4>
-        <p class="sizes"><!-- Tamanhos: -->{{ product.sizes.join(' - ') }}</p>
-        <div class="colors">
-          <!-- Renderiza as cores -->
-          <span 
-            *ngFor="let color of product.colors" 
-            [style.backgroundColor]="color"
-            class="color-dot">
-          </span>
+    <!-- Produtos -->
+    <div class="product-list">
+      <div class="card" *ngFor="let product of products">
+        <img [src]="product.image" alt="{{ product.name }}" (click)="goToCheckout(product.id)" />
+        <div class="card-body">
+          <h4>{{ product.name }}</h4>
+          <p class="sizes">{{ product.sizes.join(' - ') }}</p>
+          <div class="colors">
+            <span *ngFor="let color of product.colors" 
+                  [style.backgroundColor]="(color.color ? color.color : color)" 
+                  class="color-dot"></span>
+          </div>
+          <p class="price">R$ {{ product.price }}</p>
+          <button class="add-cart-btn" (click)="openProductModal(product)">Adicionar ao Carrinho</button>
         </div>
-        <p class="price">R$ {{ product.price }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal de Produto -->
+  <div class="product-modal" *ngIf="showProductModal">
+    <div class="product-modal-content">
+      <button class="close-btn" (click)="closeProductModal()">×</button>
+      <div class="modal-body">
+        <div class="modal-image">
+          <img [src]="selectedImage" alt="{{ selectedProduct?.name }}">
+        </div>
+        <div class="modal-details">
+          <h3>{{ selectedProduct?.name }}</h3>
+          <p class="price">Preço: R$ {{ selectedProduct?.price }}</p>
+          
+          <div class="modal-colors" *ngIf="selectedProduct?.colors">
+            <p>Cores:</p>
+            <div class="color-options">
+              <span *ngFor="let col of selectedProduct.colors" 
+                    class="color-swatch"
+                    [ngStyle]="{'background-color': (col.color ? col.color : col)}"
+                    (click)="changeColor(col)">
+              </span>
+            </div>
+          </div>
+
+          <div class="modal-sizes" *ngIf="selectedProduct?.sizes">
+            <p>Tamanhos:</p>
+            <div class="size-options">
+              <button *ngFor="let size of selectedProduct.sizes" 
+                      [class.selected]="size === selectedSize"
+                      (click)="selectSize(size)">
+                {{ size }}
+              </button>
+            </div>
+          </div>
+
+          <div class="modal-quantity">
+            <p>Quantidade:</p>
+            <input type="number" min="1" [(ngModel)]="selectedQuantity">
+          </div>
+          <button class="confirm-btn" (click)="addToCart(selectedQuantity)">Confirmar Adição</button>
+        </div>
       </div>
     </div>
   </div>
-</section>
-
-  
 </div>

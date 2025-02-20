@@ -4,6 +4,8 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { ProductService } from './app/services/products/products.service';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { importProvidersFrom } from '@angular/core';
 
 import { HomeComponent } from './app/pages/home/home/home.component';
 import { LoginComponent } from './app/pages/login/login/login.component';
@@ -35,9 +37,9 @@ bootstrapApplication(AppComponent, {
       { path: 'checkout/:id', component: CheckoutComponent },
       { path: 'payment', component: PaymentComponent },
       // { path: '**', redirectTo: 'home' },  erro na navegação admin - slidebar
-      { 
-        path: 'admin-dashboard', 
-        component: AdminDashboardComponent, 
+      {
+        path: 'admin-dashboard',
+        component: AdminDashboardComponent,
         canActivate: [AdminGuard],
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -53,7 +55,7 @@ bootstrapApplication(AppComponent, {
     ]),
     provideHttpClient(),
     ProductService,
-    ReactiveFormsModule,
+    importProvidersFrom(ReactiveFormsModule),
+    importProvidersFrom(BrowserAnimationsModule),
   ],
-  
-}).catch((err) => console.error(err));;
+}).catch((err) => console.error(err));
