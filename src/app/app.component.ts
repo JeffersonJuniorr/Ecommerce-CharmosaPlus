@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router  } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './components/navbar/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer/footer.component';
@@ -24,10 +24,14 @@ export class AppComponent implements OnInit {
   isAdmin: boolean = false;
   isSidebarCollapsed: boolean = false;
 
-  constructor(private storageService: StorageService) {}
+  constructor(private storageService: StorageService, private router: Router) {}
 
   ngOnInit() {
     const userRole = this.storageService.getItem('userRole');
     this.isAdmin = userRole === 'ADMIN';
+  }
+
+  isAuthRoute(): boolean {
+    return this.router.url === '/login' || this.router.url === '/register';
   }
 }

@@ -1,61 +1,75 @@
-<div class="container-login">
-  <div class="container-login-central">
+<div class="container-register">
+  <div class="register-central">
     <div class="container-header">
-      <div class="titulo-login">Charmosa Plus</div>
-      <div class="subtitulo-login">INICIAR SESSÃO</div>
+      <div class="titulo-register">Charmosa Plus</div>
     </div>
 
     <div class="container-form">
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="group-input half">
+            <input class="text-info" type="text" formControlName="firstName" placeholder="PRIMEIRO NOME" />
+          </div>
+          <div class="group-input half">
+            <input class="text-info" type="text" formControlName="lastName" placeholder="SOBRENOME" />
+          </div>
+        </div>
+
         <div class="group-input">
           <input class="text-info" type="text" formControlName="email" placeholder="E-MAIL" />
         </div>
+
+        <div class="group-input">
+          <input class="text-info" type="text" formControlName="username" placeholder="NOME DE USUÁRIO" />
+        </div>
+
         <div class="group-input">
           <input class="text-info" type="password" formControlName="password" placeholder="SENHA" />
         </div>
-        <div class="group-input">
-          <input class="text-info" type="text" formControlName="firstName" placeholder="PRIMEIRO NOME" />
+
+        <div class="form-row">
+          <div class="group-input half">
+            <input class="text-info" type="text" formControlName="cpf" placeholder="CNPJ / CPF" />
+          </div>
+          <div class="group-input half">
+            <input class="text-info" type="text" formControlName="phone" placeholder="TELEFONE" />
+          </div>
         </div>
-        <div class="group-input">
-          <input class="text-info" type="text" formControlName="username" placeholder="NOME DE USÚARIO" />
+
+        <div class="form-row">
+          <div class="group-input half">
+            <input class="text-info" type="text" formControlName="cep" placeholder="CEP" />
+          </div>
+          <div class="group-input half">
+            <select formControlName="gender" class="text-info">
+              <option value="" disabled selected>GÊNERO</option>
+              <option value="Male">Masculino</option>
+              <option value="Female">Feminino</option>
+              <option value="Other">Outro</option>
+            </select>
+          </div>
         </div>
-        <div class="group-input">
-          <input class="text-info" type="text" formControlName="lastName" placeholder="SOBRENOME" />
-        </div>
-        <!-- <div class="group-input">
-          <input class="text-info" type="text" formControlName="cpf" placeholder="CNPJ / CPF" />
-        </div> -->
-        <div class="group-input">
-          <!-- <input class="text-info ddd-input" type="text" formControlName="ddd" placeholder="DDD" /> -->
-          <input class="text-info telefone-input" type="text" formControlName="phone" placeholder="TELEFONE" />
-        </div>
+
         <div class="group-input">
           <input class="text-info" type="text" formControlName="address" placeholder="ENDEREÇO" />
         </div>
-        <div class="group-input">
-          <input class="text-info" type="text" formControlName="city" placeholder="CIDADE" />
+
+        <div class="form-row">
+          <div class="group-input half">
+            <input class="text-info" type="text" formControlName="city" placeholder="CIDADE" />
+          </div>
+          <div class="group-input half">
+            <input class="text-info" type="text" formControlName="state" placeholder="ESTADO" />
+          </div>
         </div>
-        <div class="group-input">
-          <input class="text-info" type="text" formControlName="state" placeholder="ESTADO" />
+
+        <div class="login-link">
+          Já possui uma conta? <a href="/login">Iniciar sessão</a>
         </div>
-        <div class="group-input">
-          <select formControlName="gender" class="text-info">
-            <option value="" disabled selected>SELECIONE O GÊNERO</option>
-            <option value="Male">Masculino</option>
-            <option value="Female">Feminino</option>
-            <option value="Other">Outro</option>
-          </select>
-        </div>
-        <div class="group-input">
-          <input class="text-info" type="text" formControlName="cep" placeholder="CEP" />
-        </div>
-        <div class="group-input">
-          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <!-- Campos do formulário -->
-            <button type="submit" class="btn-login">Criar Conta</button>
-          </form>
-          
-        </div>
+
+        <button type="submit" class="btn-register">
+          Criar Conta
+        </button>
       </form>
     </div>
   </div>

@@ -1,103 +1,109 @@
 .container-login {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 90vh;
+  background: #f8f8f8;
 }
 
 .container-login-central {
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    width: 450px;
-    height: 460px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  width: 520px;
+  height: 470px;
+  background: #fff;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 .container-header {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 30px;
 }
 
 .titulo-login {
-    color: #000;
-    font-family: "Marcellus SC";
-    font-size: 64px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+  color: #000;
+  font-family: "Marcellus SC", serif;
+  font-size: 47px;
+  font-weight: 400;
+  margin: 0;
+  padding-bottom: 20px;
 }
 
 .subtitulo-login {
-    color: #000;
-    font-family: "Inter";
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-top: 32px;
+  color: #000;
+  font-family: "Inter";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }
 
 .text-info {
-    width: 96%;
-    border: none;
-    border-bottom: 1px solid #ccc;
-    padding: 10px 0;
-    font-family: "Inter";
-    font-size: 18px;
-    color: #000; 
-    opacity: 0.8; 
-    outline: none;
-    transition: border-color 0.3s ease;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  color: #000;
+  opacity: 0.8;
+  outline: none;
+  transition: border-color 0.3s ease;
+  margin-bottom: 10px;
 }
 
 .text-info:focus {
-    border-bottom: 1px solid #000;
-    opacity: 1;
+  border-bottom: 1px solid #000;
+  opacity: 1;
 }
 
-
 .text-info::placeholder {
-    color: #aaa;
-    font-style: normal;
+  color: #aaa;
 }
 
 .btn-login {
-    width: 100%;
-    height: 55px;
-    flex-shrink: 0;
-    border: 1px solid #000;
-    color: #000;
-    font-family: "Inter";
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    background: none;
-    margin-top: 3%;
-    cursor: pointer;
+  width: 100%;
+  height: 55px;
+  border: 1px solid #000;
+  color: #000;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  background: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 20px;
 }
 
-.subtitle {
-    display: flex;
-    justify-content: space-between;
+.btn-login:hover {
+  background: #f0f0f0;
 }
 
-.forgot-password {
-    text-align: left;
-    margin-top: 10px;
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
 }
 
-.register-link {
-    text-align: right;
-    margin-top: 13px;
+.register-link a,
+.forgot-password a {
+  color: #000;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom-color 0.3s ease;
 }
 
-a {
-    border-bottom: 1px solid;
+.register-link a:hover,
+.forgot-password a:hover {
+  border-bottom-color: #000;
 }
 
-a:hover {
-    text-decoration: underline;
+.group-input {
+  font-family: 'Montserrat', sans-serif;
 }

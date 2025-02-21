@@ -1,61 +1,57 @@
-.container-login {
+.container-register {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 50px;
-    padding-top: 3%;
-    padding-bottom: 13.5%;
+    min-height: 93vh;
 }
 
-.container-login-central {
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    width: 450px;
-    height: 520px; /* Ajuste na altura */
+.register-central {
+    background: #fff;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 550px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .container-header {
+    text-align: center;
+}
+
+.titulo-register {
+    color: #000;
+    font-family: "Marcellus SC", serif;
+    font-size: 42px;
+    font-weight: 400;
+    padding-bottom: 22px;
+}
+
+.form-row {
     display: flex;
-    align-items: center;
-    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .group-input {
-    padding-top: 22px;
-    
+    margin-bottom: 0.5rem;
+    width: 100%;
 }
 
-.titulo-login {
-    color: #000;
-    font-family: "Marcellus SC";
-    font-size: 64px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-}
-
-.subtitulo-login {
-    color: #000;
-    font-family: "Inter";
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-top: 32px;
+.group-input.half {
+    width: 50%;
 }
 
 .text-info {
-    width: 96%;
+    width: 100%;
     border: none;
     border-bottom: 1px solid #ccc;
-    padding: 10px 0;
-    font-family: "Inter";
-    font-size: 18px;
-    color: #000; 
-    opacity: 0.8; 
+    padding: 8px 0;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    color: #000;
+    opacity: 0.8;
     outline: none;
     transition: border-color 0.3s ease;
+    background: transparent;
 }
 
 .text-info:focus {
@@ -65,35 +61,72 @@
 
 .text-info::placeholder {
     color: #aaa;
-    font-style: italic;
+    font-style: normal;
 }
 
-.btn-login {
+select.text-info {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    /* para aparecer as opções dos generos */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+.login-link {
+    text-align: end;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13.5px;
+    color: #000;
+}
+
+.login-link a {
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color 0.3s ease;
+}
+
+.login-link a:hover {
+    border-bottom-color: #000;
+}
+
+.btn-register {
     width: 100%;
-    height: 55px;
-    flex-shrink: 0;
+    height: 50px;
     border: 1px solid #000;
     color: #000;
-    font-family: "Inter";
+    font-family: "Inter", sans-serif;
     font-size: 16px;
-    font-style: normal;
     font-weight: 400;
-    line-height: normal;
     background: none;
-    margin-top: 40px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
 }
 
-.group-input.same-line {
-    display: flex;
-    justify-content: flex-start;
+.btn-register:hover {
+    background: #f0f0f0;
 }
 
-.ddd-input {
-    width: 30%; /* DDD ocupa 20% */
-    margin-right: 5%; /* Espaço entre DDD e Telefone */
-}
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 
-.telefone-input {
-    width: 93%; /* Telefone ocupa o restante */
+    .group-input.half {
+        width: 100%;
+    }
+
+    .register-central {
+        padding: 1.5rem;
+    }
+
+    .titulo-register {
+        font-size: 36px;
+    }
 }

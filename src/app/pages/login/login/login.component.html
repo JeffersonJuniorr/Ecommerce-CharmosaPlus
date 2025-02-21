@@ -3,15 +3,11 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="container-header">
         <div class="titulo-login">Charmosa Plus</div>
+        <div class="subtitulo-login">INICIAR SESSÃO</div>
       </div>
 
       <div class="group-input">
-        <input
-          class="text-info"
-          type="text"
-          formControlName="username"
-          placeholder="E-MAIL"
-        />
+        <input class="text-info" type="text" formControlName="username" placeholder="E-MAIL ou CPF/CNPJ" />
         <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
           <small *ngIf="loginForm.get('username')?.errors?.['required']">
             E-mail é obrigatório.
@@ -23,12 +19,7 @@
       </div>
 
       <div class="group-input">
-        <input
-          class="text-info"
-          type="password"
-          formControlName="password"
-          placeholder="SENHA"
-        />
+        <input class="text-info" type="password" formControlName="password" placeholder="SENHA" />
         <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
           <small *ngIf="loginForm.get('password')?.errors?.['required']">
             Senha é obrigatória.
@@ -38,6 +29,16 @@
           </small>
         </div>
       </div>
+
+      <div class="login-options">
+        <div class="register-link">
+          Novo usuário? <a href="/register">Cadastre-se</a>
+        </div>
+        <div class="forgot-password">
+          <a href="/recuperar-senha">Esqueceu a senha?</a>
+        </div>
+      </div>
+
       <button type="submit" class="btn-login" [disabled]="loginForm.invalid">
         INICIAR SESSÃO
       </button>
