@@ -4,3 +4,32 @@
 body {
     margin: 0;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.success-snackbar {
+    --mdc-snackbar-container-color: #4CAF50 !important;
+    --mat-mdc-snack-bar-button-color: white !important;
+    --mdc-snackbar-supporting-text-color: white !important;
+  }
+  
+  .error-snackbar {
+    --mdc-snackbar-container-color: #F44336 !important;
+    --mat-mdc-snack-bar-button-color: white !important;
+    --mdc-snackbar-supporting-text-color: white !important;
+  }
+
+  .mdc-snackbar__surface {
+    border-radius: 4px !important;
+  }
+  
+  .mat-mdc-snack-bar-container {
+    --mat-snack-bar-button-color: white !important;
+    --mdc-snackbar-supporting-text-line-height: 20px !important;
+    --mdc-snackbar-supporting-text-size: 14px !important;
+  }
+
+  .mat-mdc-progress-bar {
+    --mdc-linear-progress-active-indicator-color: rgba(255, 255, 255, 0.8) !important;
+    --mdc-linear-progress-track-color: rgba(255, 255, 255, 0.2) !important;
+  }

@@ -22,6 +22,7 @@ import { ProductManagementComponent } from './app/admin/products/productmanageme
 import { AdminCouponsComponent } from './app/admin/admin-coupons/admin-coupons.component';
 import { UsersComponent } from './app/admin/users/users.component';
 import { AdminPagesComponent } from './app/admin/adm-pages/admin-pages.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -56,6 +57,6 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(),
     ProductService,
     importProvidersFrom(ReactiveFormsModule),
-    importProvidersFrom(BrowserAnimationsModule),
+    importProvidersFrom(BrowserAnimationsModule), provideAnimationsAsync(),
   ],
 }).catch((err) => console.error(err));
