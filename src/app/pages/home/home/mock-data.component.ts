@@ -39,7 +39,7 @@ export const MOCK_DATA = {
       colors: [
         { color: '#D0C6BC', image: 'assets/products/banner1.jpg' },
         { color: '#808080', image: 'assets/products/banner1.jpg' },
-        { color: '#000000', image: 'aassets/products/banner1.jpg' },
+        { color: '#000000', image: 'assets/products/banner1.jpg' },
       ],
     },
     {
@@ -51,7 +51,7 @@ export const MOCK_DATA = {
       colors: [
         { color: '#D0C6BC', image: 'assets/products/banner3.jpg' },
         { color: '#808080', image: 'assets/products/banner3.jpg' },
-        { color: '#000000', image: 'aassets/products/banner3.jpg' },
+        { color: '#000000', image: 'assets/products/banner3.jpg' },
       ],
     },
     {
@@ -63,7 +63,7 @@ export const MOCK_DATA = {
       colors: [
         { color: '#D0C6BC', image: 'assets/products/banner3.jpg' },
         { color: '#808080', image: 'assets/products/banner3.jpg' },
-        { color: '#000000', image: 'aassets/products/banner3.jpg' },
+        { color: '#000000', image: 'assets/products/banner3.jpg' },
       ],
     },
     {
@@ -75,7 +75,7 @@ export const MOCK_DATA = {
       colors: [
         { color: '#D0C6BC', image: 'assets/products/banner3.jpg' },
         { color: '#808080', image: 'assets/products/banner3.jpg' },
-        { color: '#000000', image: 'aassets/products/banner3.jpg' },
+        { color: '#000000', image: 'assets/products/banner3.jpg' },
       ],
     },
     {
@@ -87,7 +87,7 @@ export const MOCK_DATA = {
       colors: [
         { color: '#D0C6BC', image: 'assets/products/banner3.jpg' },
         { color: '#808080', image: 'assets/products/banner3.jpg' },
-        { color: '#000000', image: 'aassets/products/banner3.jpg' },
+        { color: '#000000', image: 'assets/products/banner3.jpg' },
       ],
     },
     {
@@ -99,7 +99,7 @@ export const MOCK_DATA = {
       colors: [
         { color: '#D0C6BC', image: 'assets/products/banner3.jpg' },
         { color: '#808080', image: 'assets/products/banner3.jpg' },
-        { color: '#000000', image: 'aassets/products/banner3.jpg' },
+        { color: '#000000', image: 'assets/products/banner3.jpg' },
       ],
     },
     {
@@ -111,7 +111,7 @@ export const MOCK_DATA = {
       colors: [
         { color: '#D0C6BC', image: 'assets/products/banner3.jpg' },
         { color: '#808080', image: 'assets/products/banner3.jpg' },
-        { color: '#000000', image: 'aassets/products/banner3.jpg' },
+        { color: '#000000', image: 'assets/products/banner3.jpg' },
       ],
     },
     {
@@ -123,7 +123,7 @@ export const MOCK_DATA = {
       colors: [
         { color: '#D0C6BC', image: 'assets/products/banner3.jpg' },
         { color: '#808080', image: 'assets/products/banner3.jpg' },
-        { color: '#000000', image: 'aassets/products/banner3.jpg' },
+        { color: '#000000', image: 'assets/products/banner3.jpg' },
       ],
     },
   ],

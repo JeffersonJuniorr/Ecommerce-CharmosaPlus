@@ -15,6 +15,9 @@ export interface Product {
   images?: File[];
   imageUrls?: (string | SafeUrl)[];
   category?: string;
+  isNew?: boolean;
+  active?: boolean;
+  // discount?: number;
 }
 
 @Injectable({
@@ -36,23 +39,27 @@ export class ProductService {
     });
   }
 
-  // Buscar todos os produtos
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
-  // Adicionar um novo produto
   addProduct(formData: FormData): Observable<any> {
     return this.http.post(this.apiUrl, formData, { headers: this.getHeaders() });
   }
 
-  // Deletar Produto
   deleteProduct(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
-  // Aqui, Partial<Product> permite que a API receba apenas os campos que estão sendo atualizados, como category
-  updateProduct(id: number, updateData: Partial<Product>): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${id}`, updateData, { headers: this.getHeaders() });
+  updateProduct(id: number, updateData: FormData | Partial<Product>): Observable<any> {
+    const headers = this.getHeaders();
+  
+    // Se for FormData, não defina o Content-Type (o navegador fará isso automaticamente)
+    if (updateData instanceof FormData) {
+      return this.http.put(`${this.apiUrl}/${id}`, updateData, { headers: headers.delete('Content-Type') });
+    } else {
+      // Caso contrário, envie como JSON
+      return this.http.put(`${this.apiUrl}/${id}`, updateData, { headers: headers });
+    }
   }
 }

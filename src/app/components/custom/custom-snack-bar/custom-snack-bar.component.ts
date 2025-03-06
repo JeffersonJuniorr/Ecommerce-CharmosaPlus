@@ -1,19 +1,23 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
+import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  // CustomSnackBarComponent
   selector: 'app-custom-snack-bar',
-  imports: [MatProgressBarModule],
+  standalone: true,
+  imports: [MatProgressBarModule, CommonModule, MatIconModule],
   templateUrl: './custom-snack-bar.component.html',
-  styleUrl: './custom-snack-bar.component.css'
+  styleUrls: ['./custom-snack-bar.component.css']
 })
 export class CustomSnackBarComponent implements OnInit {
   data = inject(MAT_SNACK_BAR_DATA);
+  snackBarRef = inject(MatSnackBarRef);
   progressValue = 100;
-  
+  message: string = this.data.message || '';
+  type: 'success' | 'error' = this.data.type || 'success';
+
   ngOnInit() {
     const startTime = Date.now();
     const duration = 4500;
@@ -24,9 +28,15 @@ export class CustomSnackBarComponent implements OnInit {
       
       if (this.progressValue > 0) {
         requestAnimationFrame(updateProgress);
+      } else {
+        this.snackBarRef.dismiss();
       }
     };
 
     updateProgress();
+  }
+  
+  dismiss(): void {
+    this.snackBarRef.dismiss();
   }
 }

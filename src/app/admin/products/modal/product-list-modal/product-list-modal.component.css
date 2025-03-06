@@ -1,0 +1,245 @@
+.modal-container {
+  padding: 1rem;
+  max-width: 60vw;
+  width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.modal-container h2 {
+  left: -24px;
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-field {
+  flex: 1;
+  width: 100%;
+}
+
+.refresh-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.2rem;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+  white-space: nowrap;
+  margin-top: -20px;
+}
+
+.refresh-button:hover {
+  background: #1976D2;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 1.5rem;
+  margin: 1rem 0;
+  max-height: 50vh; 
+  overflow-y: auto;
+  padding: 0.5rem;
+  flex: 1;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.product-card img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  /* gap: 0.5rem; */
+}
+
+.edit-btn, .delete-btn {
+  background-color: rgba(76, 175, 80, 0.8);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0px 0 0 0;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin: 10px 0 0 0;
+  width: 50%;
+}
+
+.edit-btn {
+  border-radius: 0 0 0 11px;
+}
+
+.delete-btn {
+  border-radius: 0 0 11px 0;
+}
+
+.edit-btn:hover {
+  background-color: rgba(76, 175, 80, 1);
+}
+
+.delete-btn {
+  background-color: rgba(244, 67, 54, 0.9);
+}
+
+.delete-btn:hover {
+  background-color: rgb(244, 67, 54);
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2196F3;
+  margin: 0.5rem 0;
+}
+
+.details {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.3rem 0;
+}
+
+.description {
+  margin: 0.5rem 0;
+  color: #444;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-products {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #888;
+  text-align: center;
+}
+
+.no-products mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+}
+
+.no-products p {
+  font-size: 1.1rem;
+}
+
+.end-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+mat-card-subtitle {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 992px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-container {
+    max-width: 95vw;
+    width: auto;
+    height: 70vh;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .refresh-button {
+    justify-content: center;
+  }
+}
+
+::ng-deep .mat-mdc-dialog-container {
+  max-width: 90vw !important;
+}
+
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+  max-width: 90vw !important;
+  width: 1300px !important;
+}
+
+::ng-deep .cdk-overlay-pane {
+  max-width: 90vw !important;
+  width: 1300px !important;
+}
+
+::ng-deep .cdk-global-overlay-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+::ng-deep .cdk-overlay-container {
+  display: flex;
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Works on Firefox
+* {
+  scrollbar-width: thin;
+}
+
+/* Works on Chrome, Edge, and Safari */
+/* *::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-button {
+  display: none;
+}
+ */

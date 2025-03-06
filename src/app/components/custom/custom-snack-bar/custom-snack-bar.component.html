@@ -1,5 +1,9 @@
-<div class="snack-bar-content">
-    <span>{{ data.message }}</span>
-    <mat-progress-bar mode="determinate" [value]="progressValue">
-    </mat-progress-bar>
+<div class="snack-bar-content" [ngClass]="type">
+  <div class="snack-bar-header">
+    <div class="message">{{ message }}</div>
+    <button class="close-button" (click)="dismiss()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-progress-bar mode="determinate" [value]="progressValue"></mat-progress-bar>
 </div>

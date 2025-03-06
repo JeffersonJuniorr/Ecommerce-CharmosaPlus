@@ -33,3 +33,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     --mdc-linear-progress-active-indicator-color: rgba(255, 255, 255, 0.8) !important;
     --mdc-linear-progress-track-color: rgba(255, 255, 255, 0.2) !important;
   }
+
+  * {
+    scrollbar-width: thin;
+  }
+  
+  /* Works on Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
+  
+  
