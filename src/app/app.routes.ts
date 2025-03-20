@@ -14,7 +14,7 @@ import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard
 import { UsersComponent } from './admin/users/users.component';
 import { ProductManagementComponent } from './admin/products/productmanagement/product-management.component';
 import { AdminCouponsComponent } from './admin/admin-coupons/admin-coupons.component';
-import { ExtractComponent } from './admin/extract/extract.component';
+import { ExtractAdminComponent } from './admin/admin-extract/extract-admin.component';
 import { MediaComponent } from './admin/media/media.component';
 import { AdminPagesComponent } from './admin/adm-pages/admin-pages.component';
 
@@ -59,7 +59,7 @@ export const routes: Routes = [
           { path: 'users', component: UsersComponent },
           { path: 'products-management', component: ProductManagementComponent },
           { path: 'admin-coupons', component: AdminCouponsComponent },
-          { path: 'extract', component: ExtractComponent },
+          { path: 'admin-extract', component: ExtractAdminComponent },
           { path: 'media', component: MediaComponent },
           { path: 'adm-pages', component: AdminPagesComponent },
         ],

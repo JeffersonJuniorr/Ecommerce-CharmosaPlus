@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExtractComponent } from './extract.component';
+import { ExtractAdminComponent } from './extract-admin.component';
 
-describe('ExtractComponent', () => {
-  let component: ExtractComponent;
-  let fixture: ComponentFixture<ExtractComponent>;
+describe('ExtractAdminComponent', () => {
+  let component: ExtractAdminComponent;
+  let fixture: ComponentFixture<ExtractAdminComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExtractComponent]
+      imports: [ExtractAdminComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ExtractComponent);
+    fixture = TestBed.createComponent(ExtractAdminComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

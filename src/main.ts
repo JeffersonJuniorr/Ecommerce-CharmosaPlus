@@ -23,6 +23,7 @@ import { AdminCouponsComponent } from './app/admin/admin-coupons/admin-coupons.c
 import { UsersComponent } from './app/admin/users/users.component';
 import { AdminPagesComponent } from './app/admin/adm-pages/admin-pages.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { ExtractAdminComponent } from './app/admin/admin-extract/extract-admin.component';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -53,6 +54,7 @@ bootstrapApplication(AppComponent, {
       { path: 'admin-coupons', component: AdminCouponsComponent },
       { path: 'products-management', component: ProductManagementComponent },
       { path: 'admin-pages', component: AdminPagesComponent },
+      { path: 'admin-extract', component: ExtractAdminComponent },
     ]),
     provideHttpClient(),
     ProductService,
