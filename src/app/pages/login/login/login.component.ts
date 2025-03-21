@@ -45,22 +45,21 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
-
+  
       this.authService.login(username, password).subscribe({
-        next: (response) => {
-          this.storageService.setItem('authToken', response.token);
-          this.storageService.setItem('userRole', response.role);
-
-          const message = response.role === 'ADMIN' 
+        next: () => {
+          const role = this.storageService.getItem('userRole'); // Role já normalizada
+  
+          const message = role === 'ADMIN' 
             ? 'Login realizado com sucesso! Bem-vindo, Administrador!'
             : 'Login realizado com sucesso!';
             
           this.showAlert(message);
-
-          if (response.role === 'ADMIN') {
+  
+          if (role === 'ADMIN') {
             this.storageService.setItem('showAdminMenu', true);
             this.router.navigate(['/home']);
-          } else if (response.role === 'USER') {
+          } else if (role === 'USER') {
             this.storageService.setItem('showAdminMenu', false);
             this.router.navigate(['/home']);
           }

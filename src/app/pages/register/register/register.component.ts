@@ -58,19 +58,21 @@ export class RegisterComponent {
       this.authService.register(this.registerForm.value).subscribe({
         next: (response) => {
           console.log('Registro bem-sucedido:', response);
-
+  
+          this.showAlert(response.message);
+  
           this.storageService.setItem('welcomeMessage', 'Conta criada com sucesso!');
-          this.storageService.setItem('registeredUser', response.username);
-
-          this.showAlert('Conta criada com sucesso! Redirecionando para o login...');
-          
+          this.storageService.setItem('registeredUser', this.registerForm.value.username);
+  
           setTimeout(() => {
             this.router.navigate(['/login']);
           }, 1500);
         },
         error: (err) => {
           console.error('Erro ao registrar:', err);
-          this.showAlert('Erro ao criar conta. Verifique os dados e tente novamente.', true);
+  
+          const errorMessage = err.error || 'Erro ao criar conta. Verifique os dados e tente novamente.';
+          this.showAlert(errorMessage, true);
         },
       });
     } else {
