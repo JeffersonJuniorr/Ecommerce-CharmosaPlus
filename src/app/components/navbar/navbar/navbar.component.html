@@ -1,4 +1,3 @@
-<!-- Navbar -->
 <nav class="navbar">
   <div class="navbar-logo">
     <span class="logo-text">
@@ -20,8 +19,11 @@
       <img src="/assets/icons/icon-user.png" alt="Admin" class="navbar-icon">
     </a>
 
-    <a (click)="openCartModal()" aria-label="Carrinho">
+    <a (click)="openCart()" aria-label="Carrinho" class="cart-icon">
       <img src="/assets/icons/icon-bag.png" alt="Carrinho" class="navbar-icon">
+      <span *ngIf="cartItemCount > 0" class="cart-badge">
+        {{ cartItemCount }}
+      </span>
     </a>
 
     <a *ngIf="isLoggedIn" (click)="logout()" aria-label="Sair">
@@ -29,51 +31,4 @@
     </a>
   </nav>
 </nav>
-
-<!-- Modal do Carrinho -->
-<div [class.show]="showCartModal" class="cart-modal">
-  <div class="cart-content">
-    <button (click)="closeCartModal()" class="close-btn">✕</button>
-    <h2 class="cart-title">Carrinho</h2>
-
-    <div class="cart-items" *ngIf="cartProducts.length > 0; else emptyCart">
-      <div *ngFor="let item of cartProducts" class="cart-item">
-        <img [src]="item.image" alt="{{ item.name }}">
-
-        <div class="cart-item-info">
-          <span class="cart-item-name">{{ item.name }}</span>
-          <span class="cart-item-color" *ngIf="item.selectedColor">Cor: {{ item.selectedColor }}</span>
-          <span class="color-preview" [style.background-color]="item.selectedColor"></span>
-          <span class="cart-item-size" *ngIf="item.selectedSize">Tamanho: {{ item.selectedSize }}</span>
-          <span class="cart-item-price"><!--Preço Unitário: --->1 un: {{ item.price | currency:'BRL' }}</span>
-          <span class="cart-item-price">Qtd: {{ item.quantity }}</span>
-          <span class="cart-item-total">
-            <strong>Total: {{ (item.price * item.quantity) | currency:'BRL' }}</strong>
-          </span>
-        </div>
-
-        <div class="cart-item-controls">
-          <button (click)="decreaseQuantity(item)">-</button>
-          <span class="cart-item-quantity">{{ item.quantity }}</span>
-          <button (click)="increaseQuantity(item)">+</button>
-        </div>
-
-        <button (click)="removeItem(item)" class="delete-btn">🗑</button>
-      </div>
-    </div>
-
-    <div >
-      <ng-template #emptyCart>
-      <p class="cart-void">Seu carrinho está vazio.</p>
-    </ng-template>
-    </div>
-
-    <div class="cart-footer">
-      <div class="cart-summary">
-        <p>Total:</p> 
-        <strong>{{ total | currency:'BRL' }}</strong>
-      </div>
-      <button (click)="goToCart()">Meu Carrinho</button>
-    </div>
-  </div>
-</div>
+<app-cartcomponent></app-cartcomponent>

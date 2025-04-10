@@ -43,6 +43,13 @@ export class ProductService {
     return this.http.get<Product[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
+  getProductImage(productId: number, imageIndex: number = 1): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${productId}/images/${imageIndex}`, {
+      headers: this.getHeaders(),
+      responseType: 'blob'
+    });
+  }
+
   addProduct(formData: FormData): Observable<any> {
     return this.http.post(this.apiUrl, formData, { headers: this.getHeaders() });
   }

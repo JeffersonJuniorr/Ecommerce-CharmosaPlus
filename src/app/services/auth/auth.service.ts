@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { StorageService } from '../storage/storage.service';
 import { isPlatformBrowser } from '@angular/common';
+import { CartService } from '../cartservice/cartservice.service';
 import { environment } from '../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
 
@@ -16,8 +17,9 @@ export class AuthService {
   private isBrowser = isPlatformBrowser(this.platformId);
 
   constructor(
+    private storageService: StorageService,
+    private cartService: CartService,
     private http: HttpClient,
-    private storageService: StorageService
   ) {}
 
   // Método para login
@@ -42,6 +44,8 @@ export class AuthService {
             // Salva o token e a role no localStorage
             this.storageService.setItem('authToken', token);
             this.storageService.setItem('userRole', role);
+
+            this.cartService.syncLocalCartWithBackend(token).subscribe();
           }
         })
       );

@@ -45,6 +45,7 @@ export class ProductManagementComponent implements OnInit {
       name: [''],
       description: [''],
       price: [''],
+      quantity: [''],
       colors: [''],
       sizes: [''],
       images: [null],
@@ -114,18 +115,42 @@ export class ProductManagementComponent implements OnInit {
     if (this.productForm.valid) {
       const formData = new FormData();
       
-      formData.append('name', this.productForm.get('name')?.value);
-      formData.append('description', this.productForm.get('description')?.value);
-      formData.append('price', this.productForm.get('price')?.value);
-
-      const colors = this.productForm.get('colors')?.value.split(',').map((c: string) => c.trim());
-      const sizes = this.productForm.get('sizes')?.value.split(',').map((s: string) => s.trim());
-
-      colors?.forEach((color: string) => formData.append('colors', color));
-      sizes?.forEach((size: string) => formData.append('sizes', size));
-
-      this.selectedFiles.forEach((file) => formData.append('images', file));
-
+      const name = this.productForm.get('name')?.value;
+      const description = this.productForm.get('description')?.value;
+      const price = this.productForm.get('price')?.value;
+      const quantity = this.productForm.get('quantity')?.value;
+  
+      // Validação reforçada
+      if (!name || !description || price === null || quantity === null || quantity < 0) {
+        this.showAlert('Por favor, preencha todos os campos obrigatórios com valores válidos', true);
+        return;
+      }
+  
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('price', price.toString());
+      formData.append('quantity', quantity.toString());
+  
+      // Processa cores e tamanhos
+      const colorsValue = this.productForm.get('colors')?.value || '';
+      const sizesValue = this.productForm.get('sizes')?.value || '';
+  
+      const colors = colorsValue.split(',')
+        .map((c: string) => c.trim())
+        .filter((c: string) => c !== '');
+        
+      const sizes = sizesValue.split(',')
+        .map((s: string) => s.trim())
+        .filter((s: string) => s !== '');
+  
+      colors.forEach((color: string) => formData.append('colors', color));
+      sizes.forEach((size: string) => formData.append('sizes', size));
+  
+      // Adiciona imagens
+      this.selectedFiles.forEach((file) => {
+        formData.append('images', file);
+      });
+  
       this.productService.addProduct(formData).subscribe({
         next: (response) => {
           this.showAlert('Produto cadastrado com sucesso!');
@@ -134,8 +159,12 @@ export class ProductManagementComponent implements OnInit {
           this.selectedFiles = [];
         },
         error: (error) => {
-          console.error('Erro ao adicionar produto:', error);
-          this.showAlert('Erro ao cadastrar produto', true);
+          console.error('Erro detalhado:', error);
+          let errorMessage = 'Erro ao cadastrar produto';
+          if (error.error?.message) {
+            errorMessage += `: ${error.error.message}`;
+          }
+          this.showAlert(errorMessage, true);
         }
       });
     } else {

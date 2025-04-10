@@ -56,7 +56,8 @@ export class EditProductModalComponent implements OnInit {
     // Inicializa como uma cópia do produto original
     this.editableProduct = {
       ...product,
-      active: product.active !== undefined ? product.active : true,
+      active: (product as Partial<Product> & { active?: boolean }).active !== undefined ? (product as Partial<Product> & { active?: boolean }).active : true,
+      //active: product.active !== undefined ? product.active : true, // antes de remover o category
       // discount: product.discount || 0
     };
 

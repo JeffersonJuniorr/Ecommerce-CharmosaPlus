@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy, NgZone, PLATFORM_ID, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser as commonIsPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { MOCK_DATA } from './mock-data.component'; // Ajuste o caminho conforme sua estrutura
+import { MOCK_DATA } from './mock-data.component'; // Still needed for other data
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../../services/storage/storage.service';
+import { CartService } from '../../../services/cartservice/cartservice.service';
+import { ProductService, Product } from '../../../services/products/products.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -14,22 +17,25 @@ import { StorageService } from '../../../services/storage/storage.service';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   banners = MOCK_DATA.banners;
-  products = MOCK_DATA.products;
+  products: Product[] = [];
   offerBanner = MOCK_DATA.offers.banner;
   categories = MOCK_DATA.categories;
-  cardsproducts = MOCK_DATA.cardsproducts;
+  cardsproducts: Product[] = [];
   isBrowser: boolean = false;
+  isLoading: boolean = true;
+  error: string | null = null;
 
   currentIndex = 0;
   autoPlayInterval: any;
 
   // Propriedades para o modal de detalhes do produto
   showProductModal: boolean = false;
-  selectedProduct: any = null;
+  selectedProduct: Product | null = null;
   selectedImage: string = '';
   selectedSize: string = '';
-  selectedColor: string = ''; // Nova propriedade para a cor selecionada
+  selectedColor: string = '';
   selectedQuantity: number = 1;
+  selectedImageUrl: string = '';
 
   // Carrinho (array local que será salvo no StorageService)
   cart: any[] = [];
@@ -38,6 +44,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private ngZone: NgZone,
     private storageService: StorageService,
+    private cartService: CartService,
+    private productService: ProductService,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     this.isBrowser = commonIsPlatformBrowser(this.platformId);
@@ -46,17 +54,95 @@ export class HomeComponent implements OnInit, OnDestroy {
       window.addEventListener('cartUpdated', this.loadCart.bind(this));
     }
   }
+
   ngOnDestroy(): void {
     this.stopAutoPlay();
     if (this.isBrowser) {
       window.removeEventListener('cartUpdated', this.loadCart.bind(this));
     }
   }
+
   ngOnInit(): void {
     if (this.isBrowser) {
       this.startAutoPlay();
+      this.loadProducts();
     }
   }
+
+  mapMockDataToProducts(mockProducts: any[]): Product[] {
+    return mockProducts.map(mockProduct => {
+      let colorsArray: string[] = [];
+      if (mockProduct.colors && Array.isArray(mockProduct.colors)) {
+        colorsArray = mockProduct.colors.map((c: any) => 
+          typeof c === 'object' && c.color ? c.color : c
+        );
+      }
+
+      return {
+        id: mockProduct.id,
+        name: mockProduct.name,
+        description: mockProduct.description || 'Sem descrição disponível',
+        price: mockProduct.price || 0,
+        colors: colorsArray,
+        sizes: mockProduct.sizes || [],
+        imageUrls: mockProduct.image ? [mockProduct.image] : [],
+        active: true,
+        category: mockProduct.category || 'Geral'
+      } as Product;
+    });
+  }
+
+  loadProducts(): void {
+    this.isLoading = true;
+    this.error = null;
+    
+    this.productService.getProducts().subscribe({
+      next: (products) => {
+        this.products = products;
+        this.cardsproducts = products.filter(product => product.active === true).slice(0, 8);
+        this.loadProductImages();
+        
+        this.isLoading = false;
+      },
+      // error: (err) => {
+      //   console.error('Erro ao carregar os produtos:', err);
+      //   this.error = 'Falha ao carregar os produtos. Tente novamente mais tarde..';
+      //   this.isLoading = false;
+        
+      //   // Fallback to mock data if API fails
+      //   this.products = this.mapMockDataToProducts(MOCK_DATA.products);
+      //   this.cardsproducts = this.mapMockDataToProducts(MOCK_DATA.cardsproducts);
+      // }
+    });
+  }
+
+  loadProductImages(): void {
+    this.products.forEach(product => {
+      if (product.id) {
+        this.productService.getProductImage(product.id).subscribe({
+          next: (blob) => {
+            // Crie uma URL para o blob
+            const objectUrl = URL.createObjectURL(blob);
+            // Atribuir ao produto (usando uma matriz para manter a estrutura)
+            product.imageUrls = [objectUrl];
+          },
+          error: (err) => {
+            console.error(`Error loading image for product ${product.id}:`, err);
+            product.imageUrls = ['assets/products/banner1.jpg'];
+          }
+        });
+      }
+    });
+  }
+
+  getProductImageUrl(product: Product): string {
+  if (product.id) {
+    const token = this.storageService.getItem('authToken');
+    // Pode ser necessário modificar essa abordagem dependendo de como o backend espera autenticação para imagens
+    return `${environment.apiUrl}/products/${product.id}/images/1?token=${token}`;
+  }
+  return 'assets/products/banner1.jpg';
+}
 
   loadCart() {
     const savedCart = this.storageService.getItem('cart');
@@ -99,8 +185,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.startAutoPlay();
   }
 
-  goToCheckout(productId: number): void {
-    this.router.navigate(['/checkout', productId]);
+  goToCheckout(productId: number | undefined): void {
+    if (productId) {
+      this.router.navigate(['/checkout', productId]);
+    }
   }
 
   getCategory(index: number): string {
@@ -108,26 +196,29 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // Métodos para o modal de detalhes do produto
-
-  openProductModal(product: any): void {
+  openProductModal(product: Product): void {
     this.selectedProduct = product;
-    this.selectedImage = product.image; // Imagem padrão
+    
+    if (product.id) {
+      this.selectedImageUrl = `${environment.apiUrl}/products/${product.id}/images/1`;
+    } else {
+      this.selectedImageUrl = 'assets/images/placeholder.jpg';
+    }
+    
     this.selectedQuantity = 1;
+    
     if (product.sizes && product.sizes.length > 0) {
       this.selectedSize = product.sizes[0];
     } else {
       this.selectedSize = '';
     }
-    // Se o produto possuir cores estruturadas como objetos, inicialize selectedColor
-    if (
-      product.colors &&
-      product.colors.length > 0 &&
-      typeof product.colors[0] === 'object'
-    ) {
-      this.selectedColor = product.colors[0].color;
+    
+    if (product.colors && product.colors.length > 0) {
+      this.selectedColor = product.colors[0];
     } else {
       this.selectedColor = '';
     }
+    
     this.showProductModal = true;
   }
 
@@ -140,14 +231,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.selectedQuantity = 1;
   }
 
-  changeColor(colorOption: any): void {
-    if (typeof colorOption === 'object' && colorOption.image) {
-      this.selectedImage = colorOption.image;
-      this.selectedColor = colorOption.color;
-    } else {
-      this.selectedImage = this.selectedProduct.image;
-      this.selectedColor = '';
-    }
+  changeColor(color: string): void {
+    this.selectedColor = color;
   }
 
   selectSize(size: string): void {
@@ -155,32 +240,37 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   addToCart(quantity: number = 1): void {
-    if (this.selectedProduct && this.isBrowser) {
-      const cartItem = {
-        ...this.selectedProduct,
-        image: this.selectedImage,
-        selectedSize: this.selectedSize,
-        selectedColor: this.selectedColor,
-        quantity: quantity
-      };
-
-      this.cart = this.storageService.getItem('cart') || [];
-      
-      const existingItem = this.cart.find(item =>
-        item.id === cartItem.id &&
-        item.selectedSize === cartItem.selectedSize &&
-        item.selectedColor === cartItem.selectedColor
-      );
-
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        this.cart.push(cartItem);
+    if (!this.selectedProduct) return;
+  
+    const cartItem = {
+      id: this.selectedProduct.id,
+      name: this.selectedProduct.name,
+      price: this.selectedProduct.price,
+      image: this.selectedImage,
+      selectedSize: this.selectedSize,
+      selectedColor: this.selectedColor,
+      quantity: quantity
+    };
+  
+    this.cartService.addToCart(cartItem).subscribe({
+      next: () => {
+        this.closeProductModal();
+        this.showSuccessAlert('Produto adicionado ao carrinho!');
+      },
+      error: (err) => {
+        console.error('Erro ao adicionar ao carrinho:', err);
+        this.showErrorAlert(err.message || 'Erro ao adicionar produto ao carrinho');
       }
-
-      this.storageService.setItem('cart', this.cart);
-      window.dispatchEvent(new Event('cartUpdated'));
-      this.closeProductModal();
-    }
+    });
+  }
+  
+  private showSuccessAlert(message: string): void {
+    // Implementar lógica de exibição de alerta/mensagem
+    alert(message);
+  }
+  
+  private showErrorAlert(message: string): void {
+    // Implementar lógica de exibição de alerta/mensagem
+    alert('Erro: ' + message);
   }
 }

@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch  } from '@angular/common/http';
 import { ProductService } from './app/services/products/products.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -56,7 +56,7 @@ bootstrapApplication(AppComponent, {
       { path: 'admin-pages', component: AdminPagesComponent },
       { path: 'admin-extract', component: ExtractAdminComponent },
     ]),
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
     ProductService,
     importProvidersFrom(ReactiveFormsModule),
     importProvidersFrom(BrowserAnimationsModule), provideAnimationsAsync(),

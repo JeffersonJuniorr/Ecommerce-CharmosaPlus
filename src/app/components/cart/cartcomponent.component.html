@@ -1,0 +1,60 @@
+<div [class.show]="showCartModal" class="cart-modal">
+    <div class="cart-content">
+      <button (click)="closeCart()" class="close-btn">✕</button>
+      <h2 class="cart-title">Seu Carrinho</h2>
+  
+      <div class="cart-items" *ngIf="cartItems.length > 0; else emptyCart">
+        <div *ngFor="let item of cartItems" class="cart-item">
+          <img [src]="item.image" alt="{{ item.name }}" class="cart-item-image">
+  
+          <div class="cart-item-details">
+            <div class="cart-item-info">
+              <span class="cart-item-name">{{ item.name }}</span>
+              <div class="cart-item-attributes">
+                <span class="cart-item-color" *ngIf="item.selectedColor">
+                  Cor: {{ item.selectedColor }}
+                  <span class="color-preview" [style.background-color]="item.selectedColor"></span>
+                </span>
+                <span class="cart-item-size" *ngIf="item.selectedSize">
+                  Tamanho: {{ item.selectedSize }}
+                </span>
+              </div>
+              <span class="cart-item-price">{{ item.price | currency:'BRL':'symbol':'1.2-2' }}</span>
+            </div>
+  
+            <div class="cart-item-controls">
+              <button (click)="decreaseQuantity(item)" class="quantity-btn">-</button>
+              <span class="cart-item-quantity">{{ item.quantity }}</span>
+              <button (click)="increaseQuantity(item)" class="quantity-btn">+</button>
+              <button (click)="removeItem(item)" class="remove-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <ng-template #emptyCart>
+        <div class="empty-cart">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+          </svg>
+          <p>Seu carrinho está vazio</p>
+          <button routerLink="/produtos" (click)="closeCart()" class="continue-shopping-btn">
+            Continuar comprando
+          </button>
+        </div>
+      </ng-template>
+  
+      <div class="cart-footer" *ngIf="cartItems.length > 0">
+        <div class="cart-summary">
+          <span>Subtotal:</span>
+          <span class="cart-total">{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+        </div>
+        <button class="checkout-btn" (click)="goToCheckout()">Finalizar Compra</button>
+      </div>
+    </div>
+  </div>
