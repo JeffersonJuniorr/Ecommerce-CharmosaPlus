@@ -49,6 +49,7 @@ export class LoginComponent {
       this.authService.login(username, password).subscribe({
         next: () => {
           const role = this.storageService.getItem('userRole'); // Role já normalizada
+          this.storageService.setItem('username', username);
   
           const message = role === 'ADMIN' 
             ? 'Login realizado com sucesso! Bem-vindo, Administrador!'

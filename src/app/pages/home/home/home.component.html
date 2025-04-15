@@ -19,7 +19,7 @@
   </div>
 
   <!-- Menu -->
-  <nav class="menu">ola
+  <nav class="menu">
     <div class="cards-banner">
       <div class="card-banner" *ngFor="let cardsproducts of cardsproducts; let i = index">
         <img [src]="cardsproducts.images && cardsproducts.images.length > 0 ? cardsproducts.images[0] : 'assets/products/banner1.jpg'" alt="{{ cardsproducts.name }}" (click)="cardsproducts.id ? goToCheckout(cardsproducts.id) : null" />
