@@ -59,6 +59,6 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withFetch()),
     ProductService,
     importProvidersFrom(ReactiveFormsModule),
-    importProvidersFrom(BrowserAnimationsModule), provideAnimationsAsync(),
+    importProvidersFrom(BrowserAnimationsModule), provideAnimationsAsync(), provideAnimationsAsync(),
   ],
 }).catch((err) => console.error(err));

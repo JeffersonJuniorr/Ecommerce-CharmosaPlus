@@ -32,6 +32,11 @@ export class AppComponent implements OnInit {
   }
 
   isAuthRoute(): boolean {
-    return this.router.url === '/login' || this.router.url === '/register' || this.router.url === '/products-management' || this.router.url === "/admin-extract";
+    return this.router.url === '/login' 
+    || this.router.url === '/register' 
+    || this.router.url === '/products-management' 
+    || this.router.url === "/admin-extract"
+    || this.router.url === "/admin-coupons"
+    || this.router.url === "/admin-dashboard";
   }
 }

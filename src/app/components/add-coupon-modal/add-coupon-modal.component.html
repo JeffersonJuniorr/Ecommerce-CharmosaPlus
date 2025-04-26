@@ -1,0 +1,142 @@
+<div class="modal-container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Configurações do Cupom</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li [class.active]="activeSection === 'general'" (click)="setActiveSection('general')">
+                    <span>Geral</span>
+                </li>
+                <li [class.active]="activeSection === 'advanced'" (click)="setActiveSection('advanced')">
+                    <span>Configurações Avançadas</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <div class="content-header">
+            <h1>Adicionar novo cupom</h1>
+        </div>
+
+        <form [formGroup]="couponForm" class="form-content">
+            <!-- Seção Geral -->
+            <div class="section" [class.active]="activeSection === 'general'">
+                <div class="form-group">
+                    <label for="code">Código do cupom *</label>
+                    <div class="input-with-button">
+                        <input type="text" id="code" formControlName="code" required>
+                        <button type="button" (click)="generateCode()" [disabled]="isGeneratingCode">
+                            Gerar código
+                        </button>
+                    </div>
+                    <div *ngIf="isGeneratingCode" class="hint">Gerando código...</div>
+                    <div *ngIf="couponForm.get('code')?.invalid && couponForm.get('code')?.touched"
+                        class="error-message">
+                        Código do cupom é obrigatório e deve conter apenas letras maiúsculas e números
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descrição (opcional)</label>
+                    <textarea id="description" formControlName="description" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="discountType">Tipo de desconto *</label>
+                    <select id="discountType" formControlName="discountType">
+                        <option value="PERCENTAGE">Desconto em porcentagem</option>
+                        <option value="FIXED">Desconto fixo</option>
+                    </select>
+                    <div class="description">
+                        <p *ngIf="couponForm.get('discountType')?.value === 'PERCENTAGE'">
+                            <strong>Desconto em porcentagem</strong> - Um desconto em porcentagem aplicado ao valor
+                            total.
+                            Por exemplo, se o carrinho possuir três (3) camisetas &#64; R$20 cada = R$60, um cupom de
+                            10% de desconto, aplica um desconto de R$6.
+                        </p>
+                        <p *ngIf="couponForm.get('discountType')?.value === 'FIXED'">
+                            <strong>Desconto fixo</strong> - Um desconto total fixo para todo o carrinho.
+                            Por exemplo, se o carrinho possuir três (3) camisetas &#64; R$20 cada = R$60, um cupom com
+                            desconto de R$10 fornecerá um desconto de R$10.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="discountValue">Valor do cupom *</label>
+                    <div class="input-with-suffix">
+                        <input type="number" id="discountValue" formControlName="discountValue" required min="0">
+                        <span>{{ couponForm.get('discountType')?.value === 'PERCENTAGE' ? '%' : 'R$' }}</span>
+                    </div>
+                    <div class="hint">
+                        Valor fixo ou porcentagem, dependendo do tipo de desconto escolhido.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="expirationDate">Data de expiração do cupom</label>
+                    <input type="date" id="expirationDate" formControlName="expirationDate">
+                    <div class="description">
+                        Data na qual o cupom deve expirar e não pode mais ser usado. A expiração ocorre às 00:00 na data
+                        escolhida.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Configurações Avançadas -->
+            <div class="section" [class.active]="activeSection === 'advanced'">
+                <div class="form-group">
+                    <label for="minimumAmountToApply">Gasto mínimo</label>
+                    <div class="input-with-suffix">
+                        <input type="number" id="minimumAmountToApply" formControlName="minimumAmountToApply" min="0">
+                        <span>R$</span>
+                    </div>
+                    <div class="description">
+                        Permite definir o subtotal mínimo necessário para usar o cupom.
+                    </div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="individualUseOnly" formControlName="individualUseOnly">
+                    <label for="individualUseOnly">Uso individual apenas</label>
+                    <div class="description">
+                        Selecione esta caixa se o cupom não poderá ser usado em conjunto com outros cupons.
+                    </div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="freeShipping" formControlName="freeShipping">
+                    <label for="freeShipping">Permitir frete grátis</label>
+                    <div class="description">
+                        Marque esta caixa para habilitar frete grátis. Um método de frete grátis deve estar habilitado e
+                        configurado.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="maxUses">Limite de uso por cupom</label>
+                    <input type="number" id="maxUses" formControlName="maxUses" min="1">
+                    <div class="description">
+                        O número de vezes que este cupom pode ser usado antes de se tornar inválido.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="productId">Aplicar a um produto específico</label>
+                    <input type="number" id="productId" formControlName="productId" placeholder="ID do produto">
+                    <div class="description">
+                        Se preenchido, o cupom será válido apenas para o produto com este ID.
+                        Deixe em branco para aplicar a todos os produtos.
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="form-actions">
+            <button class="cancel-button" (click)="onCancel()">Cancelar</button>
+            <button class="submit-button" (click)="onSubmit()" [disabled]="couponForm.invalid">Criar Cupom</button>
+        </div>
+    </div>
+</div>
