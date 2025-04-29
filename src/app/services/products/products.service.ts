@@ -6,7 +6,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { StorageService } from '../../services/storage/storage.service';
 
 export interface Product {
-  id?: number;
+  id: number;
   name: string;
   description: string;
   price: number;
@@ -43,11 +43,17 @@ export class ProductService {
     return this.http.get<Product[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
-  getProductImage(productId: number, imageIndex: number = 1): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/${productId}/images/${imageIndex}`, {
+  getProductImage(productId: number, imageId: number = 1): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${productId}/images?imageId=${imageId}`, {
       headers: this.getHeaders(),
       responseType: 'blob'
-    });
+    })
+    // .pipe(
+    //   catchError(error => {
+    //     console.error(`Error loading image for product ${productId}, image ${imageId}:`, error);
+    //     return throwError(() => error);
+    //   })
+    // );
   }
 
   addProduct(formData: FormData): Observable<any> {

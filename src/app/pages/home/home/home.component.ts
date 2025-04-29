@@ -1,17 +1,30 @@
-import { Component, OnInit, OnDestroy, NgZone, PLATFORM_ID, Inject } from '@angular/core';
-import { CommonModule, isPlatformBrowser as commonIsPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  NgZone,
+  PLATFORM_ID,
+  Inject,
+} from '@angular/core';
+import {
+  CommonModule,
+  isPlatformBrowser as commonIsPlatformBrowser,
+} from '@angular/common';
 import { Router } from '@angular/router';
 import { MOCK_DATA } from './mock-data.component'; // Still needed for other data
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../../services/storage/storage.service';
 import { CartService } from '../../../services/cartservice/cartservice.service';
-import { ProductService, Product } from '../../../services/products/products.service';
+import {
+  ProductService,
+  Product,
+} from '../../../services/products/products.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
@@ -46,7 +59,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private cartService: CartService,
     private productService: ProductService,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = commonIsPlatformBrowser(this.platformId);
     if (this.isBrowser) {
@@ -70,10 +83,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   mapMockDataToProducts(mockProducts: any[]): Product[] {
-    return mockProducts.map(mockProduct => {
+    return mockProducts.map((mockProduct) => {
       let colorsArray: string[] = [];
       if (mockProduct.colors && Array.isArray(mockProduct.colors)) {
-        colorsArray = mockProduct.colors.map((c: any) => 
+        colorsArray = mockProduct.colors.map((c: any) =>
           typeof c === 'object' && c.color ? c.color : c
         );
       }
@@ -87,7 +100,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         sizes: mockProduct.sizes || [],
         imageUrls: mockProduct.image ? [mockProduct.image] : [],
         active: true,
-        category: mockProduct.category || 'Geral'
+        category: mockProduct.category || 'Geral',
       } as Product;
     });
   }
@@ -95,20 +108,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   loadProducts(): void {
     this.isLoading = true;
     this.error = null;
-    
+
     this.productService.getProducts().subscribe({
       next: (products) => {
         this.products = products;
-        this.cardsproducts = products.filter(product => product.active === true).slice(0, 8);
+        this.cardsproducts = products
+          .filter((product) => product.active === true)
+          .slice(0, 8);
         this.loadProductImages();
-        
+
         this.isLoading = false;
       },
       // error: (err) => {
       //   console.error('Erro ao carregar os produtos:', err);
       //   this.error = 'Falha ao carregar os produtos. Tente novamente mais tarde..';
       //   this.isLoading = false;
-        
+
       //   // Fallback to mock data if API fails
       //   this.products = this.mapMockDataToProducts(MOCK_DATA.products);
       //   this.cardsproducts = this.mapMockDataToProducts(MOCK_DATA.cardsproducts);
@@ -116,33 +131,67 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  // loadProductImages(): void {
+  //   this.products.forEach(product => {
+  //     if (product.id) {
+  //       this.productService.getProductImage(product.id).subscribe({
+  //         next: (blob) => {
+  //           // Crie uma URL para o blob
+  //           const objectUrl = URL.createObjectURL(blob);
+  //           // Atribuir ao produto (usando uma matriz para manter a estrutura)
+  //           product.imageUrls = [objectUrl];
+  //         },
+  //         error: (err) => {
+  //           console.error(`Error loading image for product ${product.id}:`, err);
+  //           product.imageUrls = ['assets/products/banner1.jpg'];
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
   loadProductImages(): void {
-    this.products.forEach(product => {
+    this.products.forEach((product) => {
       if (product.id) {
-        this.productService.getProductImage(product.id).subscribe({
-          next: (blob) => {
-            // Crie uma URL para o blob
-            const objectUrl = URL.createObjectURL(blob);
-            // Atribuir ao produto (usando uma matriz para manter a estrutura)
-            product.imageUrls = [objectUrl];
-          },
-          error: (err) => {
-            console.error(`Error loading image for product ${product.id}:`, err);
-            product.imageUrls = ['assets/products/banner1.jpg'];
-          }
-        });
+        // Para cada produto, tentamos carregar a imagem com imageId igual ao productId
+        // Isso assume que a primeira imagem do produto tem imageId=1, segunda imageId=2, etc.
+        // Se falhar, tentamos imageId=1 como fallback
+        this.loadImageWithRetry(product, product.id);
       }
     });
   }
 
-  getProductImageUrl(product: Product): string {
-  if (product.id) {
-    const token = this.storageService.getItem('authToken');
-    // Pode ser necessário modificar essa abordagem dependendo de como o backend espera autenticação para imagens
-    return `${environment.apiUrl}/products/${product.id}/images/1?token=${token}`;
+  private loadImageWithRetry(
+    product: Product,
+    imageId: number,
+    attempt: number = 1
+  ): void {
+    this.productService.getProductImage(product.id, imageId).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        product.imageUrls = [objectUrl];
+      },
+      error: (err) => {
+        if (attempt === 1) {
+          // Primeira tentativa falhou, tenta com imageId=1
+          this.loadImageWithRetry(product, 1, 2);
+        } else {
+          console.error(
+            `Failed to load image for product ${product.id} after ${attempt} attempts`
+          );
+          product.imageUrls = ['assets/images/placeholder.jpg'];
+        }
+      },
+    });
   }
-  return 'assets/products/banner1.jpg';
-}
+
+  getProductImageUrl(product: Product): string {
+    if (product.id) {
+      const token = this.storageService.getItem('authToken');
+      return `${environment.apiUrl}/products/${product.id}/images?imageId=${product.id}&token=${token}`;
+    }
+    return 'assets/products/banner1.jpg';
+  }
 
   loadCart() {
     const savedCart = this.storageService.getItem('cart');
@@ -198,31 +247,39 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Métodos para o modal de detalhes do produto
   openProductModal(product: Product): void {
     this.selectedProduct = product;
-    
+    this.selectedQuantity = 1;
+
+    // Resetando seleções
+    this.selectedSize = product.sizes?.[0] || '';
+    this.selectedColor = product.colors?.[0] || '';
+
     if (product.id) {
-      this.selectedImageUrl = `${environment.apiUrl}/products/${product.id}/images/1`;
+      this.productService.getProductImage(product.id, product.id).subscribe({
+        next: (blob) => {
+          const objectUrl = URL.createObjectURL(blob);
+          this.selectedImageUrl = objectUrl;
+          this.selectedImage = objectUrl;
+          // const objectUrl = URL.createObjectURL(blob);
+          // this.selectedImageUrl = objectUrl;
+          this.showProductModal = true;
+        },
+        error: (err) => {
+          console.error('Erro ao carregar imagem do produto:', err);
+          this.selectedImageUrl = 'assets/images/placeholder.jpg';
+          this.showProductModal = true;
+        },
+      });
     } else {
       this.selectedImageUrl = 'assets/images/placeholder.jpg';
+      this.showProductModal = true;
     }
-    
-    this.selectedQuantity = 1;
-    
-    if (product.sizes && product.sizes.length > 0) {
-      this.selectedSize = product.sizes[0];
-    } else {
-      this.selectedSize = '';
-    }
-    
-    if (product.colors && product.colors.length > 0) {
-      this.selectedColor = product.colors[0];
-    } else {
-      this.selectedColor = '';
-    }
-    
-    this.showProductModal = true;
   }
 
   closeProductModal(): void {
+    if (this.selectedImageUrl && this.selectedImageUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(this.selectedImageUrl);
+    }
+
     this.showProductModal = false;
     this.selectedProduct = null;
     this.selectedImage = '';
@@ -241,7 +298,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   addToCart(quantity: number = 1): void {
     if (!this.selectedProduct) return;
-  
+
     const cartItem = {
       id: this.selectedProduct.id,
       name: this.selectedProduct.name,
@@ -249,9 +306,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       image: this.selectedImage,
       selectedSize: this.selectedSize,
       selectedColor: this.selectedColor,
-      quantity: quantity
+      quantity: quantity,
     };
-  
+
     this.cartService.addToCart(cartItem).subscribe({
       next: () => {
         this.closeProductModal();
@@ -259,16 +316,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Erro ao adicionar ao carrinho:', err);
-        this.showErrorAlert(err.message || 'Erro ao adicionar produto ao carrinho');
-      }
+        this.showErrorAlert(
+          err.message || 'Erro ao adicionar produto ao carrinho'
+        );
+      },
     });
   }
-  
+
   private showSuccessAlert(message: string): void {
     // Implementar lógica de exibição de alerta/mensagem
     alert(message);
   }
-  
+
   private showErrorAlert(message: string): void {
     // Implementar lógica de exibição de alerta/mensagem
     alert('Erro: ' + message);
