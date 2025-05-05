@@ -10,9 +10,7 @@
       <button class="prev-btn" (click)="prevSlide()">&#10094;</button>
       <button class="next-btn" (click)="nextSlide()">&#10095;</button>
       <div class="dots">
-        <span *ngFor="let banner of banners; let i = index" 
-              [class.active]="i === currentIndex" 
-              (click)="goToSlide(i)">
+        <span *ngFor="let banner of banners; let i = index" [class.active]="i === currentIndex" (click)="goToSlide(i)">
         </span>
       </div>
     </div>
@@ -22,7 +20,9 @@
   <nav class="menu">
     <div class="cards-banner">
       <div class="card-banner" *ngFor="let cardsproducts of cardsproducts; let i = index">
-        <img [src]="cardsproducts.images && cardsproducts.images.length > 0 ? cardsproducts.images[0] : 'assets/products/banner1.jpg'" alt="{{ cardsproducts.name }}" (click)="cardsproducts.id ? goToCheckout(cardsproducts.id) : null" />
+        <img
+          [src]="cardsproducts.images && cardsproducts.images.length > 0 ? cardsproducts.images[0] : 'assets/products/banner1.jpg'"
+          alt="{{ cardsproducts.name }}" (click)="cardsproducts.id ? goToCheckout(cardsproducts.id) : null" />
         <div class="overlay">
           <span>{{ getCategory(i) }}</span>
         </div>
@@ -58,77 +58,72 @@
     </section>
 
     <!-- Produtos -->
-<div class="product-list">
-  <div *ngIf="isLoading" class="loading-container">
-    <p>Carregando produtos...</p>
-  </div>
-  
-  <div *ngIf="error" class="error-container">
-    <p>{{ error }}</p>
-  </div>
-  
-  <!-- Products list -->
-  <div class="card" *ngFor="let product of products">
-    <img [src]="product.imageUrls && product.imageUrls.length ? product.imageUrls[0] : 'assets/images/placeholder.jpg'" 
-     alt="{{ product.name }}" />
-    <div class="card-body">
-      <h4>{{ product.name }}</h4>
-      <p class="sizes" *ngIf="product.sizes && product.sizes.length > 0">
-        {{ product.sizes.join(' - ') }}
-      </p>
-      <div class="colors" *ngIf="product.colors && product.colors.length > 0">
-        <span *ngFor="let color of product.colors" 
-              [style.backgroundColor]="color" 
-              class="color-dot"></span>
+    <div class="product-list">
+      <div *ngIf="isLoading" class="loading-container">
+        <p>Carregando produtos...</p>
       </div>
-      <p class="price">R$ {{ product.price }}</p>
-      <button class="add-cart-btn" (click)="openProductModal(product)">Adicionar ao Carrinho</button>
-    </div>
-  </div>
-</div>
 
-<!-- Modal de Produto -->
-<div class="product-modal" *ngIf="showProductModal && selectedProduct">
-  <div class="product-modal-content">
-    <button class="close-btn" (click)="closeProductModal()">×</button>
-    <div class="modal-body">
-      <div class="modal-image">
-        <img [src]="selectedImageUrl" alt="{{ selectedProduct.name }}">
+      <div *ngIf="error" class="error-container">
+        <p>{{ error }}</p>
       </div>
-      <div class="modal-details">
-        <h3>{{ selectedProduct.name }}</h3>
-        <p class="modal-description" *ngIf="selectedProduct.description">{{ selectedProduct.description }}</p>
-        <p class="price">Preço: R$ {{ selectedProduct.price }}</p>
-        
-        <div class="modal-colors" *ngIf="selectedProduct.colors && selectedProduct.colors.length > 0">
-          <p>Cores:</p>
-          <div class="color-options">
-            <span *ngFor="let col of selectedProduct.colors" 
-                  class="color-swatch"
-                  [class.selected]="col === selectedColor"
-                  [style.backgroundColor]="col"
-                  (click)="changeColor(col)">
-            </span>
-          </div>
-        </div>
 
-        <div class="modal-sizes" *ngIf="selectedProduct.sizes && selectedProduct.sizes.length > 0">
-          <p>Tamanhos:</p>
-          <div class="size-options">
-            <button *ngFor="let size of selectedProduct.sizes" 
-                    [class.selected]="size === selectedSize"
-                    (click)="selectSize(size)">
-              {{ size }}
-            </button>
+      <!-- Products list -->
+      <div class="card" *ngFor="let product of products">
+        <img
+          [src]="product.imageUrls && product.imageUrls.length ? product.imageUrls[0] : 'assets/images/placeholder.jpg'"
+          alt="{{ product.name }}" />
+        <div class="card-body">
+          <h4>{{ product.name }}</h4>
+          <p class="sizes" *ngIf="product.sizes && product.sizes.length > 0">
+            {{ product.sizes.join(' - ') }}
+          </p>
+          <div class="colors" *ngIf="product.colors && product.colors.length > 0">
+            <span *ngFor="let color of product.colors" [style.backgroundColor]="color" class="color-dot"></span>
           </div>
+          <p class="price">R$ {{ product.price }}</p>
+          <button class="add-cart-btn" (click)="openProductModal(product)">Adicionar ao Carrinho</button>
         </div>
-
-        <div class="modal-quantity">
-          <p>Quantidade:</p>
-          <input type="number" min="1" [(ngModel)]="selectedQuantity">
-        </div>
-        <button class="confirm-btn" (click)="addToCart(selectedQuantity)">Confirmar Adição</button>
       </div>
     </div>
-  </div>
-</div>
+
+    <!-- Modal de Produto -->
+    <div class="product-modal" *ngIf="showProductModal && selectedProduct">
+      <div class="product-modal-content">
+        <button class="close-btn" (click)="closeProductModal()">×</button>
+        <div class="modal-body">
+          <div class="modal-image">
+            <img [src]="selectedImageUrl" alt="{{ selectedProduct.name }}">
+          </div>
+          <div class="modal-details">
+            <h3>{{ selectedProduct.name }}</h3>
+            <p class="modal-description" *ngIf="selectedProduct.description">{{ selectedProduct.description }}</p>
+            <p class="price">Preço: R$ {{ selectedProduct.price }}</p>
+
+            <div class="modal-colors" *ngIf="selectedProduct.colors && selectedProduct.colors.length > 0">
+              <p>Cores:</p>
+              <div class="color-options">
+                <span *ngFor="let col of selectedProduct.colors" class="color-swatch"
+                  [class.selected]="col === selectedColor" [style.backgroundColor]="col" (click)="changeColor(col)">
+                </span>
+              </div>
+            </div>
+
+            <div class="modal-sizes" *ngIf="selectedProduct.sizes && selectedProduct.sizes.length > 0">
+              <p>Tamanhos:</p>
+              <div class="size-options">
+                <button *ngFor="let size of selectedProduct.sizes" [class.selected]="size === selectedSize"
+                  (click)="selectSize(size)">
+                  {{ size }}
+                </button>
+              </div>
+            </div>
+
+            <div class="modal-quantity">
+              <p>Quantidade:</p>
+              <input type="number" min="1" [(ngModel)]="selectedQuantity">
+            </div>
+            <button class="confirm-btn" (click)="addToCart(selectedQuantity)">Confirmar Adição</button>
+          </div>
+        </div>
+      </div>
+    </div>

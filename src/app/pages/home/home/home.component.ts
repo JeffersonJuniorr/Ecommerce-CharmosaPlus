@@ -11,7 +11,7 @@ import {
   isPlatformBrowser as commonIsPlatformBrowser,
 } from '@angular/common';
 import { Router } from '@angular/router';
-import { MOCK_DATA } from './mock-data.component'; // Still needed for other data
+import { MOCK_DATA } from './mock-data.component';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../../services/storage/storage.service';
 import { CartService } from '../../../services/cartservice/cartservice.service';
@@ -299,15 +299,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   addToCart(quantity: number = 1): void {
     if (!this.selectedProduct) return;
 
+    const productImage = typeof this.selectedImage === 'string' ? this.selectedImage : 
+    (this.selectedProduct.imageUrls && this.selectedProduct.imageUrls[0]) || null;
+
     const cartItem = {
       id: this.selectedProduct.id,
       name: this.selectedProduct.name,
       price: this.selectedProduct.price,
-      image: this.selectedImage,
+      image: productImage,
       selectedSize: this.selectedSize,
       selectedColor: this.selectedColor,
       quantity: quantity,
     };
+
+     console.log('Item sendo adicionado:', cartItem);
 
     this.cartService.addToCart(cartItem).subscribe({
       next: () => {

@@ -1,60 +1,130 @@
 <div [class.show]="showCartModal" class="cart-modal">
-    <div class="cart-content">
-      <button (click)="closeCart()" class="close-btn">✕</button>
-      <h2 class="cart-title">Seu Carrinho</h2>
+  <div class="cart-overlay" [class.active]="showCartModal" (click)="closeCart()"></div>
   
+  <div class="cart-content" (click)="$event.stopPropagation()">
+    <div class="cart-header">
+      <h2 class="cart-title">Seu Carrinho</h2>
+      <button (click)="closeCart()" class="close-btn" aria-label="Fechar carrinho">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="cart-items-container">
       <div class="cart-items" *ngIf="cartItems.length > 0; else emptyCart">
         <div *ngFor="let item of cartItems" class="cart-item">
-          <img [src]="item.image" alt="{{ item.name }}" class="cart-item-image">
-  
+          <div class="cart-item-image-container">
+            <img
+            *ngIf="item.fullImageUrl; else noImage"
+            [src]="item.fullImageUrl"
+            [alt]="item.name"
+            class="cart-item-image" 
+          />
+          <ng-template #noImage>
+            <div class="no-image">Imagem indisponível</div>
+          </ng-template>
+          </div>
+
           <div class="cart-item-details">
             <div class="cart-item-info">
               <span class="cart-item-name">{{ item.name }}</span>
+              
               <div class="cart-item-attributes">
                 <span class="cart-item-color" *ngIf="item.selectedColor">
-                  Cor: {{ item.selectedColor }}
+                  <span class="color-label">Cor:</span>
                   <span class="color-preview" [style.background-color]="item.selectedColor"></span>
+                  
+                  <!-- nome/codigo da cor -->
+                  <!-- <span class="color-name">{{ item.selectedColor }}</span> -->
                 </span>
+                
                 <span class="cart-item-size" *ngIf="item.selectedSize">
-                  Tamanho: {{ item.selectedSize }}
+                  <span class="size-label">Tamanho:</span>
+                  <span class="size-value">{{ item.selectedSize }}</span>
                 </span>
               </div>
-              <span class="cart-item-price">{{ item.price | currency:'BRL':'symbol':'1.2-2' }}</span>
+              
+              <span class="cart-item-price">{{ item.unitPrice | currency:'BRL':'symbol':'1.2-2' }}</span>
             </div>
-  
+
             <div class="cart-item-controls">
-              <button (click)="decreaseQuantity(item)" class="quantity-btn">-</button>
-              <span class="cart-item-quantity">{{ item.quantity }}</span>
-              <button (click)="increaseQuantity(item)" class="quantity-btn">+</button>
-              <button (click)="removeItem(item)" class="remove-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+              <div class="quantity-controls">
+                <button 
+                  (click)="decreaseQuantity(item)" 
+                  class="quantity-btn" 
+                  aria-label="Reduzir quantidade" 
+                  [disabled]="item.quantity <= 1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+                <span class="cart-item-quantity">{{ item.quantity }}</span>
+                <button 
+                  (click)="increaseQuantity(item)" 
+                  class="quantity-btn" 
+                  aria-label="Aumentar quantidade"
+                  [disabled]="item.quantity >= item.availableStock">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+                <span class="stock-info" *ngIf="item.availableStock">
+                  (estoque: {{ item.availableStock }})
+                </span>
+              </div>
+              
+              <button (click)="removeItem(item)" class="remove-btn" aria-label="Remover item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
                 </svg>
               </button>
+            </div>
+            
+            <div class="cart-item-total">
+              <span>Total: {{ (item.unitPrice * item.quantity) | currency:'BRL':'symbol':'1.2-2' }}</span>
             </div>
           </div>
         </div>
       </div>
-  
+
       <ng-template #emptyCart>
         <div class="empty-cart">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-          </svg>
-          <p>Seu carrinho está vazio</p>
+          <div class="empty-cart-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="10" cy="20.5" r="1"></circle>
+              <circle cx="18" cy="20.5" r="1"></circle>
+              <path d="M2.5 2.5h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6l1.6-8.4H7.1"></path>
+            </svg>
+          </div>
+          <h3>Seu carrinho está vazio</h3>
+          <p>Adicione itens para continuar</p>
           <button routerLink="/produtos" (click)="closeCart()" class="continue-shopping-btn">
             Continuar comprando
           </button>
         </div>
       </ng-template>
-  
-      <div class="cart-footer" *ngIf="cartItems.length > 0">
-        <div class="cart-summary">
-          <span>Subtotal:</span>
+    </div>
+
+    <div class="cart-footer" *ngIf="cartItems.length > 0">
+      <div class="cart-summary">
+        <div class="subtotal">
+          <span>Total: </span>
           <span class="cart-total">{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
         </div>
-        <button class="checkout-btn" (click)="goToCheckout()">Finalizar Compra</button>
+        <small class="shipping-note">Frete calculado na finalização da compra</small>
       </div>
+      <button class="checkout-btn" (click)="goToCheckout()">
+        Finalizar Compra
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
     </div>
   </div>
+</div>

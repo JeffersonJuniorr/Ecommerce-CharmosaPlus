@@ -10,6 +10,11 @@ import { environment } from '../../../environments/environment';
 })
 export class CartService {
   private apiUrl = `${environment.apiUrl}/cart`;
+
+  // Método para obter a URL base da API (para uso com imagens)
+  getApiBaseUrl(): string {
+    return environment.apiUrl;
+  }
   private cartItemsSubject = new BehaviorSubject<any[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
 
@@ -24,7 +29,6 @@ export class CartService {
     private storageService: StorageService
   ) {
     this.loadInitialCart();
-    // this.loadCart();
   }
 
   private getAuthHeaders(): HttpHeaders {
@@ -35,22 +39,32 @@ export class CartService {
     });
   }
 
+   // retorna o blob da imagem, já com o header de auth incluso
+   public fetchProductImage(
+    productId: number,
+    imageId: number
+  ): Observable<Blob> {
+    const url = `${this.getApiBaseUrl()}/products/${productId}/images/${imageId}`;
+    return this.http.get(url, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
   private loadInitialCart(): void {
     const token = this.storageService.getItem('authToken');
 
     if (token) {
       // Usuário autenticado - carrega do backend
-      this.http
-        .get<any>(this.apiUrl, { headers: this.getAuthHeaders() })
-        .subscribe({
-          next: (response) => {
-            this.cartItemsSubject.next(response.items || []);
-          },
-          error: (err) => {
-            console.error('Erro ao carregar carrinho:', err);
-            this.loadLocalCart();
-          },
-        });
+      this.loadCart().subscribe({
+        next: (response) => {
+          this.cartItemsSubject.next(response.items || []);
+        },
+        error: (err) => {
+          console.error('Erro ao carregar carrinho:', err);
+          this.loadLocalCart();
+        },
+      });
     } else {
       // Usuário não autenticado - carrega do localStorage
       this.loadLocalCart();
@@ -68,25 +82,34 @@ export class CartService {
     this.storageService.setItem('tempCart', { items });
   }
 
-  private loadCart(): void {
-    // tem que ter autenticação, porque pode causar erros se o endpoint exigir autenticação
+  // Método público para carregar o carrinho
+  loadCart(): Observable<any> {
     const token = this.storageService.getItem('authToken');
 
-    if (!token) {
-      return; // Não faz requisição se não estiver autenticado
+    if (token) {
+      return this.http.get<any>(this.apiUrl, {
+        headers: this.getAuthHeaders()
+      }).pipe(
+        tap(response => {
+          this.cartItemsSubject.next(response.items || []);
+          this.totalSubject.next(this.calculateTotalAmount(response.items || []));
+        }),
+        catchError(error => {
+          console.error('Erro ao carregar carrinho:', error);
+          this.loadLocalCart();
+          const localCart = this.storageService.getItem('tempCart') || { items: [] };
+          return of(localCart);
+        })
+      );
+    } else {
+      const localCart = this.storageService.getItem('tempCart') || { items: [] };
+      this.cartItemsSubject.next(localCart.items);
+      return of(localCart);
     }
+  }
 
-    this.http.get<any>(this.apiUrl).subscribe({
-      next: (response) => {
-        if (response && response.items) { // Verifica se a resposta tem a estrutura esperada (talvez apagar isso)
-          this.cartItemsSubject.next(response.items);
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao carregar carrinho:', err);
-        this.loadLocalCart();
-      },
-    });
+  private calculateTotalAmount(items: any[]): number {
+    return items.reduce((total, item) => total + (item.unitPrice * item.quantity), 0);
   }
 
   private updateLocalCart(cart: any) {
@@ -97,8 +120,6 @@ export class CartService {
       total: cart.totalAmount,
     });
   }
-
-  openCartRequested = new BehaviorSubject<boolean>(false);
 
   openCart() {
     this.isCartOpenSubject.next(true);
@@ -113,7 +134,7 @@ export class CartService {
       productId: item.id,
       selectedColor: item.selectedColor,
       selectedSize: item.selectedSize,
-      quantity: item.quantity || 1 // Garante quantidade mínima
+      quantity: item.quantity || 1
     };
   
     const token = this.storageService.getItem('authToken');
@@ -153,15 +174,18 @@ export class CartService {
       } else {
         currentItems.push({
           ...cartItem,
+          id: Date.now(), // ID temporário para o item
           name: item.name,
-          price: item.price,
+          unitPrice: item.price,
           image: item.image,
+          availableStock: item.availableStock || 10, // Estoque padrão para modo offline
+          totalPrice: item.price * (item.quantity || 1)
         });
       }
 
       this.cartItemsSubject.next(currentItems);
       this.saveLocalCart(currentItems);
-      return of(null);
+      return of({ items: currentItems });
     }
   }
 
@@ -169,25 +193,29 @@ export class CartService {
     const token = this.storageService.getItem('authToken');
 
     if (token) {
-      return this.http
-        .delete(`${this.apiUrl}/remove/${itemId}`, {
-          headers: this.getAuthHeaders(),
+      return this.http.delete(`${this.apiUrl}/remove-item/${itemId}`, {
+        headers: this.getAuthHeaders(),
+      }).pipe(
+        tap((response: any) => {
+          this.cartItemsSubject.next(response.items || []);
+        }),
+        catchError(error => {
+          console.error('Erro ao remover item:', error);
+          // Tentar remover localmente em caso de erro
+          const updatedItems = this.cartItemsSubject.value.filter(
+            (item) => item.id !== itemId
+          );
+          this.cartItemsSubject.next(updatedItems);
+          return of({ items: updatedItems });
         })
-        .pipe(
-          tap(() => {
-            const updatedItems = this.cartItemsSubject.value.filter(
-              (item) => item.id !== itemId
-            );
-            this.cartItemsSubject.next(updatedItems);
-          })
-        );
+      );
     } else {
       const updatedItems = this.cartItemsSubject.value.filter(
         (item) => item.id !== itemId
       );
       this.cartItemsSubject.next(updatedItems);
       this.saveLocalCart(updatedItems);
-      return of(null);
+      return of({ items: updatedItems });
     }
   }
 
@@ -195,17 +223,22 @@ export class CartService {
     const token = this.storageService.getItem('authToken');
 
     if (token) {
-      return this.http
-        .delete(`${this.apiUrl}/clear`, { headers: this.getAuthHeaders() })
-        .pipe(
-          tap(() => {
-            this.cartItemsSubject.next([]);
-          })
-        );
+      return this.http.delete(`${this.apiUrl}/clear`, { 
+        headers: this.getAuthHeaders() 
+      }).pipe(
+        tap((response) => {
+          this.cartItemsSubject.next([]);
+        }),
+        catchError(error => {
+          console.error('Erro ao limpar carrinho:', error);
+          this.cartItemsSubject.next([]);
+          return of({ items: [] });
+        })
+      );
     } else {
       this.cartItemsSubject.next([]);
       this.storageService.removeItem('tempCart');
-      return of(null);
+      return of({ items: [] });
     }
   }
 
@@ -213,42 +246,49 @@ export class CartService {
     const token = this.storageService.getItem('authToken');
 
     if (token) {
-      return this.http
-        .patch(
-          `${this.apiUrl}/update/${itemId}`,
-          { quantity: newQuantity },
-          { headers: this.getAuthHeaders() }
-        )
-        .pipe(
-          tap(() => {
-            const updatedItems = this.cartItemsSubject.value.map((item) => {
-              if (item.id === itemId) {
-                return { ...item, quantity: newQuantity };
-              }
-              return item;
-            });
-            this.cartItemsSubject.next(updatedItems);
-          })
-        );
+      // Adaptando para a URL do exemplo: /cart/update-quantity
+      return this.http.put(
+        `${this.apiUrl}/update-quantity`, 
+        { itemId, quantity: newQuantity },
+        { headers: this.getAuthHeaders() }
+      ).pipe(
+        tap((response: any) => {
+          this.cartItemsSubject.next(response.items || []);
+        }),
+        catchError(error => {
+          console.error('Erro ao atualizar quantidade:', error);
+          
+          // Atualiza a UI em caso de erro
+          const updatedItems = this.cartItemsSubject.value.map((item) => {
+            if (item.id === itemId) {
+              return { 
+                ...item, 
+                quantity: newQuantity,
+                totalPrice: item.unitPrice * newQuantity 
+              };
+            }
+            return item;
+          });
+          this.cartItemsSubject.next(updatedItems);
+          return of({ items: updatedItems });
+        })
+      );
     } else {
       const updatedItems = this.cartItemsSubject.value.map((item) => {
         if (item.id === itemId) {
-          return { ...item, quantity: newQuantity };
+          return { 
+            ...item, 
+            quantity: newQuantity,
+            totalPrice: item.unitPrice * newQuantity 
+          };
         }
         return item;
       });
       this.cartItemsSubject.next(updatedItems);
       this.saveLocalCart(updatedItems);
-      return of(null);
+      return of({ items: updatedItems });
     }
   }
-
-  // private calculateTotal(items: any[]): number {
-  //   return items.reduce(
-  //     (total, item) => total + item.unitPrice * item.quantity,
-  //     0
-  //   );
-  // }
 
   syncLocalCartWithBackend(token: string): Observable<any> {
     const localCart = this.storageService.getItem('tempCart');

@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { CartService } from '../../services/cartservice/cartservice.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -9,9 +11,9 @@ import { Subscription } from 'rxjs';
   selector: 'app-cartcomponent',
   imports: [CommonModule],
   templateUrl: './cartcomponent.component.html',
-  styleUrl: './cartcomponent.component.css'
+  styleUrl: './cartcomponent.component.css',
 })
-export class CartComponent implements OnDestroy{
+export class CartComponent implements OnDestroy {
   public showCartModal = false;
   private cartSubscription!: Subscription;
   private cartOpenSubscription: Subscription;
@@ -20,10 +22,14 @@ export class CartComponent implements OnDestroy{
 
   constructor(
     private cartService: CartService,
+    private sanitizer: DomSanitizer,
     private router: Router
   ) {
     this.cartOpenSubscription = this.cartService.isCartOpen$.subscribe(isOpen => {
       this.showCartModal = isOpen;
+      if (isOpen) {
+        this.loadCart();
+      }
     });
 
     this.cartSubscription = this.cartService.cartItems$.subscribe(items => {
@@ -32,71 +38,97 @@ export class CartComponent implements OnDestroy{
     });
   }
 
-  private subscriptions: Subscription[] = [];
-
   ngOnDestroy(): void {
     this.cartSubscription.unsubscribe();
     this.cartOpenSubscription.unsubscribe();
   }
 
   loadCart() {
-    this.cartService.cartItems$.subscribe(items => {
-      this.cartItems = items;
+    this.cartService.loadCart().subscribe(cart => {
+      this.cartItems = cart.items || [];
+
+      this.cartItems.forEach(item => {
+        if (item.imageUrl) {
+          const [productId, imageId] = item.imageUrl.match(/\d+/g) || [];
+
+          this.cartService
+            .fetchProductImage(+productId, +imageId)
+            .subscribe({
+              next: blob => {
+                const objectUrl = URL.createObjectURL(blob);
+                item.fullImageUrl =
+                  this.sanitizer.bypassSecurityTrustUrl(objectUrl) as string;
+                  item.availableStock = item.availableStock ?? item.stockQuantity;
+              },
+              error: () => {
+                item.fullImageUrl = null;
+              }
+            });
+        }
+      });
+
       this.calculateTotal();
     });
   }
 
   calculateTotal(): void {
-    this.total = this.cartItems.reduce(
-      (sum, item) => sum + (item.price * item.quantity),
-      0
-    );
+    // Usar totalPrice fornecido pela API ou calcular caso não exista
+    if (this.cartItems.length > 0 && this.cartItems[0].totalPrice) {
+      this.total = this.cartItems.reduce(
+        (sum, item) => sum + item.totalPrice,
+        0
+      );
+    } else {
+      this.total = this.cartItems.reduce(
+        (sum, item) => sum + (item.unitPrice * item.quantity),
+        0
+      );
+    }
   }
-
-
-  // ngOnInit() {
-  //   this.cartService.cartItems$.subscribe(items => {
-  //     this.cartItems = items;
-  //   });
-
-  //   this.cartService.total$.subscribe(total => {
-  //     this.total = total;
-  //   });
-  // }
 
   public openCart(): void {
     this.showCartModal = true;
     this.loadCart();
+    document.body.style.overflow = 'hidden';
   }
 
   public closeCart(): void {
     this.showCartModal = false;
+    document.body.style.overflow = '';
   }
-  
-
-  // goToCart() {
-  //   this.closeCart();
-  //   this.router.navigate(['/cart']);
-  // }
 
   increaseQuantity(item: any): void {
-    this.cartService.updateQuantity(item.id, item.quantity + 1).subscribe();
+    if (item.quantity < item.availableStock) {
+      this.cartService.updateQuantity(item.id, item.quantity + 1).subscribe(
+        () => this.loadCart(),
+        error => console.error('Erro ao aumentar quantidade:', error)
+      );
+    }
   }
 
   decreaseQuantity(item: any): void {
     if (item.quantity > 1) {
-      this.cartService.updateQuantity(item.id, item.quantity - 1).subscribe();
+      this.cartService.updateQuantity(item.id, item.quantity - 1).subscribe(
+        () => this.loadCart(),
+        error => console.error('Erro ao diminuir quantidade:', error)
+      );
     } else {
       this.removeItem(item);
     }
   }
 
   removeItem(item: any): void {
-    this.cartService.removeItem(item.id).subscribe();
+    this.cartService.removeItem(item.id).subscribe(
+      () => this.loadCart(),
+      error => console.error('Erro ao remover item:', error)
+    );
   }
 
   clearCart(): void {
-    this.cartService.clearCart().subscribe();
+    this.cartService.clearCart().subscribe(
+      () => this.loadCart(),
+      error => console.error('Erro ao limpar carrinho:', error)
+    );
   }
 
   goToCheckout() {
