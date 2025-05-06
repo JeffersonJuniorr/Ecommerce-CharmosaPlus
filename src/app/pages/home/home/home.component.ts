@@ -1,24 +1,11 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  NgZone,
-  PLATFORM_ID,
-  Inject,
-} from '@angular/core';
-import {
-  CommonModule,
-  isPlatformBrowser as commonIsPlatformBrowser,
-} from '@angular/common';
+import { Component, OnInit, OnDestroy, NgZone, PLATFORM_ID, Inject} from '@angular/core';
+import { CommonModule, isPlatformBrowser as commonIsPlatformBrowser} from '@angular/common';
 import { Router } from '@angular/router';
 import { MOCK_DATA } from './mock-data.component';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../../services/storage/storage.service';
 import { CartService } from '../../../services/cartservice/cartservice.service';
-import {
-  ProductService,
-  Product,
-} from '../../../services/products/products.service';
+import { ProductService, Product } from '../../../services/products/products.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -209,7 +196,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.ngZone.run(() => {
           this.nextSlide();
         });
-      }, 3000);
+      }, 8000);
     });
   }
 

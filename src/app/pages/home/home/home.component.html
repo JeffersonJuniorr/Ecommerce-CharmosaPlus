@@ -42,46 +42,43 @@
   </section>
 
   <!-- Categorias -->
-  <section class="products">
-    <section class="categories">
-      <div class="categories-header">
-        <h2>Categorias</h2>
-        <a href="#" class="view-all">Ver tudo</a>
-      </div>
-      <div class="categories-buttons">
-        <button class="category-btn active">Tudo</button>
-        <button class="category-btn">Vestidos</button>
-        <button class="category-btn">Conjuntos</button>
-        <button class="category-btn">Macaquinhos</button>
-        <button class="category-btn">Moletom</button>
-      </div>
-    </section>
+  <section class="see-also-section">
+    <div class="see-also-divider">
+      <span class="divider-line"></span>
+      <h2 class="see-also-title">Veja também</h2>
+      <span class="divider-line"></span>
+    </div>
+  </section>
 
     <!-- Produtos -->
     <div class="product-list">
       <div *ngIf="isLoading" class="loading-container">
         <p>Carregando produtos...</p>
       </div>
-
+    
       <div *ngIf="error" class="error-container">
         <p>{{ error }}</p>
       </div>
-
-      <!-- Products list -->
-      <div class="card" *ngFor="let product of products">
-        <img
+    
+      <div class="product-card" *ngFor="let product of products">
+        <div class="product-image">
+          <img
           [src]="product.imageUrls && product.imageUrls.length ? product.imageUrls[0] : 'assets/images/placeholder.jpg'"
           alt="{{ product.name }}" />
-        <div class="card-body">
+        </div>
+    
+        <div class="product-info">
           <h4>{{ product.name }}</h4>
-          <p class="sizes" *ngIf="product.sizes && product.sizes.length > 0">
-            {{ product.sizes.join(' - ') }}
-          </p>
-          <div class="colors" *ngIf="product.colors && product.colors.length > 0">
+          <p *ngIf="product.sizes?.length" class="product-sizes">{{ product.sizes.join(' · ') }}</p>
+    
+          <div *ngIf="product.colors?.length" class="product-colors">
             <span *ngFor="let color of product.colors" [style.backgroundColor]="color" class="color-dot"></span>
           </div>
-          <p class="price">R$ {{ product.price }}</p>
-          <button class="add-cart-btn" (click)="openProductModal(product)">Adicionar ao Carrinho</button>
+    
+          <div class="product-bottom">
+            <span class="product-price">R$ {{ product.price }}</span>
+            <button class="btn-outline" (click)="openProductModal(product)">+ Carrinho</button>
+          </div>
         </div>
       </div>
     </div>
