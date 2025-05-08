@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, PLATFORM_ID, Inject } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService, Product } from '../../../services/products/products.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { StorageService } from '../../../services/storage/storage.service';
 import { environment } from '../../../../environments/environment';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +30,7 @@ export class CheckoutComponent implements OnInit {
   calculating = false;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private route: ActivatedRoute,
     private productService: ProductService,
     private storage: StorageService,
@@ -41,7 +42,9 @@ export class CheckoutComponent implements OnInit {
     const productId = Number(this.route.snapshot.paramMap.get('id'));
     this.productService.getProductById(productId).subscribe(prod => {
       this.product = prod;
-      this.loadImages(productId);
+      if (isPlatformBrowser(this.platformId)) {
+        this.loadImages(productId);
+    }
     });
   }
 
