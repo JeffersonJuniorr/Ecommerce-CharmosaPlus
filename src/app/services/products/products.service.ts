@@ -43,6 +43,11 @@ export class ProductService {
     return this.http.get<Product[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
+  // checkout
+  getProductById(productId: number): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${productId}`, { headers: this.getHeaders() });
+  }
+
   getProductImage(productId: number, imageId: number = 1): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/${productId}/images?imageId=${imageId}`, {
       headers: this.getHeaders(),

@@ -16,6 +16,7 @@
     </div>
   </div>
 
+  <!-- Não visivel -->
   <!-- Menu -->
   <nav class="menu">
     <div class="cards-banner">
@@ -64,7 +65,7 @@
       <div class="product-image">
         <img
           [src]="product.imageUrls && product.imageUrls.length ? product.imageUrls[0] : 'assets/images/placeholder.jpg'"
-          alt="{{ product.name }}" />
+          alt="{{ product.name }}" (click)="product.id ? goToCheckout(product.id) : null" />
       </div>
 
       <div class="product-info">

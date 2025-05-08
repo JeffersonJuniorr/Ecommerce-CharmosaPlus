@@ -37,7 +37,7 @@ export const routes: Routes = [
         path:"register", component: RegisterComponent
     },
     {
-        path:"checkout", component: CheckoutComponent
+        path:"checkout/:id", component: CheckoutComponent
     },
     {
         path:"payment", component: PaymentComponent

@@ -1,44 +1,58 @@
-<div class="checkout-container">
-  <!-- Informações do Produto -->
-  <div class="product-info">
-    <h2>Macaquinho Duna</h2>
-    <p>
-      Macaquinho duna elegante e confortável, ideal para diversos ocasiões. Confeccionado em tecido leve, com forro interno para maior conforto e acabamento impecável. Disponível nos tamanhos G1 e G2 e em cores versáteis para combinar com seu estilo.
-    </p>
-    <p><strong>Material:</strong> Tecido Duna - Forro Microfibra Branco</p>
-    <p class="line"><strong>Tamanhos disponíveis:</strong> G1 - G2</p>
-
-    <div class="product-options">
-      <!-- Cores -->
-      <div class="colors">
-        <span class="color" style="background-color: #D3C6B2;"></span>
-        <span class="color" style="background-color: #C0C0C0;"></span>
-        <span class="color" style="background-color: #000000;"></span>
-      </div>
+<div class="checkout-page" *ngIf="product">
+  <div class="gallery">
+    <div class="thumbnails">
+      <img
+        *ngFor="let thumb of thumbnails; let i = index"
+        [src]="thumb"
+        [class.selected]="i === selectedThumbnailIndex"
+        (click)="selectThumbnail(i)"
+        alt="Miniatura"
+      />
     </div>
-    
-    <!-- Tamanhos -->
-    <div class="sizes">
-      <button class="size-btn">G1</button>
-      <button class="size-btn">G2</button>
-    </div>
-
-    <div class="quantity-container">
-      <button class="quantity-btn" (click)="decreaseQuantity()">-</button>
-      <span class="quantity-btn">{{ quantity }}</span>
-      <button class="quantity-btn" (click)="increaseQuantity()">+</button>
-    </div>
-
-    <div class="action-buttons">
-      <button class="btn add-cart">Adicionar ao carrinho</button>
-      <button class="btn continue" (click)="goToPayment()">Continuar</button>
+    <div class="main-image">
+      <img [src]="mainImageUrl" [alt]="product.name" />
     </div>
   </div>
 
-  <!-- Imagem do Produto -->
-  <div class="product-image">
-    <img src="/assets/products/banner3.jpg" alt="Macaquinho Duna">
-    <h3>Macaquinho Duna</h3>
-    <p>R$139,00</p>
+  <div class="details">
+    <h1 class="product-title">{{ product.name }}</h1>
+
+    
+    <p class="description">{{ product.description }}</p>
+
+    <div class="pricing">
+      <div class="price">R$ {{ product.price | number:'1.2-2' }}</div>
+      <div class="installments">até 6× sem juros de R$ {{ (product.price/6) | number:'1.2-2' }}</div>
+    </div>
+
+
+    <div class="sizes" *ngIf="product.sizes?.length">
+      <label>Tamanho:</label>
+      <span>{{ product.sizes.join(' • ') }}</span>
+    </div>
+
+    <div class="colors" *ngIf="product.colors?.length">
+      <label>Outras cores:</label>
+      <div class="color-list">
+        <span
+          *ngFor="let c of product.colors"
+          class="color-dot"
+          [style.backgroundColor]="c"
+        ></span>
+      </div>
+    </div>
+
+    <button class="btn-buy">COMPRAR</button>
+
+    <div class="shipping">
+      <label>Frete e prazo</label>
+      <div class="cep-input">
+        <input type="text" placeholder="Insira seu CEP" [(ngModel)]="cep" />
+        <button (click)="calculateShipping()">CALCULAR</button>
+      </div>
+      <div class="shipping-result" *ngIf="shippingInfo">
+        {{ shippingInfo }}
+      </div>
+    </div>
   </div>
 </div>
