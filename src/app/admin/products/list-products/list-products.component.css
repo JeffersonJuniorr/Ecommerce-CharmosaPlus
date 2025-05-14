@@ -1,0 +1,329 @@
+body {
+  background-color: #f5f7fa ;
+}
+
+.admin-products {
+  max-width: 1000px;
+  padding: 20px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-row h1 {
+  margin: 0;
+}
+.btn-manage {
+  padding: 8px 16px;
+  background: #555;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-manage:hover {
+  background: #333;
+}
+
+.products-list {
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-top: 20px;
+  padding: 1px 10px 0 10px;
+}
+
+.loading, .error {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 1.1rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+}
+.tabs button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  border: none;
+  background: #fffdfd;
+  cursor: pointer;
+}
+.tabs button.active {
+  border-bottom: 2px solid #555;
+  background: transparent;
+}
+.controls input[type="text"] {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="checkbox"]:indeterminate {
+  background-color: #555;
+  border-color: #555;
+}
+
+/* Tabela */
+table {
+  table-layout: fixed;
+}
+
+.checkbox-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkbox-header, .checkbox-cell {
+  width: 40px;
+  text-align: center;
+  padding: 12px 8px;
+  border: none;
+}
+
+.thumb {
+  width: 80px;
+  text-align: center;
+}
+
+.name-cell {
+  width: 200px;
+  padding-left: 15px;
+}
+
+.id-cell {
+  width: 80px;
+  text-align: center;
+}
+
+.quantity-cell {
+  width: 100px;
+  text-align: center;
+}
+
+.price-cell {
+  text-align: left;
+  padding-left: 10px; 
+}
+
+.status-cell {
+  width: 100px;
+  text-align: center;
+}
+
+.actions-cell {
+  width: 100px;
+  text-align: center;
+}
+
+.btn-status {
+  padding: 5px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+th {
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #eee;
+}
+
+td {
+  padding: 12px 8px;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee;
+}
+
+.thumb img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+}
+
+.clickable { cursor: pointer; }
+th span.asc::after  { content: '▲'; margin-left: 4px; font-size: 0.7rem; }
+th span.desc::after { content: '▼'; margin-left: 4px; font-size: 0.7rem; }
+th:first-child, td:first-child  { width: 40px; text-align: center; }
+th:nth-child(2), td:nth-child(2) { width: 80px; text-align: center; }
+.thumb img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+span.active   { color: #28a745; font-weight: 600; }
+span.inactive { color: #dc3545; font-weight: 600; }
+
+.search-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  border-bottom: 2px solid #eee;
+  width: calc(100% + 20px);
+  margin: 0 -10px;
+  padding: 0 10px;
+  box-sizing: border-box; 
+}
+
+.sort-control {
+    margin-left: 15px;
+}
+
+.sort-select {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #aaa;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-reload {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon input {
+  padding-left: 30px;
+  width: 300px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.input-icon input:focus {
+  border-color: #aaa;
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); 
+}
+
+.input-icon .material-symbols-outlined {
+  position: absolute;
+  left: 8px; 
+  font-size: 20px; 
+  color: #888; 
+}
+
+.search-bar {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 30px;
+}
+
+/* Paginação */
+.pagination {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  gap: 12px;
+}
+
+.pagination button {
+  padding: 4px 8px;
+  border: none;
+  background: #555;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: default;
+}
+
+.pagination select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.bulk-actions select {
+  padding: 5px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.bulk-actions select:focus {
+  outline: none;
+  border-color: #aaa;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.bulk-actions .btn-apply {
+  padding: 6px 12px;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.bulk-actions .btn-apply:hover {
+  background-color: #333;
+}
+
+.bulk-actions .btn-apply:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+th, td {
+  position: relative;
+  border-bottom: none;
+  padding: 20px 0; 
+}
+
+ .line-header::after, td::after {
+  content: '';
+  position: absolute;
+  bottom: 0; 
+  left: 0;
+  width: calc(100% + 20px);
+  height: 2px; 
+  background-color: #eee;
+  transform: translateX(-10px);
+}
+
+th, td {
+  width: 100%;
+  padding: 20px 30px 20px 20px;
+  white-space: nowrap;
+}
+
+/* Ajuste para remover a borda extra do último td */
+table tr:last-child td::after {
+  content: none; /* Remove o pseudo-elemento do último td */
+}

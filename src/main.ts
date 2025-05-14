@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch  } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { ProductService } from './app/services/products/products.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,6 +24,7 @@ import { UsersComponent } from './app/admin/users/users.component';
 import { AdminPagesComponent } from './app/admin/adm-pages/admin-pages.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ExtractAdminComponent } from './app/admin/admin-extract/extract-admin.component';
+import { ListProductsComponent } from './app/admin/products/list-products/list-products.component';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -39,26 +40,40 @@ bootstrapApplication(AppComponent, {
       { path: 'checkout/:id', component: CheckoutComponent },
       { path: 'payment', component: PaymentComponent },
       // { path: '**', redirectTo: 'home' },  erro na navegação admin - slidebar
-      {
-        path: 'admin-dashboard',
-        component: AdminDashboardComponent,
-        canActivate: [AdminGuard],
-        children: [
-          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-          // { path: 'admdashboard', component: AdminDashboardComponent },
-          // { path: 'admin-products', component: ProductManagementComponent },
-          //{ path: 'coupons', component: CouponsComponent },
-          { path: 'users', component: UsersComponent },
-        ],
-      },
+      // {
+      //   path: 'admin-dashboard',
+      //   component: AdminDashboardComponent,
+      //   canActivate: [AdminGuard],
+      //   children: [
+      //     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      //     // { path: 'admdashboard', component: AdminDashboardComponent },
+      //     // { path: 'admin-products', component: ProductManagementComponent },
+      //     //{ path: 'coupons', component: CouponsComponent },
+      //     // { path: 'list-products', component: ListProductsComponent },
+      //     { path: 'users', component: UsersComponent },
+      //   ],
+      // },
+      // {
+      //   path: 'list-products',
+      //   component: ListProductsComponent,
+      //   children: [
+      //     {
+      //       path: 'products-management',
+      //       component: ProductManagementComponent,
+      //     },
+      //   ],
+      // },
       { path: 'admin-coupons', component: AdminCouponsComponent },
       { path: 'products-management', component: ProductManagementComponent },
       { path: 'admin-pages', component: AdminPagesComponent },
       { path: 'admin-extract', component: ExtractAdminComponent },
+      { path: 'list-products', component: ListProductsComponent },
     ]),
     provideHttpClient(withFetch()),
     ProductService,
     importProvidersFrom(ReactiveFormsModule),
-    importProvidersFrom(BrowserAnimationsModule), provideAnimationsAsync(), provideAnimationsAsync(),
+    importProvidersFrom(BrowserAnimationsModule),
+    provideAnimationsAsync(),
+    provideAnimationsAsync(),
   ],
 }).catch((err) => console.error(err));

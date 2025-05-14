@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ExtractService } from '../../services/extract/extract.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { Chart } from 'chart.js';
   selector: 'app-extract-admin',
   templateUrl: './extract-admin.component.html',
   styleUrls: ['./extract-admin.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ExtractAdminComponent implements OnInit {
 

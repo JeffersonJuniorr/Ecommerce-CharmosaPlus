@@ -17,6 +17,9 @@ export interface Product {
   category?: string;
   isNew?: boolean;
   active?: boolean;
+  quantity?: number;
+  thumbnailUrl?: string | SafeUrl;
+  selected?: boolean;
   // discount?: number;
 }
 
@@ -79,5 +82,15 @@ export class ProductService {
       // Caso contrário, envie como JSON
       return this.http.put(`${this.apiUrl}/${id}`, updateData, { headers: headers });
     }
+  }
+
+  updateStatus(productId: number, active: boolean): Observable<any> {
+  const url = `${this.apiUrl}/products/${productId}/status`;
+  return this.http.patch(url, { active });
+  }
+
+  bulkUpdateStatus(productIds: number[], active: boolean): Observable<any> {
+    const url = `${this.apiUrl}/products/bulk-status`;
+    return this.http.patch(url, { productIds, active });
   }
 }

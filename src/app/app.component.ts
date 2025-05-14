@@ -37,6 +37,8 @@ export class AppComponent implements OnInit {
     || this.router.url === '/products-management' 
     || this.router.url === "/admin-extract"
     || this.router.url === "/admin-coupons"
-    || this.router.url === "/admin-dashboard";
+    || this.router.url === "/admin-dashboard"
+    || this.router.url === "/list-products"
+    ;
   }
 }
