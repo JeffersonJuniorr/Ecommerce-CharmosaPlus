@@ -1,72 +1,261 @@
 <div class="product-management-container">
   <div class="product-management-content">
     <div class="header">
-      <h1>Cadastrar Produtos</h1>
-      <div class="header-buttons">
-        <button class="view-products-btn" (click)="openProductList()">
-          <mat-icon>visibility</mat-icon>
-          Ver Produtos
-        </button>
-      </div>
+      <h1>Cadastrar Produto</h1>
     </div>
 
-    <div class="content-wrapper single-column">
-      <div class="form-section">
-        <form [formGroup]="productForm" (ngSubmit)="addProduct()" class="product-form">
-          <div class="form-group">
-            <label>Nome do Produto</label>
-            <input type="text" formControlName="name" required placeholder="Digite o nome do produto">
-          </div>
+    <form [formGroup]="productForm" (ngSubmit)="addProduct()" class="product-form">
+      <!-- ABAS DE NAVEGAÇÃO -->
+      <div class="category-tabs">
+        <button type="button" class="tab-button" [class.active]="activeTab === 'general'"
+          (click)="activeTab = 'general'">
+          Geral
+        </button>
+        <button type="button" class="tab-button" [class.active]="activeTab === 'stock'" (click)="activeTab = 'stock'">
+          Estoque e Variações
+        </button>
+        <button type="button" class="tab-button" [class.active]="activeTab === 'images'" (click)="activeTab = 'images'">
+          Imagens
+        </button>
+      </div>
 
-          <div class="form-group">
-            <label>Descrição</label>
-            <textarea formControlName="description" required placeholder="Digite a descrição do produto"></textarea>
-          </div>
+      <div class="tab-content">
 
-          <div class="form-row">
+        <!-- ABA GERAL -->
+        <div *ngIf="activeTab === 'general'" class="tab-pane">
+          <div class="form-section">
+            <div class="form-header">
+              <h2 class="section-title">Informações Básicas</h2>
+
+              <div class="form-group checkbox-group">
+                <label>
+                  <input type="checkbox" formControlName="active">
+                  <p>Produto Ativo</p>
+                </label>
+                <!-- <div class="field-description">
+                  Desmarque para ocultar este produto da loja
+                </div> -->
+              </div>
+            </div>
+
+
             <div class="form-group">
-              <label>Preço</label>
-              <input type="number" formControlName="price" required placeholder="R$ 0,00">
+              <label>Nome do Produto</label>
+              <input type="text" formControlName="name" required placeholder="Nome do produto">
+              <div class="field-description">
+                Nome completo do produto como será exibido aos clientes
+              </div>
             </div>
 
             <div class="form-group">
-              <label>Cores</label>
-              <input type="text" formControlName="colors" placeholder="Ex: Vermelho, Azul, Preto">
+              <label>Descrição</label>
+              <textarea formControlName="description" required placeholder="Descrição detalhada do produto"></textarea>
+              <div class="field-description">
+                Detalhes importantes sobre o produto, materiais, características especiais
+              </div>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
+          <div class="form-section">
+            <h2 class="section-title">Dimensões</h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Peso (kg)</label>
+                <input type="number" formControlName="weight" step="0.01" placeholder="0.00">
+                <div class="field-description">
+                  Peso do produto para cálculo de frete
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Largura (cm)</label>
+                <input type="number" formControlName="width" placeholder="0">
+                <div class="field-description">
+                  Largura da embalagem do produto
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Altura (cm)</label>
+                <input type="number" formControlName="height" placeholder="0">
+                <div class="field-description">
+                  Altura da embalagem do produto
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Comprimento (cm)</label>
+                <input type="number" formControlName="length" placeholder="0">
+                <div class="field-description">
+                  Comprimento da embalagem do produto
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2 class="section-title">Preços</h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Preço de Custo</label>
+                <input type="number" formControlName="price" required placeholder="R$ 0.00" step="0.01">
+                <!-- <div class="field-description">
+                  Preço que será exibido aos clientes
+                </div> -->
+              </div>
+              <div class="form-group">
+                <label>Preço de Venda</label>
+                <input type="number" formControlName="costPrice" required placeholder="R$ 0.00" step="0.01">
+                <!-- <div class="field-description">
+                  Preço que você pagou pelo produto
+                </div> -->
+              </div>
+            </div>
+            <div class="price-display" *ngIf="calculateDiscount() > 0">
+              <div class="price-display-label">
+                Exibição na loja
+              </div>
+              <div class="price-display-values">
+                <span class="original-price">R$ {{productForm.get('price')?.value | number:'1.2-2'}}</span>
+                <span class="sale-price">R$ {{productForm.get('costPrice')?.value | number:'1.2-2'}}</span>
+                <span class="discount">{{calculateDiscount()}}% OFF</span>
+              </div>
+            </div>
+            <!-- <div class="form-group">
+              <label>Preço Base (Opcional)</label>
+              <input type="number" formControlName="basePrice" placeholder="R$ 0.00" step="0.01">
+              <div class="field-description">
+                Preço original (para exibir desconto se aplicável)
+              </div>
+            </div> -->
+          </div>
+        </div>
+
+        <!-- ABA ESTOQUE E VARIAÇÕES -->
+        <div *ngIf="activeTab === 'stock'" class="tab-pane">
+          <div class="form-section section-stock">
+            <h2 class="section-title">Estoque e Variações</h2>
+
+            <!-- <div class="form-group">
               <label>Quantidade em Estoque</label>
               <input type="number" formControlName="quantity" min="0" required placeholder="Quantidade disponível">
-            </div>
-          
-            <div class="form-group">
-              <label>Tamanhos</label>
-              <input type="text" formControlName="sizes" placeholder="Ex: P, M, G, GG">
-            </div>
+              <div class="field-description">
+                Quantidade total disponível para venda
+              </div>
+            </div> -->
+          </div>
 
-            <div class="form-group">
-              <label>Imagens</label>
+          <div class="form-section">
+
+            <div class="variations-container">
+              <div class="variation-item" *ngFor="let variation of variations; let i = index">
+                <div class="variation-header">
+                  <h3>Variação {{i + 1}}</h3>
+
+                  <button type="button" class="remove-variation" (click)="removeVariation(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Tamanho</label>
+                      <input type="text" [(ngModel)]="variation.size" [ngModelOptions]="{standalone: true}"
+                        placeholder="Ex: P, M, G">
+                    </div>
+
+                    <div class="form-group">
+                      <label>Cor (Hex)</label>
+                      <div class="color-input">
+                        <input type="text" [(ngModel)]="variation.color" [ngModelOptions]="{standalone: true}"
+                          placeholder="Código HEX (ex: #FF0000)">
+                        <input type="color" [(ngModel)]="variation.color" [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Quantidade</label>
+                      <input type="number" [(ngModel)]="variation.quantity" [ngModelOptions]="{standalone: true}"
+                        min="0" placeholder="0" [value]="variation.quantity || ''">
+                    </div>
+                  </div>
+
+                  <!-- <div class="form-group">
+                    <label>Modelo</label>
+                    <input type="text" [(ngModel)]="variation.model" [ngModelOptions]="{standalone: true}"
+                      placeholder="Nome do modelo">
+                    <div class="field-description">
+                      Nome ou código do modelo (opcional)
+                    </div>
+                  </div> -->
+
+
+                </div>
+              </div>
+
+              <button type="button" class="add-variation" (click)="addVariation()">
+                <mat-icon>add</mat-icon>
+                Adicionar Variação
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABA IMAGENS -->
+        <div *ngIf="activeTab === 'images'" class="tab-pane">
+          <div class="form-section">
+            <h2 class="section-title">Imagens do Produto</h2>
+
+            <div class="image-upload-container">
               <div class="file-input-wrapper">
                 <button type="button" class="file-input-button">
                   <mat-icon>cloud_upload</mat-icon>
                   Selecionar Imagens
                 </button>
-                <input type="file" multiple (change)="onFileChange($event)">
+                <input type="file" multiple (change)="onFileChange($event)" accept="image/*">
                 <span *ngIf="selectedFiles.length > 0">
-                  {{selectedFiles.length}} arquivo(s) selecionado(s)
+                  {{selectedFiles.length}} imagem(ns) selecionada(s)
                 </span>
+              </div>
+
+              <div class="field-description">
+                Adicione imagens de alta qualidade do produto (mínimo 800x800px)
+              </div>
+
+              <div class="image-preview-grid" *ngIf="selectedFiles.length > 0">
+                <div class="image-preview" *ngFor="let file of selectedFiles; let i = index">
+                  <img [src]="getPreview(file)" (load)="onImageLoad()">
+                  <button type="button" class="remove-image" (click)="removeImage(i, file)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-
-          <button type="submit" class="submit-button" [disabled]="!productForm.valid">
-            <mat-icon>add_circle</mat-icon>
-            Cadastrar Produto
-          </button>
-        </form>
+        </div>
       </div>
-    </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-button" *ngIf="activeTab !== 'general'" (click)="previousTab()">
+          <mat-icon>arrow_back</mat-icon>
+          <!-- Voltar -->
+        </button>
+
+        <button type="button" class="secondary-button" *ngIf="activeTab !== 'images'" (click)="nextTab()">
+          <!-- Continuar -->
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+
+        <button type="submit" class="submit-button" [disabled]="!productForm.valid">
+          <mat-icon>save</mat-icon>
+          Salvar Produto
+        </button>
+      </div>
+    </form>
   </div>
 </div>

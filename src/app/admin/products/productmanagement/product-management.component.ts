@@ -1,16 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { environment } from '../../../../environments/environment.development';
-import { ProductService, Product } from '../../../services/products/products.service';
+import { ProductService } from '../../../services/products/products.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { CustomSnackBarComponent } from '../../../components/custom/custom-snack-bar/custom-snack-bar.component';
-import { ProductListModalComponent } from '../modal/product-list-modal/product-list-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+
+interface ProductVariation {
+  size: string;
+  color: string;
+  quantity?: number;
+  // model: string;
+}
 
 @Component({
   standalone: true,
@@ -18,178 +23,207 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './product-management.component.html',
   styleUrls: ['./product-management.component.css'],
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
     MatSnackBarModule,
-    MatDialogModule,
     MatInputModule,
     MatButtonModule,
-    MatCardModule,
     MatIconModule,
+    MatCheckboxModule,
   ],
 })
-
 export class ProductManagementComponent implements OnInit {
   productForm: FormGroup;
-  products: (Product & { imageUrls?: string[] })[] = [];
-  deletingProductId: number | null = null;
+  variations: ProductVariation[] = [];
   selectedFiles: File[] = [];
-
+  activeTab: 'general' | 'stock' | 'images' = 'general';
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
+    private sanitizer: DomSanitizer,
+    private changeDetector: ChangeDetectorRef
   ) {
     this.productForm = this.fb.group({
-      name: [''],
-      description: [''],
-      price: [''],
-      quantity: [''],
-      colors: [''],
-      sizes: [''],
-      images: [null],
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      weight: [''],
+      width: [''],
+      height: [''],
+      length: [''],
+      costPrice: ['', [Validators.required, Validators.min(0)]],
+      price: ['', [Validators.required, Validators.min(0)]],
+      // quantity: ['', [Validators.required, Validators.min(0)]],
+      active: [true],
+
     });
+    this.addVariation();
   }
 
   ngOnInit() {
-    this.loadProducts();
+    // this.addVariation(); // Adiciona uma variação inicial
   }
 
-  showAlert(message: string, isError: boolean = false) {
-    this.snackBar.openFromComponent(CustomSnackBarComponent, {
-      duration: 5000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: isError ? ['error-snackbar'] : ['success-snackbar'],
-      data: { message }
-    });
-  }
-
-
-  openProductList() {
-    const dialogRef = this.dialog.open(ProductListModalComponent, {
-      width: '80%',
-      maxHeight: '90vh',
-      data: { products: this.products }
-    });
-  
-    dialogRef.afterClosed().subscribe(() => {
-      this.loadProducts();
-      // window.location.reload(); // Recarrega a página
+  addVariation() {
+    this.variations.push({
+      size: '',
+      color: '#000000',
+      // quantity: 0,
+      // model: '',
     });
   }
 
-  loadProducts() {
-    this.productService.getProducts().subscribe({
-      next: (data: Product[]) => {
-        this.products = data.map((product) => ({
-          ...product,
-          imageUrls: Array.isArray(product.imageUrls)
-            ? product.imageUrls.map((url) => {
-                if (typeof url === 'string') {
-                  return `${environment.apiUrl}/products/${product.id}/images/${url.split('/').pop()}`;
-                }
-                return '';
-              }).filter(url => url !== '')
-            : []
-        }));
-        console.log('Produtos carregados:', this.products);
-      },
-      error: (error) => {
-        console.error('Erro ao carregar produtos:', error);
-        this.showAlert('Erro ao carregar produtos', true);
-      }
-    });
+  removeVariation(index: number) {
+    this.variations.splice(index, 1);
   }
 
   onFileChange(event: any) {
-    const files = event.target.files;
-    if (files.length > 0) {
-      this.selectedFiles = Array.from(files);
-      this.productForm.patchValue({ images: this.selectedFiles });
+    // Libera as URLs das imagens anteriores para evitar vazamento de memória
+    this.selectedFiles.forEach((file) => {
+      URL.revokeObjectURL(this.getPreview(file) as string);
+    });
+
+    // Adiciona as novas imagens às existentes (em vez de substituir)
+    const newFiles = Array.from(event.target.files) as File[];
+    this.selectedFiles = [...this.selectedFiles, ...newFiles];
+
+    //  Limitador de imagem, ex: limite 10 imagens
+    // this.selectedFiles = combinedFiles.slice(0, 10);
+
+    // if (combinedFiles.length > 10) {
+    //   this.snackBar.open('Máximo de 10 imagens atingido', 'Fechar', {
+    //     duration: 3000,
+    //   });
+    // }
+
+    this.changeDetector.detectChanges();
+  }
+
+  getPreview(file: File): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
+  }
+
+  removeImage(index: number, file: File) {
+    URL.revokeObjectURL(this.getPreview(file) as string);
+    this.selectedFiles.splice(index, 1);
+    this.changeDetector.detectChanges();
+  }
+
+  onImageLoad() {
+    this.changeDetector.detectChanges();
+  }
+
+  validateImages(): boolean {
+    if (this.selectedFiles.length !== 2) {
+      this.snackBar.open(
+        'Selecione exatamente 2 imagens para o produto',
+        'Fechar',
+        {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        }
+      );
+      return false;
+    }
+    return true;
+  }
+
+  calculateDiscount(): number {
+    const cost = this.productForm.get('price')?.value;
+    const price = this.productForm.get('costPrice')?.value;
+    if (cost && price && cost > price) {
+      return Math.round(((cost - price) / cost) * 100);
+    }
+    return 0;
+  }
+
+  nextTab() {
+    if (this.activeTab === 'general') {
+      this.activeTab = 'stock';
+    } else if (this.activeTab === 'stock') {
+      this.activeTab = 'images';
+    }
+  }
+
+  previousTab() {
+    if (this.activeTab === 'stock') {
+      this.activeTab = 'general';
+    } else if (this.activeTab === 'images') {
+      this.activeTab = 'stock';
     }
   }
 
   addProduct() {
     if (this.productForm.valid) {
       const formData = new FormData();
-      
-      const name = this.productForm.get('name')?.value;
-      const description = this.productForm.get('description')?.value;
-      const price = this.productForm.get('price')?.value;
-      const quantity = this.productForm.get('quantity')?.value;
-  
-      // Validação reforçada
-      if (!name || !description || price === null || quantity === null || quantity < 0) {
-        this.showAlert('Por favor, preencha todos os campos obrigatórios com valores válidos', true);
+      const formValue = this.productForm.value;
+      const totalQuantity = this.variations.reduce(
+        (sum, variation) => sum + (variation.quantity || 0),
+        0
+      );
+      const productData = {
+        ...formValue,
+        price: formValue.costPrice, // Envia o preço de custo como "price" para o backend
+        salePrice: formValue.price,
+        quantity: totalQuantity,
+      };
+
+      if (totalQuantity <= 0) {
+        this.snackBar.open(
+          'Adicione pelo menos uma variação com quantidade',
+          'Fechar',
+          {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          }
+        );
         return;
       }
-  
-      formData.append('name', name);
-      formData.append('description', description);
-      formData.append('price', price.toString());
-      formData.append('quantity', quantity.toString());
-  
-      // Processa cores e tamanhos
-      const colorsValue = this.productForm.get('colors')?.value || '';
-      const sizesValue = this.productForm.get('sizes')?.value || '';
-  
-      const colors = colorsValue.split(',')
-        .map((c: string) => c.trim())
-        .filter((c: string) => c !== '');
-        
-      const sizes = sizesValue.split(',')
-        .map((s: string) => s.trim())
-        .filter((s: string) => s !== '');
-  
-      colors.forEach((color: string) => formData.append('colors', color));
-      sizes.forEach((size: string) => formData.append('sizes', size));
-  
+
+      Object.keys(productData).forEach((key) => {
+        if (productData[key] !== null && productData[key] !== undefined) {
+          formData.append(key, productData[key]);
+        }
+      });
+
+      // Adiciona variações
+      this.variations.forEach((variation, index) => {
+        if (variation.size)
+          formData.append(`variations[${index}][size]`, variation.size);
+        if (variation.color)
+          formData.append(`variations[${index}][color]`, variation.color);
+        // formData.append(
+        //   `variations[${index}][quantity]`,
+        //   variation.quantity.toString()
+        // );
+        // if (variation.model)
+        //   formData.append(`variations[${index}][model]`, variation.model);
+      });
+
       // Adiciona imagens
       this.selectedFiles.forEach((file) => {
         formData.append('images', file);
       });
-  
-      this.productService.addProduct(formData).subscribe({
-        next: (response) => {
-          this.showAlert('Produto cadastrado com sucesso!');
-          this.loadProducts();
-          this.productForm.reset();
-          this.selectedFiles = [];
-        },
-        error: (error) => {
-          console.error('Erro detalhado:', error);
-          let errorMessage = 'Erro ao cadastrar produto';
-          if (error.error?.message) {
-            errorMessage += `: ${error.error.message}`;
-          }
-          this.showAlert(errorMessage, true);
-        }
-      });
-    } else {
-      this.showAlert('Por favor, preencha todos os campos obrigatórios', true);
-    }
-  }
 
-  deleteProduct(id: number) {
-    if (!id) return;
-    
-    if (confirm('Tem certeza que deseja excluir este produto?')) {
-      this.deletingProductId = id;
-      
-      this.productService.deleteProduct(id).subscribe({
+      this.productService.addProduct(formData).subscribe({
         next: () => {
-          this.showAlert('Produto excluído com sucesso!');
-          this.loadProducts();
+          this.snackBar.open('Produto cadastrado com sucesso!', 'Fechar', {
+            duration: 3000,
+          });
+          this.productForm.reset();
+          this.variations = [];
+          this.selectedFiles = [];
+          this.addVariation();
         },
         error: (error) => {
-          console.error('Erro ao excluir produto:', error);
-          this.showAlert('Erro ao excluir produto', true);
+          console.error('Erro ao cadastrar produto:', error);
+          this.snackBar.open('Erro ao cadastrar produto', 'Fechar', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
         },
-        complete: () => {
-          this.deletingProductId = null;
-        }
       });
     }
   }
