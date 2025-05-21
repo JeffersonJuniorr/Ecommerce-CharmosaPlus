@@ -130,64 +130,69 @@ export class CartService {
   }
 
   addToCart(item: any): Observable<any> {
-    const cartItem = {
-      productId: item.id,
-      selectedColor: item.selectedColor,
-      selectedSize: item.selectedSize,
-      quantity: item.quantity || 1
-    };
-  
-    const token = this.storageService.getItem('authToken');
-  
-    if (token) {
-      return this.http.post<any>(`${this.apiUrl}/add`, cartItem, {
-        headers: this.getAuthHeaders()
-      }).pipe(
-        tap((response) => {
-          this.cartItemsSubject.next(response.items);
-        }),
-        catchError(error => {
-          console.error('Erro ao adicionar ao carrinho:', error);
-          let errorMessage = 'Erro ao adicionar produto ao carrinho';
-          
-          if (error.status === 500 && error.error?.message?.includes('Quantidade insuficiente')) {
-            errorMessage = 'Quantidade em estoque insuficiente';
-          } else if (error.status === 500 && error.error?.message?.includes('Produto esgotado')) {
-            errorMessage = 'Produto esgotado no momento';
-          }
-          
-          throw new Error(errorMessage);
-        })
-      );
+  const cartItem = {
+    productId: item.id,
+    color: item.selectedColor,
+    size: item.selectedSize,
+    quantity: item.quantity || 1
+  };
+
+  const token = this.storageService.getItem('authToken');
+
+  if (token) {
+    // Usuário autenticado – envia para o backend
+    return this.http.post<any>(`${this.apiUrl}/add`, cartItem, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      tap((response) => {
+        this.cartItemsSubject.next(response.items || []);
+        this.totalSubject.next(this.calculateTotalAmount(response.items || []));
+      }),
+      catchError(error => {
+        console.error('Erro ao adicionar ao carrinho:', error);
+        let errorMessage = 'Erro ao adicionar produto ao carrinho';
+
+        if (error.status === 500 && error.error?.message?.includes('Quantidade insuficiente')) {
+          errorMessage = 'Quantidade em estoque insuficiente';
+        } else if (error.status === 500 && error.error?.message?.includes('Produto esgotado')) {
+          errorMessage = 'Produto esgotado no momento';
+        }
+
+        return of({ error: true, message: errorMessage });
+      })
+    );
+  } else {
+    // Usuário não autenticado – manipula localmente
+    const currentItems = this.cartItemsSubject.value;
+    const existingItem = currentItems.find(
+      (i) =>
+        i.productId === cartItem.productId &&
+        i.color === cartItem.color &&
+        i.size === cartItem.size
+    );
+
+    if (existingItem) {
+      existingItem.quantity += cartItem.quantity;
+      existingItem.totalPrice = existingItem.unitPrice * existingItem.quantity;
     } else {
-      // Usuário não autenticado - salva no localStorage
-      const currentItems = this.cartItemsSubject.value;
-      const existingItem = currentItems.find(
-        (i) =>
-          i.productId === cartItem.productId &&
-          i.selectedColor === cartItem.selectedColor &&
-          i.selectedSize === cartItem.selectedSize
-      );
-
-      if (existingItem) {
-        existingItem.quantity += cartItem.quantity;
-      } else {
-        currentItems.push({
-          ...cartItem,
-          id: Date.now(), // ID temporário para o item
-          name: item.name,
-          unitPrice: item.price,
-          image: item.image,
-          availableStock: item.availableStock || 10, // Estoque padrão para modo offline
-          totalPrice: item.price * (item.quantity || 1)
-        });
-      }
-
-      this.cartItemsSubject.next(currentItems);
-      this.saveLocalCart(currentItems);
-      return of({ items: currentItems });
+      currentItems.push({
+        ...cartItem,
+        id: Date.now(), // ID temporário
+        name: item.name,
+        unitPrice: item.price,
+        image: item.image,
+        availableStock: item.availableStock || 10,
+        totalPrice: item.price * (item.quantity || 1)
+      });
     }
+
+    this.cartItemsSubject.next(currentItems);
+    this.totalSubject.next(this.calculateTotalAmount(currentItems));
+    this.saveLocalCart(currentItems);
+
+    return of({ items: currentItems });
   }
+}
 
   removeItem(itemId: number): Observable<any> {
     const token = this.storageService.getItem('authToken');

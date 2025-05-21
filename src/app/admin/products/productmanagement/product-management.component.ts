@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { CustomSnackBarComponent } from '../../../components/custom/custom-snack-bar/custom-snack-bar.component';
 
 interface ProductVariation {
   size: string;
@@ -31,6 +32,7 @@ interface ProductVariation {
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
+    // CustomSnackBarComponent
   ],
 })
 export class ProductManagementComponent implements OnInit {
@@ -115,15 +117,8 @@ export class ProductManagementComponent implements OnInit {
   }
 
   validateImages(): boolean {
-    if (this.selectedFiles.length !== 2) {
-      this.snackBar.open(
-        'Selecione exatamente 2 imagens para o produto',
-        'Fechar',
-        {
-          duration: 3000,
-          panelClass: ['error-snackbar'],
-        }
-      );
+    if (this.selectedFiles.length < 1) {
+      this.showAlert('Selecione pelo menos 1 imagem para o produto', true);
       return false;
     }
     return true;
@@ -154,52 +149,82 @@ export class ProductManagementComponent implements OnInit {
     }
   }
 
+  showAlert(message: string, isError: boolean = false) {
+    this.snackBar.openFromComponent(CustomSnackBarComponent, {
+      duration: 5000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: isError
+        ? ['error-snackbar', 'custom-snackbar']
+        : ['success-snackbar', 'custom-snackbar'],
+      data: { message, type: isError ? 'error' : 'success' },
+    });
+  }
+
   addProduct() {
-  if (!this.validateImages()) {
-    return;
-  }
-  if (!this.productForm.valid) {
-    this.snackBar.open('Preencha todos os campos obrigatórios', 'Fechar', { duration: 3000 });
-    return;
-  }
-
-  const formData = new FormData();
-
-  const formValue = this.productForm.value;
-  formData.append('name', formValue.name);
-  formData.append('description', formValue.description);
-  formData.append('price', formValue.price.toString());
-  formData.append('quantity', formValue.quantity?.toString() ?? '0');
-  formData.append('active', formValue.active.toString());
-
-  this.variations.forEach(v => {
-    // envia cor sem "#"
-    const colorCode = v.color.startsWith('#') ? v.color.slice(1) : v.color;
-    formData.append('colors', colorCode);
-    formData.append('sizes', v.size);
-  });
-
-  this.selectedFiles.forEach(file => {
-    formData.append('images', file);
-  });
-
-  // debug: imprime tudo que vai no request
-  // for (let [key, value] of formData.entries()) {
-  //   console.log(key, value);
-  // }
-
-  this.productService.addProduct(formData).subscribe({
-    next: (res) => {
-      this.snackBar.open('Produto cadastrado com sucesso!', 'Fechar', { duration: 3000 });
-      this.productForm.reset({ active: true });
-      this.variations = [];
-      this.selectedFiles = [];
-      this.addVariation();
-    },
-    error: (err) => {
-      console.error('Erro ao cadastrar produto:', err);
-      this.snackBar.open('Erro ao cadastrar produto', 'Fechar', { duration: 3000, panelClass: ['error-snackbar'] });
+    if (!this.validateImages()) {
+      return;
     }
-  });
-}
+    if (!this.productForm.valid) {
+      this.showAlert('Selecione exatamente 2 imagens para o produto', true);
+      return;
+    }
+
+    const formData = new FormData();
+
+    const formValue = this.productForm.value;
+    formData.append('name', formValue.name);
+    formData.append('description', formValue.description);
+    formData.append('price', formValue.price.toString());
+    // formData.append('quantity', formValue.quantity?.toString() ?? '0');
+    formData.append('active', formValue.active.toString());
+
+    const totalQuantity = this.variations.reduce(
+      (sum, v) => sum + (v.quantity || 0),
+      0
+    );
+
+    if (totalQuantity <= 0) {
+      this.showAlert(
+        'Informe a quantidade de estoque do produto.',
+        true
+      );
+      return;
+    }
+
+    formData.append('quantity', totalQuantity.toString());
+
+    this.variations.forEach((v) => {
+      // envia cor sem "#"
+      const colorCode = v.color.startsWith('#') ? v.color.slice(1) : v.color;
+      formData.append('colors', colorCode);
+      formData.append('sizes', v.size);
+    });
+
+    this.selectedFiles.forEach((file) => {
+      formData.append('images', file);
+    });
+
+    const uniqueKeys = new Set();
+    for (let [key, value] of formData.entries()) {
+      if (uniqueKeys.has(key)) console.warn('⚠️ Campo duplicado:', key);
+      uniqueKeys.add(key);
+      console.log(key, value);
+    }
+
+    for (let [k, v] of formData.entries()) console.log(k, v);
+    // debug: imprime tudo que vai no request
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(key, value);
+    // }
+
+    this.productService.addProduct(formData).subscribe({
+      next: (res) => {
+        this.showAlert('Produto cadastrado com sucesso!');
+      },
+      error: (err) => {
+        this.showAlert('Preencha todos os campos obrigatórios', true);
+      },
+    });
+  }
 }
