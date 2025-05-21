@@ -1,18 +1,18 @@
 <div class="checkout-page" *ngIf="product">
   <div class="gallery">
-    <div class="thumbnails">
-      <img
-        *ngFor="let thumb of thumbnails; let i = index"
-        [src]="thumb"
-        [class.selected]="i === selectedThumbnailIndex"
-        (click)="selectThumbnail(i)"
-        alt="Miniatura"
-      />
-    </div>
-    <div class="main-image">
-      <img [src]="mainImageUrl" [alt]="product.name" />
-    </div>
+  <div class="thumbnails">
+    <img
+      *ngFor="let thumb of thumbnails; let i = index"
+      [src]="thumb"
+      [class.selected]="i === selectedThumbnailIndex"
+      (click)="selectThumbnail(i)"
+      alt="Miniatura {{ i+1 }}"
+    />
   </div>
+  <div class="main-image">
+    <img [src]="mainImageUrl" [alt]="product.name" />
+  </div>
+</div>
 
   <div class="details">
     <h1 class="product-title">{{ product.name }}</h1>

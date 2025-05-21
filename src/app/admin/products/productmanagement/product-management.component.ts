@@ -57,7 +57,6 @@ export class ProductManagementComponent implements OnInit {
       price: ['', [Validators.required, Validators.min(0)]],
       // quantity: ['', [Validators.required, Validators.min(0)]],
       active: [true],
-
     });
     this.addVariation();
   }
@@ -156,75 +155,51 @@ export class ProductManagementComponent implements OnInit {
   }
 
   addProduct() {
-    if (this.productForm.valid) {
-      const formData = new FormData();
-      const formValue = this.productForm.value;
-      const totalQuantity = this.variations.reduce(
-        (sum, variation) => sum + (variation.quantity || 0),
-        0
-      );
-      const productData = {
-        ...formValue,
-        price: formValue.costPrice, // Envia o preço de custo como "price" para o backend
-        salePrice: formValue.price,
-        quantity: totalQuantity,
-      };
-
-      if (totalQuantity <= 0) {
-        this.snackBar.open(
-          'Adicione pelo menos uma variação com quantidade',
-          'Fechar',
-          {
-            duration: 3000,
-            panelClass: ['error-snackbar'],
-          }
-        );
-        return;
-      }
-
-      Object.keys(productData).forEach((key) => {
-        if (productData[key] !== null && productData[key] !== undefined) {
-          formData.append(key, productData[key]);
-        }
-      });
-
-      // Adiciona variações
-      this.variations.forEach((variation, index) => {
-        if (variation.size)
-          formData.append(`variations[${index}][size]`, variation.size);
-        if (variation.color)
-          formData.append(`variations[${index}][color]`, variation.color);
-        // formData.append(
-        //   `variations[${index}][quantity]`,
-        //   variation.quantity.toString()
-        // );
-        // if (variation.model)
-        //   formData.append(`variations[${index}][model]`, variation.model);
-      });
-
-      // Adiciona imagens
-      this.selectedFiles.forEach((file) => {
-        formData.append('images', file);
-      });
-
-      this.productService.addProduct(formData).subscribe({
-        next: () => {
-          this.snackBar.open('Produto cadastrado com sucesso!', 'Fechar', {
-            duration: 3000,
-          });
-          this.productForm.reset();
-          this.variations = [];
-          this.selectedFiles = [];
-          this.addVariation();
-        },
-        error: (error) => {
-          console.error('Erro ao cadastrar produto:', error);
-          this.snackBar.open('Erro ao cadastrar produto', 'Fechar', {
-            duration: 3000,
-            panelClass: ['error-snackbar'],
-          });
-        },
-      });
-    }
+  if (!this.validateImages()) {
+    return;
   }
+  if (!this.productForm.valid) {
+    this.snackBar.open('Preencha todos os campos obrigatórios', 'Fechar', { duration: 3000 });
+    return;
+  }
+
+  const formData = new FormData();
+
+  const formValue = this.productForm.value;
+  formData.append('name', formValue.name);
+  formData.append('description', formValue.description);
+  formData.append('price', formValue.price.toString());
+  formData.append('quantity', formValue.quantity?.toString() ?? '0');
+  formData.append('active', formValue.active.toString());
+
+  this.variations.forEach(v => {
+    // envia cor sem "#"
+    const colorCode = v.color.startsWith('#') ? v.color.slice(1) : v.color;
+    formData.append('colors', colorCode);
+    formData.append('sizes', v.size);
+  });
+
+  this.selectedFiles.forEach(file => {
+    formData.append('images', file);
+  });
+
+  // debug: imprime tudo que vai no request
+  // for (let [key, value] of formData.entries()) {
+  //   console.log(key, value);
+  // }
+
+  this.productService.addProduct(formData).subscribe({
+    next: (res) => {
+      this.snackBar.open('Produto cadastrado com sucesso!', 'Fechar', { duration: 3000 });
+      this.productForm.reset({ active: true });
+      this.variations = [];
+      this.selectedFiles = [];
+      this.addVariation();
+    },
+    error: (err) => {
+      console.error('Erro ao cadastrar produto:', err);
+      this.snackBar.open('Erro ao cadastrar produto', 'Fechar', { duration: 3000, panelClass: ['error-snackbar'] });
+    }
+  });
+}
 }

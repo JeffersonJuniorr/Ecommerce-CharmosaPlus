@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SafeUrl } from '@angular/platform-browser';
 import { StorageService } from '../../services/storage/storage.service';
+import { map } from 'rxjs/operators';
 
 export interface Product {
   id: number;
@@ -42,27 +43,64 @@ export class ProductService {
     });
   }
 
+  // getProducts(): Observable<Product[]> {
+  //   return this.http.get<Product[]>(this.apiUrl, { headers: this.getHeaders() });
+  // }
+
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiUrl, { headers: this.getHeaders() });
-  }
+  return this.http
+    .get<Product[]>(this.apiUrl, { headers: this.getHeaders() })
+    .pipe(
+      map(products =>
+        products.map(p => ({
+          ...p,
+          // garante que cada cor já venha com '#'
+          colors: (p.colors || []).map(c =>
+            c.startsWith('#') ? c : `#${c}`
+          ),
+          sizes: p.sizes || [],
+        }))
+      )
+    );
+}
 
-  // checkout
-  getProductById(productId: number): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${productId}`, { headers: this.getHeaders() });
-  }
+  // // checkout
+  // getProductById(productId: number): Observable<Product> {
+  //   return this.http.get<Product>(`${this.apiUrl}/${productId}`, { headers: this.getHeaders() });
+  // }
 
-  getProductImage(productId: number, imageId: number = 1): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/${productId}/images?imageId=${imageId}`, {
-      headers: this.getHeaders(),
-      responseType: 'blob'
-    })
-    // .pipe(
-    //   catchError(error => {
-    //     console.error(`Error loading image for product ${productId}, image ${imageId}:`, error);
-    //     return throwError(() => error);
-    //   })
-    // );
-  }
+  getProductById(id: number): Observable<Product> {
+  return this.http
+    .get<Product>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })
+    .pipe(
+      map(p => ({
+        ...p,
+        colors: (p.colors || []).map(c =>
+          c.startsWith('#') ? c : `#${c}`
+        ),
+        sizes: p.sizes || [],
+      }))
+    );
+}
+
+// novo método para buscar *todas* as imagens em base64
+getProductImagesBase64(productId: number): Observable<string[]> {
+  const url = `${this.apiUrl}/${productId}/images`;
+  return this.http.get<string[]>(url, { headers: this.getHeaders() });
+}
+
+  // getProductImage(productId: number, imageId: number = 1): Observable<Blob> {
+  //   return this.http.get(`${this.apiUrl}/${productId}/images?imageId=${imageId}`, {
+  //     headers: this.getHeaders(),
+  //     responseType: 'blob'
+  //   })
+  //   // .pipe(
+  //   //   catchError(error => {
+  //   //     console.error(`Error loading image for product ${productId}, image ${imageId}:`, error);
+  //   //     return throwError(() => error);
+  //   //   })
+  //   // );
+  // }
 
   addProduct(formData: FormData): Observable<any> {
     return this.http.post(this.apiUrl, formData, { headers: this.getHeaders() });

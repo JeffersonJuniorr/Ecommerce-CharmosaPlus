@@ -35,38 +35,61 @@ export class CheckoutComponent implements OnInit {
     private productService: ProductService,
     private storage: StorageService,
     private sanitizer: DomSanitizer,
-    private http: HttpClient,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
     const productId = Number(this.route.snapshot.paramMap.get('id'));
-    this.productService.getProductById(productId).subscribe(prod => {
+    this.productService.getProductById(productId).subscribe((prod) => {
       this.product = prod;
       if (isPlatformBrowser(this.platformId)) {
-        this.loadImages(productId);
+        // busca também as imagens em Base64
+        this.productService.getProductImagesBase64(productId).subscribe(
+          (list) => {
+            this.product.imageUrls = list.map(
+              (b64) => `data:image/jpeg;base64,${b64}`
+            );
+            this.setupGallery();
+          },
+          () => {
+            this.product.imageUrls = [];
+            this.setupGallery();
+          }
+        );
+      }
+    });
+  }
+
+  // Em vez de buscar Base64, use o imageUrls do ProductDTO (que já vem em product.imageUrls):
+  //  ngOnInit() {
+  //   const id = Number(this.route.snapshot.paramMap.get('id'));
+  //   this.productService.getProductById(id).subscribe(prod => {
+  //     this.product = prod;
+  //     // monta URLs completas
+  //     const token = this.storage.getItem('authToken');
+  //     const base = environment.apiUrl;
+  //     if (this.product.imageUrls?.length) {
+  //       const full = this.product.imageUrls.map(path =>
+  //         `${base}${path}?token=${token}`
+  //       );
+  //       this.thumbnails = [...full];
+  //       this.mainImageUrl = full[0];
+  //       this.selectedThumbnailIndex = 0;
+  //     }
+  //   });
+  // }
+
+  private setupGallery() {
+    // se tiver imagens, define principal + miniaturas
+    if (this.product.imageUrls?.length) {
+      this.mainImageUrl = this.product.imageUrls[0];
+      // mantém sempre todas as outras como thumbs
+      this.thumbnails = [...this.product.imageUrls];
+      this.selectedThumbnailIndex = 0;
+    } else {
+      this.mainImageUrl = '';
+      this.thumbnails = [];
     }
-    });
-  }
-
-  private loadImages(productId: number) {
-    // vamos supor que product.imageUrls seja array de strings: ['/products/8/images/101', ...]
-    this.product.imageUrls?.forEach((path, idx) => {
-      const id = this.extractImageId(path as string);
-      this.productService.getProductImage(this.product.id, id).subscribe(blob => {
-        const objectUrl = URL.createObjectURL(blob);
-        const safe = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
-        if (idx === 0) {
-          this.mainImageUrl = safe;
-        }
-        this.thumbnails.push(safe);
-      });
-    });
-  }
-
-  private extractImageId(path: string): number {
-    // exemplo '/products/8/images/101' → 101
-    const parts = path.split('/');
-    return Number(parts[parts.length - 1]);
   }
 
   selectThumbnail(idx: number) {
@@ -81,43 +104,46 @@ export class CheckoutComponent implements OnInit {
       this.shippingInfo = 'CEP inválido';
       return;
     }
-  
+
     this.calculating = true;
     this.http
       .get<{ state: string }>(`https://brasilapi.com.br/api/cep/v2/${cleanCep}`)
       .pipe(
         timeout(5000), // aborta se passar de 5s
-        catchError(err => {
+        catchError((err) => {
           this.shippingInfo = 'Não foi possível calcular frete';
           this.calculating = false;
           return of(null);
         })
       )
-      .subscribe(res => {
+      .subscribe((res) => {
         if (!res) return;
         const zone = this.mapStateToZone(res.state);
         const { price, days } = this.zoneTable[zone];
-        this.shippingInfo = `R$ ${price.toFixed(2)} • prazo de ${days} dias úteis`;
+        this.shippingInfo = `R$ ${price.toFixed(
+          2
+        )} • prazo de ${days} dias úteis`;
         this.calculating = false;
       });
   }
-  
+
   /** Tabela de zonas por região */
   private zoneTable: Record<string, { price: number; days: number }> = {
-    Norte:       { price: 30.0, days: 12 },
-    Nordeste:    { price: 25.0, days: 10 },
-    Centro_Oeste:{ price: 20.0, days: 8  },
-    Sudeste:     { price: 15.0, days: 5  },
-    Sul:         { price: 12.0, days: 4  },
+    Norte: { price: 30.0, days: 12 },
+    Nordeste: { price: 25.0, days: 10 },
+    Centro_Oeste: { price: 20.0, days: 8 },
+    Sudeste: { price: 15.0, days: 5 },
+    Sul: { price: 12.0, days: 4 },
   };
 
-   /** Agrupa cada estado na sua zona */
-   private mapStateToZone(uf: string): string {
-    if (['AC','AP','AM','PA','RO','RR','TO'].includes(uf)) return 'Norte';
-    if (['AL','BA','CE','MA','PB','PE','PI','RN','SE'].includes(uf)) return 'Nordeste';
-    if (['DF','GO','MT','MS'].includes(uf)) return 'Centro_Oeste';
-    if (['ES','MG','RJ','SP'].includes(uf)) return 'Sudeste';
-    if (['PR','RS','SC'].includes(uf)) return 'Sul';
+  /** Agrupa cada estado na sua zona */
+  private mapStateToZone(uf: string): string {
+    if (['AC', 'AP', 'AM', 'PA', 'RO', 'RR', 'TO'].includes(uf)) return 'Norte';
+    if (['AL', 'BA', 'CE', 'MA', 'PB', 'PE', 'PI', 'RN', 'SE'].includes(uf))
+      return 'Nordeste';
+    if (['DF', 'GO', 'MT', 'MS'].includes(uf)) return 'Centro_Oeste';
+    if (['ES', 'MG', 'RJ', 'SP'].includes(uf)) return 'Sudeste';
+    if (['PR', 'RS', 'SC'].includes(uf)) return 'Sul';
     return 'Sudeste';
   }
 }

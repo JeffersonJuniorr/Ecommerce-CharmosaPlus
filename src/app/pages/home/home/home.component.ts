@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isBrowser: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
+  productImages: string[] = [];
 
   currentIndex = 0;
   autoPlayInterval: any;
@@ -67,29 +68,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.startAutoPlay();
       this.loadProducts();
     }
-  }
-
-  mapMockDataToProducts(mockProducts: any[]): Product[] {
-    return mockProducts.map((mockProduct) => {
-      let colorsArray: string[] = [];
-      if (mockProduct.colors && Array.isArray(mockProduct.colors)) {
-        colorsArray = mockProduct.colors.map((c: any) =>
-          typeof c === 'object' && c.color ? c.color : c
-        );
-      }
-
-      return {
-        id: mockProduct.id,
-        name: mockProduct.name,
-        description: mockProduct.description || 'Sem descrição disponível',
-        price: mockProduct.price || 0,
-        colors: colorsArray,
-        sizes: mockProduct.sizes || [],
-        imageUrls: mockProduct.image ? [mockProduct.image] : [],
-        active: true,
-        category: mockProduct.category || 'Geral',
-      } as Product;
-    });
   }
 
   loadProducts(): void {
@@ -137,48 +115,30 @@ export class HomeComponent implements OnInit, OnDestroy {
   //   });
   // }
 
-  loadProductImages(): void {
-    this.products.forEach((product) => {
-      if (product.id) {
-        // Para cada produto, tentamos carregar a imagem com imageId igual ao productId
-        // Isso assume que a primeira imagem do produto tem imageId=1, segunda imageId=2, etc.
-        // Se falhar, tentamos imageId=1 como fallback
-        this.loadImageWithRetry(product, product.id);
+  
+loadProductImages(): void {
+  this.products.forEach(product => {
+    this.productService.getProductImagesBase64(product.id).subscribe({
+      next: (base64List) => {
+        // prefixa cada string com o data URI
+        product.imageUrls = base64List.map(b64 => `data:image/jpeg;base64,${b64}`);
+      },
+      error: () => {
+        // se não tiver imagem, deixa o array vazio (para não quebrar o *ngFor)
+        product.imageUrls = [];
+        console.warn(`Sem imagem para produto ${product.id}`);
       }
     });
-  }
+  });
+}
 
-  private loadImageWithRetry(
-    product: Product,
-    imageId: number,
-    attempt: number = 1
-  ): void {
-    this.productService.getProductImage(product.id, imageId).subscribe({
-      next: (blob) => {
-        const objectUrl = URL.createObjectURL(blob);
-        product.imageUrls = [objectUrl];
-      },
-      error: (err) => {
-        if (attempt === 1) {
-          // Primeira tentativa falhou, tenta com imageId=1
-          this.loadImageWithRetry(product, 1, 2);
-        } else {
-          console.error(
-            `Failed to load image for product ${product.id} after ${attempt} attempts`
-          );
-          product.imageUrls = ['assets/images/placeholder.jpg'];
-        }
-      },
-    });
-  }
-
-  getProductImageUrl(product: Product): string {
-    if (product.id) {
-      const token = this.storageService.getItem('authToken');
-      return `${environment.apiUrl}/products/${product.id}/images?imageId=${product.id}&token=${token}`;
-    }
-    return 'assets/products/banner1.jpg';
-  }
+  // getProductImageUrl(product: Product): string {
+  //   if (product.id) {
+  //     const token = this.storageService.getItem('authToken');
+  //     return `${environment.apiUrl}/products/${product.id}/images?imageId=${product.id}&token=${token}`;
+  //   }
+  //   return 'assets/products/banner1.jpg';
+  // }
 
   loadCart() {
     const savedCart = this.storageService.getItem('cart');
@@ -235,32 +195,30 @@ export class HomeComponent implements OnInit, OnDestroy {
   openProductModal(product: Product): void {
     this.selectedProduct = product;
     this.selectedQuantity = 1;
-
-    // Resetando seleções
     this.selectedSize = product.sizes?.[0] || '';
     this.selectedColor = product.colors?.[0] || '';
 
-    if (product.id) {
-      this.productService.getProductImage(product.id, product.id).subscribe({
-        next: (blob) => {
-          const objectUrl = URL.createObjectURL(blob);
-          this.selectedImageUrl = objectUrl;
-          this.selectedImage = objectUrl;
-          // const objectUrl = URL.createObjectURL(blob);
-          // this.selectedImageUrl = objectUrl;
-          this.showProductModal = true;
-        },
-        error: (err) => {
-          console.error('Erro ao carregar imagem do produto:', err);
-          this.selectedImageUrl = 'assets/images/placeholder.jpg';
-          this.showProductModal = true;
-        },
-      });
-    } else {
-      this.selectedImageUrl = 'assets/images/placeholder.jpg';
+    if (!product.id) {
+      this.selectedImageUrl = '';
       this.showProductModal = true;
+      return;
     }
-  }
+
+  // Usa o Base64
+  this.productService.getProductImagesBase64(product.id).subscribe({
+    next: (base64List) => {
+      // salva todas as URLs no componente
+      this.productImages = base64List.map(b64 => `data:image/jpeg;base64,${b64}`);
+      this.selectedImageUrl = this.productImages[0] || '';
+      this.showProductModal = true;
+    },
+    error: () => {
+      this.productImages = [];
+      this.selectedImageUrl = '';
+      this.showProductModal = true;
+    },
+  });
+}
 
   closeProductModal(): void {
     if (this.selectedImageUrl && this.selectedImageUrl.startsWith('blob:')) {

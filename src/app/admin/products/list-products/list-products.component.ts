@@ -121,17 +121,19 @@ export class ListProductsComponent implements OnInit {
     imageId: number
   ): Observable<Blob> {
     return new Observable((observer) => {
-      this.productService.getProductImage(p.id, imageId).subscribe({
-        next: (blob) => {
-          const objectUrl = URL.createObjectURL(blob);
-          p.thumbnailUrl = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
-          observer.next(blob);
-          observer.complete();
-        },
-        error: (err) => {
-          observer.error(err);
-        },
-      });
+      this.products.forEach(p => {
+  this.productService.getProductImagesBase64(p.id).subscribe({
+    next: base64List => {
+      if (base64List.length) {
+        const uri = `data:image/jpeg;base64,${base64List[0]}`;
+        p.thumbnailUrl = this.sanitizer.bypassSecurityTrustUrl(uri);
+      }
+    },
+    error: () => {
+      // sem imagem → deixa p.thumbnailUrl undefined
+    }
+  });
+});
     });
   }
 
