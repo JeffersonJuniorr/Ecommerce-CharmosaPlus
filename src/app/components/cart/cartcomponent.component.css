@@ -101,7 +101,7 @@
 }
 
 .cart-item-name {
-  font-weight: bold;
+  font-weight: 550;
   display: block;
   margin-bottom: 0.25rem;
 }
@@ -129,7 +129,7 @@
 }
 
 .cart-item-price {
-  font-weight: bold;
+  font-weight: 550;
   color: #222;
 }
 

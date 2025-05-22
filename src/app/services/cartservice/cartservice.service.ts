@@ -5,6 +5,18 @@ import { switchMap, tap, catchError } from 'rxjs/operators';
 import { StorageService } from '../storage/storage.service';
 import { environment } from '../../../environments/environment';
 
+export interface CartItem {
+  id:           number;
+  productId:    number;
+  selectedColor: string;
+  selectedSize:  string;
+  quantity:      number;
+  unitPrice:     number;
+  totalPrice:    number;
+  availableStock: number;
+  imageUrl:      string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -15,7 +27,7 @@ export class CartService {
   getApiBaseUrl(): string {
     return environment.apiUrl;
   }
-  private cartItemsSubject = new BehaviorSubject<any[]>([]);
+  private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
 
   private totalSubject = new BehaviorSubject<number>(0);
@@ -132,8 +144,8 @@ export class CartService {
   addToCart(item: any): Observable<any> {
   const cartItem = {
     productId: item.id,
-    color: item.selectedColor,
-    size: item.selectedSize,
+    selectedColor: item.selectedColor,
+    selectedSize: item.selectedSize,
     quantity: item.quantity || 1
   };
 
@@ -167,8 +179,8 @@ export class CartService {
     const existingItem = currentItems.find(
       (i) =>
         i.productId === cartItem.productId &&
-        i.color === cartItem.color &&
-        i.size === cartItem.size
+        i.selectedColor === cartItem.selectedColor &&
+        i.selectedSize === cartItem.selectedSize
     );
 
     if (existingItem) {
@@ -178,9 +190,9 @@ export class CartService {
       currentItems.push({
         ...cartItem,
         id: Date.now(), // ID temporário
-        name: item.name,
+        // name: item.name,
         unitPrice: item.price,
-        image: item.image,
+        imageUrl: item.image,
         availableStock: item.availableStock || 10,
         totalPrice: item.price * (item.quantity || 1)
       });
@@ -198,11 +210,12 @@ export class CartService {
     const token = this.storageService.getItem('authToken');
 
     if (token) {
-      return this.http.delete(`${this.apiUrl}/remove-item/${itemId}`, {
+      return this.http.delete(`${this.apiUrl}/remove/${itemId}`, {
         headers: this.getAuthHeaders(),
       }).pipe(
         tap((response: any) => {
-          this.cartItemsSubject.next(response.items || []);
+          this.cartItemsSubject.next(response || []);
+          // this.cartItemsSubject.next(response.items || []);
         }),
         catchError(error => {
           console.error('Erro ao remover item:', error);
