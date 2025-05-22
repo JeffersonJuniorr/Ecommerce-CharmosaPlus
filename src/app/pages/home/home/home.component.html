@@ -85,62 +85,59 @@
   </div>
 
   <!-- Modal de Produto -->
- <div class="product-modal" *ngIf="showProductModal">
-  
-  <div class="modal-content">
-    <div class="thumbs">
-      <img
-        *ngFor="let img of productImages; let i = index"
-        [src]="img"
-        [class.selected]="img === selectedImageUrl"
-        (click)="selectedImageUrl = img"
-        alt="Imagem {{i+1}}"
-      />
-    </div>
+  <div class="product-modal" *ngIf="showProductModal">
 
-    <div class="main-img">
-      <img [src]="selectedImageUrl" [alt]="selectedProduct?.name" />
-    </div>
+    <div class="modal-content">
+      <div class="thumbs">
+        <img *ngFor="let img of productImages; let i = index" [src]="img" [class.selected]="img === selectedImageUrl"
+          (click)="selectedImageUrl = img" alt="Imagem {{i+1}}" />
+      </div>
 
-    <div class="details">
-      <button class="close-btn" (click)="closeProductModal()">✕</button>
-      <h2>{{ selectedProduct?.name }}</h2>
-      <p>{{ selectedProduct?.description }}</p>
-      <div class="price">R$ {{ selectedProduct?.price | number:'1.2-2' }}</div>
+      <div class="main-img">
+        <img [src]="selectedImageUrl" [alt]="selectedProduct?.name" />
+      </div>
 
-      <div class="sizes" *ngIf="selectedProduct?.sizes?.length">
-        <label>Tamanhos:</label>
-        <div class="size-list">
-          <button
-            *ngFor="let s of selectedProduct?.sizes"
-            (click)="selectSize(s)"
-            [class.active]="selectedSize === s"
-          >{{ s }}</button>
+      <div class="details">
+        <button class="close-btn" (click)="closeProductModal()">✕</button>
+        <h2>{{ selectedProduct?.name }}</h2>
+        <!-- <p>{{ selectedProduct?.description }}</p> -->
+        <div class="price">R$ {{ selectedProduct?.price | number:'1.2-2' }}</div>
+
+        <div class="sizes" *ngIf="selectedProduct?.sizes?.length">
+          <label>Tamanhos:</label>
+          <div class="size-list">
+            <button *ngFor="let s of selectedProduct?.sizes" (click)="selectSize(s)"
+              [class.active]="selectedSize === s">{{ s }}</button>
+          </div>
         </div>
-      </div>
 
-      <div class="colors" *ngIf="selectedProduct?.colors?.length">
-        <label>Cores:</label>
-        <div class="color-list">
-          <div
-            *ngFor="let c of selectedProduct?.colors"
-            class="color-dot"
-            [style.background]="c"
-            (click)="changeColor(c)"
-            [class.active]="selectedColor === c"
-          ></div>
+        <div class="colors" *ngIf="selectedProduct?.colors?.length">
+          <label>Cores:</label>
+          <div class="color-list">
+            <div *ngFor="let c of selectedProduct?.colors" class="color-dot" [style.background]="c"
+              (click)="changeColor(c)" [class.active]="selectedColor === c"></div>
+          </div>
         </div>
-      </div>
 
-      <div class="quantity">
-        <label>Quantidade:</label>
-        <input type="number" [(ngModel)]="selectedQuantity" min="1" />
-      </div>
+        <div class="quantity-controls">
+          <button class="quantity-btn" (click)="decreaseQuantityModal()" [disabled]="selectedQuantity <= 1"
+            aria-label="Diminuir quantidade">–</button>
 
-      <button class="add-cart" (click)="addToCart(selectedQuantity)">
-        Adicionar ao carrinho
-      </button>
+          <span class="cart-item-quantity">{{ selectedQuantity }}</span>
+
+          <button class="quantity-btn" (click)="increaseQuantityModal()"
+            [disabled]="selectedQuantity >= (selectedProduct?.quantity ?? 0)"
+            aria-label="Aumentar quantidade">+</button>
+
+          <span class="stock-info">
+            (estoque: {{ selectedProduct?.quantity }})
+          </span>
+        </div>
+
+        <button class="add-cart" (click)="addToCart(selectedQuantity)">
+          Adicionar ao carrinho
+        </button>
+      </div>
     </div>
   </div>
-</div>
 </div>

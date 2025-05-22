@@ -341,6 +341,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-bottom: 23%;
+  /* padding-bottom: 90px; */
+  position: relative;
 }
 
 .size-list button {
@@ -375,14 +378,41 @@
   border-color: #333;
 }
 
-.quantity input {
-  width: 60px;
-  margin-left: 5px;
-  padding: 4px;
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.quantity-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.quantity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cart-item-quantity {
+  min-width: 24px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.stock-info {
+  font-size: 0.875rem;
+  color: #666;
 }
 
 .add-cart {
-  margin-top: 10px;
   padding: 10px;
   background: #555;
   color: #fff;
@@ -390,6 +420,10 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
+  position: sticky;
+  width: 100%;
+  border-radius: 0 0 4px 4px;
+  z-index: 2;
 }
 
 .add-cart:hover {

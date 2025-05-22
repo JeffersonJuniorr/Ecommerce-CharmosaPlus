@@ -282,4 +282,19 @@ loadProductImages(): void {
     // Implementar lógica de exibição de alerta/mensagem
     alert('Erro: ' + message);
   }
+
+  decreaseQuantityModal(): void {
+  if (this.selectedQuantity > 1) {
+    this.selectedQuantity--;
+  }
+}
+
+increaseQuantityModal(): void {
+  if (
+    this.selectedProduct &&
+    this.selectedQuantity < (this.selectedProduct?.quantity ?? Infinity)
+  ) {
+    this.selectedQuantity++;
+  }
+}
 }
