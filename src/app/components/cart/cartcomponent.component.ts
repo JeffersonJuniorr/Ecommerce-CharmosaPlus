@@ -156,6 +156,6 @@ export class CartComponent implements OnDestroy {
 
   goToCheckout() {
     this.closeCart();
-    this.router.navigate(['/checkout']);
+    this.router.navigate(['/payment']);
   }
 }

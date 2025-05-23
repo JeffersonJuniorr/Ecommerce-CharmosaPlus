@@ -1,171 +1,219 @@
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
-  flex-direction: column;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: auto;
   padding: 2rem;
   font-family: Arial, sans-serif;
-  gap: 2rem;
+  height: calc(87vh - 4rem);
 }
 
-/* Produto */
-.product-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-  gap: 2rem;
-  /* background-color: gray; */
-}
-
-.product-details {
+.left {
   flex: 3;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+
+  max-height: 100%;
+  overflow-y: auto;
 }
 
-.product-image {
-  width: 150px;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.info-product {
-  display: flex;
-  justify-content: space-between;
-  gap: 2rem;
-  background-color: gray;
-}
-
-.quantity-container {
-  display: flex;
-  align-items: center;
-  margin-top: 16px;
-  justify-content: center;
-}
-
-.quantity-btn {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  background-color: #f5f5f5;
-}
-
-.quantity {
-  font-size: 16px;
-  text-align: center;
-  padding: 5px 10px;
-  background-color: #F1F0F0;
+.right {
   flex: 1;
-  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
 }
 
-/* Frete e Cupom + Resumo do Pedido */
-.frete-resumo-container {
+/* Itens */
+.item-title {
   display: flex;
   justify-content: space-between;
-  gap: 2rem;
-  width: 100%;
+  margin-right: 3%;
 }
 
-.frete-cupom {
-  flex: 1;
-  max-width: 300px;
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #ddd;
 }
 
-.frete-cupom div {
-  margin: 0.5rem 0;
-}
-
-.frete-cupom label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 0.3rem;
-}
-
-.frete-cupom input {
-  width: 100%;
-  padding: 0.5rem;
+.thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
   border-radius: 4px;
 }
 
-.text-info {
-  width: 96%;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  padding: 10px 0;
-  font-family: "Inter";
-  font-size: 18px;
-  color: #000; 
-  opacity: 0.8; 
-  outline: none;
-  transition: border-color 0.3s ease;
-  margin-top: 10px;
-}
-
-.text-info:focus {
-  border-bottom: 1px solid #000;
-  opacity: 1;
-}
-
-
-.text-info::placeholder {
-  color: #aaa;
-  font-style: normal;
-}
-
-/* Resumo do Pedido */
-.order-summary {
-  /* border: 1px solid #ddd; */
-  padding: 1rem;
-  border-radius: 8px;
+.details {
   flex: 1;
-  max-width: 55%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.attributes span {
+  margin-right: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quantity-controls button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  color: #333;
+  border-radius: 4px;
+}
+
+.quantity-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stock {
+  font-size: 0.8rem;
+  color: #888;
+  margin-left: 0.5rem;
+}
+
+.price,
+.total-item {
+  font-weight: 600;
+}
+
+/* Frete & Cupom */
+.frete-cupom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+ /* animação input */
+.frete-cupom input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  transition: border 0.3s ease;
+}
+
+.frete-cupom input:hover {
+  border-color: #555;
+}
+
+.frete-cupom input:focus {
+  border-color: #333;
+  outline: none;
+}
+
+.frete-cupom button {
+  align-self: flex-start;
+  padding: 0.4rem 0.8rem;
+}
+
+/* Resumo */
+.order-summary {
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .order-summary h3 {
-  margin-bottom: 1rem;
+  margin: 0;
 }
 
 .order-summary p {
-  margin: 0.5rem 0;
   display: flex;
   justify-content: space-between;
+  margin: 0.4rem 0;
 }
 
-.order-summary span, 
-.order-summary strong {
-  margin-left: auto;
-  text-align: right;
+.order-summary .total {
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
 }
 
-.line {
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 10px;
-}
-
-.discount-info {
-  font-size: 0.9rem;
-  color: #888;
-  display: flex;
-  justify-content: space-between;
-}
-
-.continue-button {
-  background-color: black;
-  color: white;
-  padding: 0.8rem 1.5rem;
+button {
+  background: #555;
+  color: #fff;
+  border-radius: 4px;
   border: none;
   cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #333;
+}
+.continue-button {
   margin-top: 1rem;
+  padding: 0.8rem;
+  background: #555;
+  color: #fff;
+  border: none;
   border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .continue-button:hover {
-  background-color: #333;
+  background: #333;
+}
+
+.remove {
+  background: none;
+  /* border: #c00 1px solid; */
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.9rem;
+  align-self: flex-start;
+  padding: 4px;
+  transition: color 0.4s ease;
+}
+
+.remove:hover {
+  background: none;
+  color: #c00;
+  border-radius: 4px;
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.empty-cart .icon {
+  font-size: 48px;
+  color: #ccc;
 }

@@ -1,58 +1,64 @@
 <div class="container">
-  <!-- Informações do Produto -->
-  <div class="product-info">
-    <div class="product-details">
-      <img src="/assets/products/banner3.jpg" alt="Macaquinho Duna" class="product-image" />
-      <div class="info">
-        <h2>Macaquinho Duna</h2>
-        <p>Tamanho - G1</p>
+  <div class="left">
+    <div *ngIf="cartItems.length; else empty">
+      <div class="cart-item" *ngFor="let item of cartItems">
+        <img class="thumb" [src]="item.fullImageUrl" />
+        <div class="details">
+          <div class="item-title">
+            <h4>{{ item.productName }}</h4>
+            <button class="remove" (click)="remove(item)">
+              <span class="material-symbols-outlined">
+                delete
+              </span>
+            </button>
+          </div>
+          <div class="attributes">
+            <span *ngIf="item.selectedSize">Tamanho: {{ item.selectedSize }}</span>
+            <span *ngIf="item.selectedColor">Cor: <span class="dot"
+                [style.background]="item.selectedColor"></span></span>
+          </div>
+          <div class="quantity-controls">
+            <button (click)="decrease(item)" [disabled]="item.quantity<=1">–</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="increase(item)" [disabled]="item.quantity>=item.availableStock">+</button>
+            <small class="stock">(estoque: {{ item.availableStock }})</small>
+          </div>
+          <div class="price">R$ {{ item.unitPrice | number:'1.2-2' }}</div>
+          <div class="total-item">Subtotal: R$ {{ item.totalPrice | number:'1.2-2' }}</div>
+          
+        </div>
       </div>
-      <div class="quantity-control">
-        <button class="quantity-btn" (click)="decrementQuantity()">-</button>
-        <span class="quantity">{{ quantity }}</span>
-        <button class="quantity-btn" (click)="incrementQuantity()">+</button>
-      </div>
-      <p class="price">R$ {{ price.toFixed(2) }}</p>
     </div>
-    
   </div>
-
-  <!-- Frete + Cupom e Resumo do Pedido -->
-  <div class="frete-resumo-container">
-
-    <!-- Frete e Cupom -->
+  <div class="right">
     <div class="frete-cupom">
-      <div>
-        <label for="cep"><strong>Calcular frete</strong></label>
-        <input 
-          class="text-info"
-          id="cep" 
-          type="text" 
-          placeholder="Digite seu CEP"/>
-      </div>
+      <label>CEP</label>
+      <input [(ngModel)]="cep" placeholder="00000-000" />
+      <button (click)="calculateFrete()">Calcular Frete</button>
+      <p *ngIf="frete">Frete: R$ {{ frete | number:'1.2-2' }}</p>
 
-      <div class="cupom">
-        <input 
-          class="text-info"
-          id="cupom" 
-          type="text" 
-          placeholder="CUPOM:"/>
-      </div>
-
+      <label>Cupom</label>
+      <input [(ngModel)]="couponCode" placeholder="Digite o cupom" />
+      <button (click)="applyCoupon()">Aplicar</button>
+      <p *ngIf="discount > 0" class="success">Desconto aplicado: R$ {{ discount | number:'1.2-2' }}</p>
+      <p *ngIf="couponError" class="error">{{ couponError }}</p>
     </div>
 
-    <!-- Resumo do Pedido -->
     <div class="order-summary">
       <h3>Resumo do Pedido</h3>
-      <p class="line">Subtotal: <span>R$ {{ total.toFixed(2) }}</span></p>
-      <p>Total do Pedido: <span>R$ {{ total.toFixed(2) }}</span></p>
-
-      <p class="discount-info">
-        <strong>R$ {{ (total - 10).toFixed(2) }}</strong> no Pix com desconto<br />
-        ou 5x sem juros de R$ {{ (total / 5).toFixed(2) }} no cartão de crédito
-      </p>
-
-      <button class="continue-button">Continuar</button>
+      <p>Subtotal: <span>R$ {{ subtotal | number:'1.2-2' }}</span></p>
+      <p>Frete: <span>R$ {{ frete | number:'1.2-2' }}</span></p>
+      <p *ngIf="discount>0">Desconto: <span>- R$ {{ discount | number:'1.2-2' }}</span></p>
+      
+      <p class="total">Total: <span>R$ {{ total | number:'1.2-2' }}</span></p>
+      <button class="continue-button">Finalizar Compra</button>
     </div>
   </div>
+
+ <ng-template #empty>
+  <div class="empty-cart">
+    <span class="material-icons icon">remove_shopping_cart</span>
+    <p>Seu carrinho está vazio.</p>
+  </div>
+</ng-template>
 </div>
