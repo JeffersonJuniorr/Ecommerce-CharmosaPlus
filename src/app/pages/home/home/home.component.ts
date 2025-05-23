@@ -1,15 +1,5 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  NgZone,
-  PLATFORM_ID,
-  Inject,
-} from '@angular/core';
-import {
-  CommonModule,
-  isPlatformBrowser as commonIsPlatformBrowser,
-} from '@angular/common';
+import { Component, OnInit, OnDestroy, NgZone, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser as commonIsPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { MOCK_DATA } from './mock-data.component';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +7,7 @@ import { StorageService } from '../../../services/storage/storage.service';
 import { CartService } from '../../../services/cartservice/cartservice.service';
 import { ProductService, Product } from '../../../services/products/products.service';
 import { SafeUrl } from '@angular/platform-browser';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, of, Subscription } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -39,6 +29,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     images: (string | SafeUrl)[];
     overlayText: string;
   }[] = [];
+  private autoPlayId?: number;
+  private cartSub?: Subscription;
+
   isBrowser: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
@@ -67,11 +60,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    this.isBrowser = commonIsPlatformBrowser(this.platformId);
-    if (this.isBrowser) {
-      this.loadCart();
-      window.addEventListener('cartUpdated', this.loadCart.bind(this));
-    }
+    this.isBrowser = commonIsPlatformBrowser(platformId);
+    // if (this.isBrowser) {
+    //   this.loadCart();
+    //   window.addEventListener('cartUpdated', this.loadCart.bind(this));
+    // }
   }
 
   // ngOnDestroy(): void {
@@ -82,27 +75,30 @@ export class HomeComponent implements OnInit, OnDestroy {
   // }
 
   ngOnInit() {
-    if (!commonIsPlatformBrowser(this.platformId)) return;
-    this.loadAll();
+    if (!this.isBrowser) return;
+    this.loadMenuConfig();
+    this.startAutoPlay();
+    // this.loadAll();
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    if (this.autoPlayId != null) {
+      clearInterval(this.autoPlayId);
+    }
+  }
 
-  private loadAll() {
+  private loadMenuConfig() {
     this.isLoading = true;
-
-    // 1) buscar produtos
     this.productService
       .getProducts()
       .pipe(
-        // 2) para cada produto, buscar as imagens em base64
         switchMap((products) => {
           this.products = products;
           const calls = products.map((p) =>
             this.productService.getProductImagesBase64(p.id).pipe(
-              map((list) => ({
+              map((b64s) => ({
                 id: p.id,
-                images: list.map((b64) => `data:image/jpeg;base64,${b64}`),
+                images: b64s.map((b) => `data:image/jpeg;base64,${b}`),
               })),
               catchError(() => of({ id: p.id, images: [] }))
             )
@@ -111,45 +107,76 @@ export class HomeComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((allImages) => {
-        // 3) colocar as imageUrls em cada product
+        // Atribui imageUrls aos products
         allImages.forEach((slot) => {
           const p = this.products.find((x) => x.id === slot.id);
           if (p) p.imageUrls = slot.images;
         });
 
-        // 4) montar de uma vez os cardsproducts, aplicando homeConfig ou fallback
+        // Monta os cards com config do localStorage ou fallback
         this.buildCards();
         this.isLoading = false;
       });
   }
 
-  private buildCards() {
-    const cfg = this.storageService.getItem('homeConfig') as Array<{
-      productId: number;
-      overlayText: string;
-    }>;
+  // private loadAll() {
+  //   this.isLoading = true;
 
-    if (Array.isArray(cfg)) {
+  //   // 1) buscar produtos
+  //   this.productService
+  //     .getProducts()
+  //     .pipe(
+  //       // 2) para cada produto, buscar as imagens em base64
+  //       switchMap((products) => {
+  //         this.products = products;
+  //         const calls = products.map((p) =>
+  //           this.productService.getProductImagesBase64(p.id).pipe(
+  //             map((list) => ({
+  //               id: p.id,
+  //               images: list.map((b64) => `data:image/jpeg;base64,${b64}`),
+  //             })),
+  //             catchError(() => of({ id: p.id, images: [] }))
+  //           )
+  //         );
+  //         return forkJoin(calls);
+  //       })
+  //     )
+  //     .subscribe((allImages) => {
+  //       // 3) colocar as imageUrls em cada product
+  //       allImages.forEach((slot) => {
+  //         const p = this.products.find((x) => x.id === slot.id);
+  //         if (p) p.imageUrls = slot.images;
+  //       });
+
+  //       // 4) montar de uma vez os cardsproducts, aplicando homeConfig ou fallback
+  //       this.buildCards();
+  //       this.isLoading = false;
+  //     });
+  // }
+
+  private buildCards() {
+    const cfgRaw = this.storageService.getItem('homeConfig');
+    const cfg = Array.isArray(cfgRaw)
+      ? cfgRaw.map((s) => ({
+          productId: Number(s.productId),
+          overlayText: s.overlayText,
+        }))
+      : null;
+
+    if (cfg) {
       this.cardsproducts = cfg.map((slot) => {
         const p = this.products.find((x) => x.id === slot.productId);
-        return p
-          ? {
-              id: p.id,
-              name: p.name,
-              images: p.imageUrls || [],
-              overlayText: slot.overlayText,
-            }
-          : {
-              id: slot.productId,
-              name: 'Produto não encontrado',
-              images: [],
-              overlayText: slot.overlayText,
-            };
+        return {
+          id: slot.productId,
+          name: p?.name ?? 'Produto não encontrado',
+          images: p?.imageUrls ?? [],
+          overlayText: slot.overlayText,
+        };
       });
     } else {
-      // fallback dos 8 primeiros ativos
+      // fallback: primeiros 8 ativos
       this.cardsproducts = this.products
-        .filter((p) => p.active)
+        // .filter(p => p.active)
         .slice(0, 8)
         .map((p) => ({
           id: p.id,
@@ -158,6 +185,8 @@ export class HomeComponent implements OnInit, OnDestroy {
           overlayText: p.name,
         }));
     }
+    //debug
+    // console.log('MENU SLOTS:', this.cardsproducts);
   }
 
   loadProducts(): void {
@@ -191,26 +220,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       // }
     });
   }
-
-  // loadProductImages(): void {
-  //   this.products.forEach(product => {
-  //     if (product.id) {
-  //       this.productService.getProductImage(product.id).subscribe({
-  //         next: (blob) => {
-  //           // Crie uma URL para o blob
-  //           const objectUrl = URL.createObjectURL(blob);
-  //           // Atribuir ao produto (usando uma matriz para manter a estrutura)
-  //           product.imageUrls = [objectUrl];
-  //         },
-  //         error: (err) => {
-  //           console.error(`Error loading image for product ${product.id}:`, err);
-  //           product.imageUrls = ['assets/products/banner1.jpg'];
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-
   loadProductImages(): void {
     this.products.forEach((product) => {
       this.productService.getProductImagesBase64(product.id).subscribe({
@@ -229,14 +238,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  // getProductImageUrl(product: Product): string {
-  //   if (product.id) {
-  //     const token = this.storageService.getItem('authToken');
-  //     return `${environment.apiUrl}/products/${product.id}/images?imageId=${product.id}&token=${token}`;
-  //   }
-  //   return 'assets/products/banner1.jpg';
-  // }
-
   loadCart() {
     const savedCart = this.storageService.getItem('cart');
     if (savedCart) {
@@ -247,14 +248,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // Carrossel (banner principal)
-  startAutoPlay(): void {
-    this.ngZone.runOutsideAngular(() => {
-      this.autoPlayInterval = setInterval(() => {
-        this.ngZone.run(() => {
-          this.nextSlide();
-        });
-      }, 8000);
-    });
+
+  private startAutoPlay() {
+    if (!this.isBrowser) return;
+    this.autoPlayId = window.setInterval(() => {
+    }, 8000);
   }
 
   stopAutoPlay(): void {

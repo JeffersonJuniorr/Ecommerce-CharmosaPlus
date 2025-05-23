@@ -20,9 +20,15 @@
   <!-- Menu -->
   <nav class="menu">
     <div class="cards-banner">
-      <div class="card-banner" *ngFor="let slot of cardsproducts; let i = index">
-        <img [src]="slot.images[0] || 'assets/products/banner1.jpg'" alt="{{ slot.name }}"
-          (click)="goToCheckout(slot.id)" />
+      <div class="card-banner" *ngFor="let slot of cardsproducts">
+        <ng-container *ngIf="slot.images.length; else noImage">
+          <img [src]="slot.images[0]" [alt]="slot.name" (click)="goToCheckout(slot.id)" />
+        </ng-container>
+        <ng-template #noImage>
+          <span class="material-symbols-outlined placeholder-icon">
+            image_not_supported
+          </span>
+        </ng-template>
         <div class="overlay">
           <span>{{ slot.overlayText }}</span>
         </div>
