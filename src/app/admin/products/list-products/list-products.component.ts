@@ -1,15 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef  } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import {
-  ProductService,
-  Product,
-} from '../../../services/products/products.service';
+import { ProductService, Product } from '../../../services/products/products.service';
 import { StorageService } from '../../../services/storage/storage.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { FormsModule } from '@angular/forms';
+import { PageCustomizerComponent } from '../../page-customizer/page-customizer.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-list-products',
@@ -51,7 +50,8 @@ export class ListProductsComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private storageService: StorageService,
     private productService: ProductService,
-     private changeDetectorRef: ChangeDetectorRef
+     private changeDetectorRef: ChangeDetectorRef,
+     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -73,6 +73,13 @@ export class ListProductsComponent implements OnInit {
         this.error = 'Erro ao carregar produtos.';
         this.loading = false;
       },
+    });
+  }
+
+  openCustomizer() {
+  this.dialog.open(PageCustomizerComponent, {
+    width: '800px',
+    data: { /* se precisar passar algo */ }
     });
   }
 

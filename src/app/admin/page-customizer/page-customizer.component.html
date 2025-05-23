@@ -1,0 +1,44 @@
+<div class="page-customizer">
+    <div class="header">
+        <h2>Personalizar Página Inicial</h2>
+        <button type="button" class="btn-cancel" (click)="onCancel()">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <form [formGroup]="form">
+        <div formArrayName="slots">
+            <div *ngFor="let slot of slots.controls; let i = index" [formGroupName]="i" class="slot-row">
+                <div class="field">
+                    <label>Produto</label>
+                    <select formControlName="productId">
+                        <option value="" disabled>Selecione...</option>
+                        <option *ngFor="let p of products" [value]="p.id">{{ p.name }}</option>
+                    </select>
+                    <small class="error" *ngIf="slot.get('productId')?.hasError('required')">Obrigatório</small>
+                </div>
+
+                <div class="field">
+                    <label>Texto</label>
+                    <input type="text" formControlName="overlayText" placeholder="Ex: Promoção" />
+                    <!-- <small class="error" *ngIf="slot.get('overlayText')?.hasError('required')">Obrigatório</small> -->
+                </div>
+
+                <button type="button" class="btn-icon btn-remove" (click)="removeSlot(i)" title="Remover">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="button" class="btn-icon btn-add" (click)="addSlot()">
+                <span class="material-symbols-outlined">add</span> 
+            </button>
+            <div class="btn-group">
+
+                <button type="button" class="btn-primary" (click)="onSave()" [disabled]="form.invalid">
+                    <span class="material-symbols-outlined">save</span> Salvar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

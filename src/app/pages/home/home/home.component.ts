@@ -1,12 +1,24 @@
-import { Component, OnInit, OnDestroy, NgZone, PLATFORM_ID, Inject} from '@angular/core';
-import { CommonModule, isPlatformBrowser as commonIsPlatformBrowser} from '@angular/common';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  NgZone,
+  PLATFORM_ID,
+  Inject,
+} from '@angular/core';
+import {
+  CommonModule,
+  isPlatformBrowser as commonIsPlatformBrowser,
+} from '@angular/common';
 import { Router } from '@angular/router';
 import { MOCK_DATA } from './mock-data.component';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../../services/storage/storage.service';
 import { CartService } from '../../../services/cartservice/cartservice.service';
 import { ProductService, Product } from '../../../services/products/products.service';
-import { environment } from '../../../../environments/environment';
+import { SafeUrl } from '@angular/platform-browser';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +32,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   offerBanner = MOCK_DATA.offers.banner;
   categories = MOCK_DATA.categories;
-  cardsproducts: Product[] = [];
+  // cardsproducts: Product[] = [];
+  cardsproducts: {
+    id: number;
+    name: string;
+    images: (string | SafeUrl)[];
+    overlayText: string;
+  }[] = [];
   isBrowser: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
@@ -56,17 +74,89 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.stopAutoPlay();
-    if (this.isBrowser) {
-      window.removeEventListener('cartUpdated', this.loadCart.bind(this));
-    }
+  // ngOnDestroy(): void {
+  //   this.stopAutoPlay();
+  //   if (this.isBrowser) {
+  //     window.removeEventListener('cartUpdated', this.loadCart.bind(this));
+  //   }
+  // }
+
+  ngOnInit() {
+    if (!commonIsPlatformBrowser(this.platformId)) return;
+    this.loadAll();
   }
 
-  ngOnInit(): void {
-    if (this.isBrowser) {
-      this.startAutoPlay();
-      this.loadProducts();
+  ngOnDestroy() {}
+
+  private loadAll() {
+    this.isLoading = true;
+
+    // 1) buscar produtos
+    this.productService
+      .getProducts()
+      .pipe(
+        // 2) para cada produto, buscar as imagens em base64
+        switchMap((products) => {
+          this.products = products;
+          const calls = products.map((p) =>
+            this.productService.getProductImagesBase64(p.id).pipe(
+              map((list) => ({
+                id: p.id,
+                images: list.map((b64) => `data:image/jpeg;base64,${b64}`),
+              })),
+              catchError(() => of({ id: p.id, images: [] }))
+            )
+          );
+          return forkJoin(calls);
+        })
+      )
+      .subscribe((allImages) => {
+        // 3) colocar as imageUrls em cada product
+        allImages.forEach((slot) => {
+          const p = this.products.find((x) => x.id === slot.id);
+          if (p) p.imageUrls = slot.images;
+        });
+
+        // 4) montar de uma vez os cardsproducts, aplicando homeConfig ou fallback
+        this.buildCards();
+        this.isLoading = false;
+      });
+  }
+
+  private buildCards() {
+    const cfg = this.storageService.getItem('homeConfig') as Array<{
+      productId: number;
+      overlayText: string;
+    }>;
+
+    if (Array.isArray(cfg)) {
+      this.cardsproducts = cfg.map((slot) => {
+        const p = this.products.find((x) => x.id === slot.productId);
+        return p
+          ? {
+              id: p.id,
+              name: p.name,
+              images: p.imageUrls || [],
+              overlayText: slot.overlayText,
+            }
+          : {
+              id: slot.productId,
+              name: 'Produto não encontrado',
+              images: [],
+              overlayText: slot.overlayText,
+            };
+      });
+    } else {
+      // fallback dos 8 primeiros ativos
+      this.cardsproducts = this.products
+        .filter((p) => p.active)
+        .slice(0, 8)
+        .map((p) => ({
+          id: p.id,
+          name: p.name,
+          images: p.imageUrls || [],
+          overlayText: p.name,
+        }));
     }
   }
 
@@ -79,7 +169,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.products = products;
         this.cardsproducts = products
           .filter((product) => product.active === true)
-          .slice(0, 8);
+          .slice(0, 8)
+          .map((product) => ({
+            id: product.id,
+            name: product.name,
+            images: product.imageUrls || [],
+            overlayText: product.name, // or any other overlay text logic
+          }));
         this.loadProductImages();
 
         this.isLoading = false;
@@ -115,22 +211,23 @@ export class HomeComponent implements OnInit, OnDestroy {
   //   });
   // }
 
-  
-loadProductImages(): void {
-  this.products.forEach(product => {
-    this.productService.getProductImagesBase64(product.id).subscribe({
-      next: (base64List) => {
-        // prefixa cada string com o data URI
-        product.imageUrls = base64List.map(b64 => `data:image/jpeg;base64,${b64}`);
-      },
-      error: () => {
-        // se não tiver imagem, deixa o array vazio (para não quebrar o *ngFor)
-        product.imageUrls = [];
-        console.warn(`Sem imagem para produto ${product.id}`);
-      }
+  loadProductImages(): void {
+    this.products.forEach((product) => {
+      this.productService.getProductImagesBase64(product.id).subscribe({
+        next: (base64List) => {
+          // prefixa cada string com o data URI
+          product.imageUrls = base64List.map(
+            (b64) => `data:image/jpeg;base64,${b64}`
+          );
+        },
+        error: () => {
+          // se não tiver imagem, deixa o array vazio (para não quebrar o *ngFor)
+          product.imageUrls = [];
+          console.warn(`Sem imagem para produto ${product.id}`);
+        },
+      });
     });
-  });
-}
+  }
 
   // getProductImageUrl(product: Product): string {
   //   if (product.id) {
@@ -204,21 +301,23 @@ loadProductImages(): void {
       return;
     }
 
-  // Usa o Base64
-  this.productService.getProductImagesBase64(product.id).subscribe({
-    next: (base64List) => {
-      // salva todas as URLs no componente
-      this.productImages = base64List.map(b64 => `data:image/jpeg;base64,${b64}`);
-      this.selectedImageUrl = this.productImages[0] || '';
-      this.showProductModal = true;
-    },
-    error: () => {
-      this.productImages = [];
-      this.selectedImageUrl = '';
-      this.showProductModal = true;
-    },
-  });
-}
+    // Usa o Base64
+    this.productService.getProductImagesBase64(product.id).subscribe({
+      next: (base64List) => {
+        // salva todas as URLs no componente
+        this.productImages = base64List.map(
+          (b64) => `data:image/jpeg;base64,${b64}`
+        );
+        this.selectedImageUrl = this.productImages[0] || '';
+        this.showProductModal = true;
+      },
+      error: () => {
+        this.productImages = [];
+        this.selectedImageUrl = '';
+        this.showProductModal = true;
+      },
+    });
+  }
 
   closeProductModal(): void {
     if (this.selectedImageUrl && this.selectedImageUrl.startsWith('blob:')) {
@@ -244,8 +343,12 @@ loadProductImages(): void {
   addToCart(quantity: number = 1): void {
     if (!this.selectedProduct) return;
 
-    const productImage = typeof this.selectedImage === 'string' ? this.selectedImage : 
-    (this.selectedProduct.imageUrls && this.selectedProduct.imageUrls[0]) || null;
+    const productImage =
+      typeof this.selectedImage === 'string'
+        ? this.selectedImage
+        : (this.selectedProduct.imageUrls &&
+            this.selectedProduct.imageUrls[0]) ||
+          null;
 
     const cartItem = {
       id: this.selectedProduct.id,
@@ -257,7 +360,7 @@ loadProductImages(): void {
       quantity: quantity,
     };
 
-     console.log('Item sendo adicionado:', cartItem);
+    console.log('Item sendo adicionado:', cartItem);
 
     this.cartService.addToCart(cartItem).subscribe({
       next: () => {
@@ -284,17 +387,17 @@ loadProductImages(): void {
   }
 
   decreaseQuantityModal(): void {
-  if (this.selectedQuantity > 1) {
-    this.selectedQuantity--;
+    if (this.selectedQuantity > 1) {
+      this.selectedQuantity--;
+    }
   }
-}
 
-increaseQuantityModal(): void {
-  if (
-    this.selectedProduct &&
-    this.selectedQuantity < (this.selectedProduct?.quantity ?? Infinity)
-  ) {
-    this.selectedQuantity++;
+  increaseQuantityModal(): void {
+    if (
+      this.selectedProduct &&
+      this.selectedQuantity < (this.selectedProduct?.quantity ?? Infinity)
+    ) {
+      this.selectedQuantity++;
+    }
   }
-}
 }

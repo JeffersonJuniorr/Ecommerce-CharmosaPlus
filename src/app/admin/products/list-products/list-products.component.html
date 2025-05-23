@@ -2,9 +2,15 @@
     <div class="admin-products">
         <div class="header-row">
             <h1>Meus produtos</h1>
-            <button class="btn-manage" routerLink="/products-management">
-                Adicionar produto
-            </button>
+            <div class="header-actions">
+                <button class="btn-customize" (click)="openCustomizer()">
+                    <!-- <span class="material-icons">tune</span> -->
+                    Personalizar Página
+                </button>
+                <button class="btn-manage" routerLink="/products-management">
+                    Adicionar produto
+                </button>
+            </div>
         </div>
 
         <div *ngIf="loading" class="loading">Carregando produtos…</div>
@@ -40,7 +46,8 @@
 
             <div class="search-pagination">
                 <th class="checkbox-header">
-                    <input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()" [indeterminate]="someSelected && !allSelected"/>
+                    <input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()"
+                        [indeterminate]="someSelected && !allSelected" />
                 </th>
                 <button class="btn-reload" (click)="reloadProducts()" title="Recarregar">
                     <span class="material-symbols-outlined">refresh</span>
