@@ -74,6 +74,23 @@
   outline: none;
 }
 
+.field select {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  transition: border 0.3s ease;
+}
+
+.field select:hover {
+  border-color: #555;
+}
+
+.field select:focus {
+  border-color: #333;
+  outline: none;
+}
+
 .btn-icon {
     background: none;
     border: none;

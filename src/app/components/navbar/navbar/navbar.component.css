@@ -57,6 +57,34 @@
   position: relative;
 }
 
+.form-group  input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+.form-group  input:hover {
+  border-color: #555;
+}
+.form-group  input:focus {
+  border-color: #333;
+  outline: none;
+}
+
+input {
+  border: 1px solid #ccc;
+  transition: border 0.3s ease;
+}
+
+input:hover {
+  border-color: #555;
+}
+
+input:focus {
+  border-color: #333;
+  outline: none;
+}
+
 .search-input {
   width: 100%;
   padding: 10px 15px;

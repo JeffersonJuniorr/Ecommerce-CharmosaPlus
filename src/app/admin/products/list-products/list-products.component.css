@@ -239,8 +239,15 @@ span.inactive { color: #dc3545; font-weight: 600; }
 .input-icon input {
   padding-left: 30px;
   width: 300px;
+  border: 1px solid #ccc;
   max-width: 100%;
   box-sizing: border-box;
+  transition: border 0.3s ease;
+}
+
+.input-icon input:hover {
+  border-color: #555;
+  transition: border 0.3s ease;
 }
 
 .input-icon input:focus {

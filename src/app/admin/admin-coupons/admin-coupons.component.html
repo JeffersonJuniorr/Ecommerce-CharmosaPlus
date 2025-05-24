@@ -78,7 +78,7 @@
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Ações</th>
-        <td mat-cell *matCellDef="let coupon">
+        <td mat-cell *matCellDef="let coupon" class="button-delete">
           <button mat-icon-button color="warn" (click)="deleteCoupon(coupon.id, coupon.code)">
             <mat-icon>delete</mat-icon>
           </button>

@@ -44,7 +44,7 @@
 
 .sidebar-nav li.active {
   background-color: #e1e4e8;
-  border-left: 3px solid #1976d2;
+  border-left: 3px solid #555;
   font-weight: 500;
 }
 
@@ -112,6 +112,20 @@
   color: #24292e;
 }
 
+input {
+  border: 1px solid #ccc;
+  transition: border 0.3s ease;
+}
+
+input:hover {
+  border-color: #555;
+}
+
+input:focus {
+  border-color: #333;
+  outline: none;
+}
+
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group input[type="date"],
@@ -119,7 +133,7 @@
 .form-group select {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #d1d5da;
+  /* border: 1px solid #d1d5da; */
   border-radius: 4px;
   font-size: 14px;
   box-sizing: border-box;
@@ -130,13 +144,34 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #1976d2;
-  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+  /* border-color: #1976d2; */
+  /* box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2); */
 }
 
 .form-group textarea {
   min-height: 80px;
   resize: vertical;
+  border: 1px solid #ccc;
+  transition: border 0.3s ease;
+}
+.form-group textarea:hover {
+  border-color: #555;
+}
+.form-group textarea:focus {
+  border-color: #333;
+  outline: none;
+}
+
+.form-group select {
+  border: 1px solid #ccc;
+  transition: border 0.3s ease;
+}
+.form-group select:hover {
+  border-color: #555;
+}
+.form-group select:focus {
+  border-color: #333;
+  outline: none;
 }
 
 .form-group select[multiple] {
@@ -196,28 +231,30 @@
 
 .checkbox-group {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.checkbox-group input {
-  margin-right: 8px;
-  margin-top: 3px;
+.checkbox-group input[type="checkbox"] {
+  margin: 0 8px 0 0;
+  align-self: center;
 }
 
 .checkbox-group label {
-  margin-bottom: 0;
+  flex: 1;
+  text-align: left;
+  margin: 0 8px;
   font-weight: normal;
 }
 
-.description {
-  margin-top: 8px;
+.checkbox-group .description {
+  flex: 2;
+  text-align: right;
+  margin: 0 0 0 8px;
   font-size: 13px;
   color: #586069;
   line-height: 1.5;
-}
-
-.description p {
-  margin: 4px 0;
 }
 
 .hint {
@@ -257,8 +294,8 @@
 
 .submit-button {
   padding: 8px 16px;
-  background-color: #1976d2;
-  border: 1px solid #1565c0;
+  background-color: #555;
+  border: 1px solid #555;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
@@ -267,11 +304,11 @@
 }
 
 .submit-button:hover {
-  background-color: #1565c0;
+  background-color: #333;
 }
 
 .submit-button:disabled {
-  background-color: #90caf9;
-  border-color: #64b5f6;
+  background-color: #999;
+  border-color: #999;
   cursor: not-allowed;
 }
