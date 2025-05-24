@@ -8,12 +8,14 @@ import {
   ViewChild,
   HostListener,
 } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { StorageService } from '../../../services/storage/storage.service';
 import { CartService } from '../../../services/cartservice/cartservice.service';
 import { CartComponent } from '../../cart/cartcomponent.component';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { filter, map, mergeMap } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -35,11 +37,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // Adicionado para controle de SSR
   private isBrowser: boolean = false;
+  public isCategoriesHidden = false;
 
   constructor(
     private router: Router,
     private storageService: StorageService,
     private cartService: CartService,
+     private activatedRoute: ActivatedRoute,
     @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -61,6 +65,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.checkLoginStatus();
+
+     // escuta mudanças de rota para esconder/mostrar categories-nav
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      map(() => this.activatedRoute),
+      map(r => { while(r.firstChild) r = r.firstChild; return r; }),
+      mergeMap(r => r.data as any)
+    ).subscribe((data: any) => {
+      this.isCategoriesHidden = !!data.hideCategories;
+    });
 
     this.cartService.cartItems$.subscribe((items) => {
       this.cartItemCount = items.length;

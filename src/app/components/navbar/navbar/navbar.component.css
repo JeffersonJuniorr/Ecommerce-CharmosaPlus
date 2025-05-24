@@ -7,7 +7,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 99;
   margin-left: 0.2%;
 }
 
@@ -149,12 +149,13 @@
   border-bottom: 1px solid #eee;
   position: sticky;
   top: 0;
-  z-index: 99;
+  z-index: 98;
   transition: transform 0.3s ease;
 }
 
 .categories-nav.hidden {
   transform: translateY(-100%);
+  display: none;
 }
 
 .categories-list {

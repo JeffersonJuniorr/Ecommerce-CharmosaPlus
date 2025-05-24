@@ -1,4 +1,4 @@
-<nav class="navbar">
+<nav class="navbar" [class.hidden]="isNavHidden">
   <div class="navbar-logo">
     <a routerLink="/home">
       <span class="logo-text">
@@ -53,7 +53,7 @@
   </div>
 </nav>
 
-<div class="categories-nav" [ngClass]="{'hidden': isNavHidden}">
+<div class="categories-nav" [class.hidden]="isCategoriesHidden">
   <ul class="categories-list">
     <li><a routerLink="/novidades">Novidades</a><span class="star-divider">★</span></li>
     <li><a routerLink="/roupas">Roupas</a><span class="star-divider">★</span></li>
