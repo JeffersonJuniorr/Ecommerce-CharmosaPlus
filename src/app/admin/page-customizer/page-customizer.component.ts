@@ -9,6 +9,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Product, ProductService } from '../../services/products/products.service';
 import { StorageService } from '../../services/storage/storage.service';
 import { MatIconModule } from '@angular/material/icon';
+import { CustomSnackBarComponent } from '../../components/custom/custom-snack-bar/custom-snack-bar.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-page-customizer',
@@ -20,7 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './page-customizer.component.html',
   styleUrls: ['./page-customizer.component.css'],
@@ -33,10 +35,11 @@ export class PageCustomizerComponent implements OnInit {
     private fb: FormBuilder,
     private productService: ProductService,
     private dialogRef: MatDialogRef<PageCustomizerComponent>,
-    private storage: StorageService
+    private storage: StorageService,
+    private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
-      slots: this.fb.array([])
+      slots: this.fb.array([]),
     });
   }
 
@@ -46,23 +49,29 @@ export class PageCustomizerComponent implements OnInit {
 
   ngOnInit() {
     // busca lista de produtos para popular o <select>
-    this.productService.getProducts().subscribe(prods => this.products = prods);
+    this.productService
+      .getProducts()
+      .subscribe((prods) => (this.products = prods));
 
     // carrega do localStorage
-    const cfg = this.storage.getItem('homeConfig') as Array<{productId:number,overlayText:string}>;
+    const cfg = this.storage.getItem('homeConfig') as Array<{
+      productId: number;
+      overlayText: string;
+    }>;
     if (Array.isArray(cfg)) {
-      cfg.forEach(slot => {
-        this.slots.push(this.fb.group({
-          productId: [slot.productId, Validators.required],
-          overlayText: [slot.overlayText, Validators.required]
-        }));
+      cfg.forEach((slot) => {
+        this.slots.push(
+          this.fb.group({
+            productId: [slot.productId, Validators.required],
+            overlayText: [slot.overlayText, Validators.required],
+          })
+        );
       });
     } else {
       // se não existir, crio 3 vazios por padrão
-      for (let i=0; i<3; i++) this.addSlot();
+      for (let i = 0; i < 3; i++) this.addSlot();
     }
   }
-  
 
   loadConfig(): void {
     // TODO: Fetch existing configuration
@@ -72,18 +81,23 @@ export class PageCustomizerComponent implements OnInit {
     // });
   }
 
-  createSlot(productId: number | null = null, overlayText: string = ''): FormGroup {
+  createSlot(
+    productId: number | null = null,
+    overlayText: string = ''
+  ): FormGroup {
     return this.fb.group({
       productId: [productId, Validators.required],
-      overlayText: [overlayText, Validators.required]
+      overlayText: [overlayText, Validators.required],
     });
   }
 
-   addSlot() {
-    this.slots.push(this.fb.group({
-      productId: [null, Validators.required],
-      overlayText: ['', Validators.required]
-    }));
+  addSlot() {
+    this.slots.push(
+      this.fb.group({
+        productId: [null, Validators.required],
+        overlayText: ['', Validators.required],
+      })
+    );
   }
 
   removeSlot(i: number) {
@@ -91,9 +105,21 @@ export class PageCustomizerComponent implements OnInit {
   }
 
   onSave() {
-    // pega o array puro e grava no localStorage
+    if (this.form.invalid) return;
+
+    // salva no localStorage
     this.storage.setItem('homeConfig', this.slots.value);
-    alert('Configurações salvas!');
+
+    // exibe snackbar de sucesso
+    this.snackBar.openFromComponent(CustomSnackBarComponent, {
+      data: { message: 'Configurações salvas com sucesso!', type: 'success' },
+      duration: 4000,
+      panelClass: ['success-snackbar'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+
+    this.dialogRef.close(true);
   }
 
   onCancel(): void {

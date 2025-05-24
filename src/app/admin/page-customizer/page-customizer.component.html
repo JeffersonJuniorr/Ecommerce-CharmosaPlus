@@ -14,7 +14,7 @@
                         <option value="" disabled>Selecione...</option>
                         <option *ngFor="let p of products" [ngValue]="p.id">{{ p.name }}</option>
                     </select>
-                    <small class="error" *ngIf="slot.get('productId')?.hasError('required')">Obrigatório</small>
+                    <!-- <small class="error" *ngIf="slot.get('productId')?.hasError('required')">Obrigatório</small> -->
                 </div>
 
                 <div class="field">
