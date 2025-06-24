@@ -1,140 +1,137 @@
-import {
-  Component,
-  ChangeDetectorRef,
-  OnDestroy,
-  PLATFORM_ID,
-  Inject,
-  OnInit,
-  ViewChild,
-  HostListener,
-} from '@angular/core';
-import { Router, RouterModule, NavigationEnd } from '@angular/router';
-import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { Component, OnDestroy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { filter } from 'rxjs/operators';
+import { RouterModule } from '@angular/router';
+
 import { StorageService } from '../../../services/storage/storage.service';
 import { CartService } from '../../../services/cartservice/cartservice.service';
 import { CartComponent } from '../../cart/cartcomponent.component';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { filter, map, mergeMap } from 'rxjs/operators';
 
 @Component({
-  standalone: true,
   selector: 'app-navbar',
-  imports: [RouterModule, CommonModule, CartComponent, FormsModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule, CartComponent], 
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  @ViewChild(CartComponent) cartComponent!: CartComponent;
   isLoggedIn = false;
-  isAdmin = false;
   username: string = '';
   searchQuery: string = '';
+  cartItemCount: number = 0;
 
   isNavHidden = false;
-  lastScrollPosition = 0;
-  scrollThreshold = 50;
+  private lastScrollPosition = 0;
+  private scrollThreshold = 50;
 
-  // Adicionado para controle de SSR
-  private isBrowser: boolean = false;
-  public isCategoriesHidden = false;
+  isMobileSearchVisible = false;
+  isMenuOpen = false;
+  isCategoriesHidden = false;
+  
+  private isBrowser: boolean;
+  private storageEventListener: () => void;
 
   constructor(
     private router: Router,
     private storageService: StorageService,
     private cartService: CartService,
-     private activatedRoute: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    this.storageEventListener = () => this.checkLoginStatus();
   }
 
-  cartItemCount: number = 0;
+  ngOnInit(): void {
+    this.checkLoginStatus();
+    this.subscribeToCartUpdates();
+    this.subscribeToRouteChanges();
+
+    if (this.isBrowser) {
+      window.addEventListener('storage', this.storageEventListener);
+      window.addEventListener('scroll', this.onWindowScroll, true);
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.isBrowser) {
-      // Remove o listener apenas se estiver no browser
       window.removeEventListener('storage', this.storageEventListener);
+      window.removeEventListener('scroll', this.onWindowScroll, true);
     }
-    // console.log('NavbarComponent is being destroyed');
   }
 
-  // Armazena a referência da função para poder remover o listener depois
-  private storageEventListener = () => this.checkLoginStatus();
-
-  ngOnInit() {
-    this.checkLoginStatus();
-
-     // escuta mudanças de rota para esconder/mostrar categories-nav
-    this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
-      map(() => this.activatedRoute),
-      map(r => { while(r.firstChild) r = r.firstChild; return r; }),
-      mergeMap(r => r.data as any)
-    ).subscribe((data: any) => {
-      this.isCategoriesHidden = !!data.hideCategories;
-    });
-
-    this.cartService.cartItems$.subscribe((items) => {
+  private checkLoginStatus(): void {
+    if (this.isBrowser) {
+      const authToken = this.storageService.getItem('authToken');
+      this.isLoggedIn = !!authToken;
+      this.username = this.storageService.getItem('username') || 'Usuário';
+    }
+  }
+  
+  private subscribeToCartUpdates(): void {
+    this.cartService.cartItems$.subscribe(items => {
       this.cartItemCount = items.length;
     });
-
-    // Verifique novamente o status de autenticação quando o armazenamento for alterado (para outras guias/janelas)
-    if (this.isBrowser) {
-      window.addEventListener('storage', this.storageEventListener);
-    }
   }
 
-  checkLoginStatus() {
-    const userRole = this.storageService.getItem('userRole');
-    const authToken = this.storageService.getItem('authToken');
-    const storedUsername = this.storageService.getItem('username');
-
-    console.log('userRole:', userRole);
-    console.log('authToken:', authToken);
-    console.log('storedUsername:', storedUsername);
-
-    this.isLoggedIn = !!authToken;
-    this.isAdmin = userRole === 'admin';
-    this.username = storedUsername || 'Usuário';
+  private subscribeToRouteChanges(): void {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      const routeData = this.router.routerState.snapshot.root.firstChild?.data;
+      this.isCategoriesHidden = routeData?.['hideCategories'] || false;
+      this.isMenuOpen = false;
+    });
   }
 
-  logout() {
-    this.storageService.removeItem('authToken');
-    this.storageService.removeItem('userRole');
-    this.storageService.removeItem('username');
-    this.isLoggedIn = false;
-    this.isAdmin = false;
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  toggleMobileSearch(): void {
+    this.isMobileSearchVisible = !this.isMobileSearchVisible;
+  }
+
+  logout(): void {
+    this.storageService.clear(); // Limpa todo o storage local
+    this.checkLoginStatus();
     this.router.navigate(['/home']);
   }
+  
+  logoutAndCloseMenu(): void {
+    this.logout();
+    this.toggleMenu();
+  }
 
-  openCart() {
+  openCart(): void {
     this.cartService.openCart();
   }
 
-  search() {
+  executeSearch(): void {
     if (this.searchQuery && this.searchQuery.trim()) {
+      if (this.isMobileSearchVisible) {
+        this.toggleMobileSearch();
+      }
       this.router.navigate(['/search'], {
-        queryParams: { q: this.searchQuery },
+        queryParams: { q: this.searchQuery.trim() },
       });
+      this.searchQuery = '';
     }
   }
 
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    if (!this.isBrowser) return; // Não executa no servidor
-    
-    const currentScrollPosition = window.pageYOffset || 
-                                this.document.documentElement.scrollTop || 
-                                this.document.body.scrollTop || 0;
-    
+  // Removido o @HostListener para adicionar e remover o listener manualmente
+  private onWindowScroll = (): void => {
+    if (!this.isBrowser) return;
+
+    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
     if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > this.scrollThreshold) {
       this.isNavHidden = true;
-    } else if (currentScrollPosition < this.lastScrollPosition) {
+    } else {
       this.isNavHidden = false;
     }
     
-    this.lastScrollPosition = currentScrollPosition;
+    this.lastScrollPosition = currentScrollPosition <= 0 ? 0 : currentScrollPosition;
   }
 }
