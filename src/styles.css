@@ -1,55 +1,79 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Marcellus+SC&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Zen+Dots&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Lexend+Exa:wght@100..900&family=Marcellus+SC&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Zen+Dots&display=swap');
 
-body {
-    margin: 0;
+html {
+  box-sizing: border-box;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .success-snackbar {
-    --mdc-snackbar-container-color: #4CAF50 !important;
-    --mat-mdc-snack-bar-button-color: white !important;
-    --mdc-snackbar-supporting-text-color: white !important;
-  }
-  
-  .error-snackbar {
-    --mdc-snackbar-container-color: #F44336 !important;
-    --mat-mdc-snack-bar-button-color: white !important;
-    --mdc-snackbar-supporting-text-color: white !important;
-  }
+  --mdc-snackbar-container-color: #4CAF50 !important;
+  --mat-mdc-snack-bar-button-color: white !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+}
 
-  .mdc-snackbar__surface {
-    border-radius: 4px !important;
-  }
-  
-  .mat-mdc-snack-bar-container {
-    --mat-snack-bar-button-color: white !important;
-    --mdc-snackbar-supporting-text-line-height: 20px !important;
-    --mdc-snackbar-supporting-text-size: 14px !important;
-  }
+.error-snackbar {
+  --mdc-snackbar-container-color: #F44336 !important;
+  --mat-mdc-snack-bar-button-color: white !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+}
 
-  .mat-mdc-progress-bar {
-    --mdc-linear-progress-active-indicator-color: rgba(255, 255, 255, 0.8) !important;
-    --mdc-linear-progress-track-color: rgba(255, 255, 255, 0.2) !important;
-  }
+.mdc-snackbar__surface {
+  border-radius: 4px !important;
+}
 
-  * {
-    scrollbar-width: thin;
+.mat-mdc-snack-bar-container {
+  --mat-snack-bar-button-color: white !important;
+  --mdc-snackbar-supporting-text-line-height: 20px !important;
+  --mdc-snackbar-supporting-text-size: 14px !important;
+}
+
+.mat-mdc-progress-bar {
+  --mdc-linear-progress-active-indicator-color: rgba(255, 255, 255, 0.8) !important;
+  --mdc-linear-progress-track-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-button {
+  display: none;
+}
+
+.coupon-modal .mat-dialog-container {
+  padding: 0;
+  overflow: hidden;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+@media (max-width: 600px) {
+  .app-container {
+    padding-left: 15px;
+    padding-right: 15px;
   }
-  
-  /* Works on Chrome, Edge, and Safari */
-  *::-webkit-scrollbar {
-    width: 12px;
-  }
-  
-  *::-webkit-scrollbar-button {
-    display: none;
-  }
-  
-  .coupon-modal .mat-dialog-container {
-    padding: 0;
-    overflow: hidden;
-  }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+}

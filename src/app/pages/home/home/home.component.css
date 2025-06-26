@@ -1,15 +1,22 @@
 .home-container {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Banner / Carrossel */
+.menu,
+.special-offers,
+.see-also-section,
+.product-list {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+/* 1. Banner Principal / Carrossel */
 .carousel-container {
-  position: relative;
   width: 100%;
-  height: 500px;
-  overflow: hidden;
+  aspect-ratio: 1920 / 800;
+  max-height: 75vh;
+  position: relative;
+  background-color: #f0f0f0;
 }
 
 .carousel {
@@ -20,19 +27,19 @@
 
 .slide {
   flex: 0 0 100%;
-  /* height: 100%; */
+  height: 100%;
 }
 
+.slide picture,
 .slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Dots */
 .dots {
   position: absolute;
-  bottom: 12px;
+  bottom: 15px;
   width: 100%;
   text-align: center;
 }
@@ -52,24 +59,35 @@
   background-color: #fff;
 }
 
-/* Menu */
 .cards-banner {
-  margin-top: 2%;
   display: flex;
-  justify-content: center;
-  gap: 6.6%;
-  padding: 20px;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-padding: 0 30px;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  scroll-behavior: smooth;
+  cursor: grab;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.cards-banner::-webkit-scrollbar {
+  display: none;
 }
 
 .card-banner {
-  border-radius: 10px;
-  overflow: hidden;
-  width: 320px;
-  height: 320px;
-  text-align: center;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1.1;
+  width: calc(100% / 3 - 14px);
   transition: transform 0.3s;
-  cursor: pointer;
-  position: relative;
+}
+
+.card-banner:hover {
+  transform: scale(1.03);
 }
 
 .card-banner img {
@@ -80,17 +98,13 @@
 
 .card-banner .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0, 0, 0, 0.4);
   opacity: 0;
   transition: opacity 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(2px);
 }
 
 .card-banner:hover .overlay {
@@ -101,20 +115,15 @@
   color: #fff;
   font-size: 1.5rem;
   font-weight: bold;
-}
-
-
-/* Ofertas Especiais */
-.special-offers {
-  padding: 35px 17.4%;
   text-align: center;
+  padding: 10px;
 }
 
 .special-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .special-header h2 {
@@ -126,32 +135,16 @@
   font-weight: bold;
 }
 
-.offers-content {
-  margin-top: -10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .offer-banner {
   width: 100%;
-  max-width: 1500px;
-  height: 500px;
+  aspect-ratio: 16 / 7;
   object-fit: cover;
-  border-radius: 28px;
-}
-
-/* Categorias */
-.see-also-section {
-  padding: 0 19%;
-  max-width: 1600px;
-  margin: 2rem auto 3rem auto;
+  border-radius: 20px;
 }
 
 .see-also-divider {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 1.5rem;
 }
 
@@ -163,12 +156,6 @@
 
 .see-also-title {
   font-size: 1.5rem;
-  font-weight: 400;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 0 1rem;
-  margin: 0;
 }
 
 /* Produtos */
@@ -176,9 +163,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .product-card {
@@ -342,7 +326,6 @@
   flex-direction: column;
   gap: 10px;
   padding-bottom: 23%;
-  /* padding-bottom: 90px; */
   position: relative;
 }
 
@@ -429,4 +412,52 @@
 .add-cart:hover {
   background: #333;
   color: #fff;
+}
+
+/* --- TABLET (de 601px até 991px) --- */
+@media (max-width: 991px) {
+  .carousel-container {
+    aspect-ratio: 1200 / 900;
+    /* 4 / 3 */
+  }
+
+  .card-banner {
+    width: calc(100% / 2 - 10px);
+  }
+
+  .product-list {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+/* --- CELULAR (até 600px) --- */
+@media (max-width: 600px) {
+
+  .carousel-container {
+    aspect-ratio: 800 / 1000;
+    /* 4 / 5 */
+  }
+
+  .cards-banner {
+    scroll-padding: 0 15px;
+  }
+
+  .card-banner {
+    width: 65%;
+  }
+
+
+  .offer-banner {
+    aspect-ratio: 1 / 1;
+  }
+
+  .special-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .product-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
 }

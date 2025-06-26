@@ -1,59 +1,61 @@
 <header class="main-header" [class.hidden]="isNavHidden">
-  <nav class="navbar" [class.hidden]="isNavHidden">
-    <button class="menu-toggle" (click)="toggleMenu()">
-      <span class="material-symbols-outlined">menu</span>
-    </button>
-
-    <div class="navbar-logo">
-      <a routerLink="/home">
-        <img src="../../../../assets/logo/logoCharmosa.png" class="logo-image" alt="Logo Charmosa+">
-      </a>
-    </div>
-
-    <div class="search-container">
-      <input type="search" [(ngModel)]="searchQuery" (keyup.enter)="executeSearch()" placeholder="O que você procura?"
-        class="search-input">
-      <button class="search-button" (click)="executeSearch()">
-        <span class="material-symbols-outlined">search</span>
+  <div class="app-container">
+    <nav class="navbar" [class.hidden]="isNavHidden">
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <span class="material-symbols-outlined">menu</span>
       </button>
-    </div>
 
-    <div class="navbar-user">
-      <a (click)="toggleMobileSearch()" class="nav-link search-icon-mobile">
-        <span class="material-symbols-outlined">search</span>
-      </a>
-
-      <a routerLink="/home" routerLinkActive="active" aria-label="Home" class="nav-link icon-home-link">
-        <span class="material-symbols-outlined">home</span>
-      </a>
-
-      <a *ngIf="!isLoggedIn" routerLink="/login" routerLinkActive="active" aria-label="Minha conta" class="nav-link">
-        <span class="material-symbols-outlined">person</span>
-      </a>
-
-      <div *ngIf="isLoggedIn" class="user-greeting">
-        <a routerLink="/minha-conta" class="greeting-link">Olá, {{ username }}</a>
-        <span class="separator">|</span>
-        <a (click)="logout()" class="logout-link">Sair</a>
+      <div class="navbar-logo">
+        <a routerLink="/home">
+          <img src="../../../../assets/logo/logoCharmosa.png" class="logo-image" alt="Logo Charmosa+">
+        </a>
       </div>
 
-      <a (click)="openCart()" aria-label="Carrinho" class="cart-icon nav-link">
-        <span class="material-symbols-outlined">shopping_cart</span>
-        <span *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</span>
-      </a>
+      <div class="search-container">
+        <input type="search" [(ngModel)]="searchQuery" (keyup.enter)="executeSearch()" placeholder="O que você procura?"
+          class="search-input">
+        <button class="search-button" (click)="executeSearch()">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+      </div>
+
+      <div class="navbar-user">
+        <a (click)="toggleMobileSearch()" class="nav-link search-icon-mobile">
+          <span class="material-symbols-outlined">search</span>
+        </a>
+
+        <a routerLink="/home" routerLinkActive="active" aria-label="Home" class="nav-link icon-home-link">
+          <span class="material-symbols-outlined">home</span>
+        </a>
+
+        <a *ngIf="!isLoggedIn" routerLink="/login" routerLinkActive="active" aria-label="Minha conta" class="nav-link">
+          <span class="material-symbols-outlined">person</span>
+        </a>
+
+        <div *ngIf="isLoggedIn" class="user-greeting">
+          <a routerLink="/minha-conta" class="greeting-link">Olá, {{ username }}</a>
+          <span class="separator">|</span>
+          <a (click)="logout()" class="logout-link">Sair</a>
+        </div>
+
+        <a (click)="openCart()" aria-label="Carrinho" class="cart-icon nav-link">
+          <span class="material-symbols-outlined">shopping_cart</span>
+          <span *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</span>
+        </a>
+      </div>
+    </nav>
+
+
+    <div class="categories-nav" [class.hidden]="isCategoriesHidden || isNavHidden">
+      <ul class="categories-list">
+        <li><a routerLink="/novidades">Novidades</a><span class="star-divider">★</span></li>
+        <li><a routerLink="/roupas">Roupas</a><span class="star-divider">★</span></li>
+        <li><a routerLink="/colecoes">Coleções</a><span class="star-divider">★</span></li>
+        <li><a routerLink="/moletom">Moletom</a><span class="star-divider">★</span></li>
+        <li><a routerLink="/acessorios">Acessórios</a><span class="star-divider">★</span></li>
+        <li><a routerLink="/outlet">Outlet</a></li>
+      </ul>
     </div>
-  </nav>
-
-
-  <div class="categories-nav" [class.hidden]="isCategoriesHidden || isNavHidden">
-    <ul class="categories-list">
-      <li><a routerLink="/novidades">Novidades</a><span class="star-divider">★</span></li>
-      <li><a routerLink="/roupas">Roupas</a><span class="star-divider">★</span></li>
-      <li><a routerLink="/colecoes">Coleções</a><span class="star-divider">★</span></li>
-      <li><a routerLink="/moletom">Moletom</a><span class="star-divider">★</span></li>
-      <li><a routerLink="/acessorios">Acessórios</a><span class="star-divider">★</span></li>
-      <li><a routerLink="/outlet">Outlet</a></li>
-    </ul>
   </div>
 </header>
 

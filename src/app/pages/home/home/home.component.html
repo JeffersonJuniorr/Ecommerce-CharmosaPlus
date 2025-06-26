@@ -4,7 +4,11 @@
     <div class="carousel-container">
       <div class="carousel" [style.transform]="'translateX(' + (-currentIndex * 100) + '%)'">
         <div class="slide" *ngFor="let banner of banners">
-          <img [src]="banner.image" alt="Slide">
+          <picture>
+            <source [srcset]="banner.mobileImage" media="(max-width: 600px)">
+            <source [srcset]="banner.tabletImage" media="(max-width: 991px)">
+            <img [src]="banner.desktopImage" [alt]="banner.altText">
+          </picture>
         </div>
       </div>
       <button class="prev-btn" (click)="prevSlide()">&#10094;</button>
@@ -16,74 +20,74 @@
     </div>
   </div>
 
-  <!-- Não visivel -->
+  <div class="app-container">
   <!-- Menu -->
-  <nav class="menu">
-    <div class="cards-banner">
-      <div class="card-banner" *ngFor="let slot of cardsproducts">
-        <ng-container *ngIf="slot.images.length; else noImage">
-          <img [src]="slot.images[0]" [alt]="slot.name" (click)="goToCheckout(slot.id)" />
-        </ng-container>
-        <ng-template #noImage>
-          <span class="material-symbols-outlined placeholder-icon">
-            image_not_supported
-          </span>
-        </ng-template>
-        <div class="overlay">
-          <span>{{ slot.overlayText }}</span>
+    <nav class="menu">
+      <div class="cards-banner">
+        <div class="card-banner" *ngFor="let slot of cardsproducts">
+          <ng-container *ngIf="slot.images.length; else noImage">
+            <img [src]="slot.images[0]" [alt]="slot.name" (click)="goToCheckout(slot.id)" />
+          </ng-container>
+          <ng-template #noImage>
+            <span class="material-symbols-outlined placeholder-icon">
+              image_not_supported
+            </span>
+          </ng-template>
+          <div class="overlay">
+            <span>{{ slot.overlayText }}</span>
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- Ofertas Especiais -->
-  <section class="special-offers">
-    <div class="special-header">
-      <h2>Especial para você</h2>
-      <a href="#">Ver tudo</a>
-    </div>
-    <div class="offers-content">
-      <img [src]="offerBanner" alt="Oferta Especial" class="offer-banner" />
-    </div>
-  </section>
+    <!-- Ofertas Especiais -->
+    <section class="special-offers">
+      <div class="special-header">
+        <h2>Especial para você</h2>
+        <a href="#">Ver tudo</a>
+      </div>
+      <div class="offers-content">
+        <img [src]="offerBanner" alt="Oferta Especial" class="offer-banner" />
+      </div>
+    </section>
 
-  <!-- Categorias -->
-  <section class="see-also-section">
-    <div class="see-also-divider">
-      <span class="divider-line"></span>
-      <h2 class="see-also-title">Veja também</h2>
-      <span class="divider-line"></span>
-    </div>
-  </section>
+    <!-- Categorias -->
+    <section class="see-also-section">
+      <div class="see-also-divider">
+        <span class="divider-line"></span>
+        <h2 class="see-also-title">Veja também</h2>
+        <span class="divider-line"></span>
+      </div>
+    </section>
 
-  <!-- Produtos -->
-  <div class="product-list">
-    <div *ngIf="isLoading" class="loading-container">
-      <!-- <p>Carregando produtos...</p> -->
-    </div>
-
-    <div *ngIf="error" class="error-container">
-      <p>{{ error }}</p>
-    </div>
-
-    <div class="product-card" *ngFor="let product of products">
-      <div class="product-image">
-        <img
-          [src]="product.imageUrls && product.imageUrls.length ? product.imageUrls[0] : 'assets/images/placeholder.jpg'"
-          alt="{{ product.name }}" (click)="product.id ? goToCheckout(product.id) : null" />
+    <!-- Produtos -->
+    <div class="product-list">
+      <div *ngIf="isLoading" class="loading-container">
       </div>
 
-      <div class="product-info">
-        <h4>{{ product.name }}</h4>
-        <p *ngIf="product.sizes?.length" class="product-sizes">{{ product.sizes.join(' · ') }}</p>
+      <div *ngIf="error" class="error-container">
+        <p>{{ error }}</p>
+      </div>
 
-        <div *ngIf="product.colors?.length" class="product-colors">
-          <span *ngFor="let color of product.colors" [style.backgroundColor]="color" class="color-dot"></span>
+      <div class="product-card" *ngFor="let product of products">
+        <div class="product-image">
+          <img
+            [src]="product.imageUrls && product.imageUrls.length ? product.imageUrls[0] : 'assets/images/placeholder.jpg'"
+            alt="{{ product.name }}" (click)="product.id ? goToCheckout(product.id) : null" />
         </div>
 
-        <div class="product-bottom">
-          <span class="product-price">R$ {{ product.price }}</span>
-          <button class="btn-outline" (click)="openProductModal(product)">+ Carrinho</button>
+        <div class="product-info">
+          <h4>{{ product.name }}</h4>
+          <p *ngIf="product.sizes?.length" class="product-sizes">{{ product.sizes.join(' · ') }}</p>
+
+          <div *ngIf="product.colors?.length" class="product-colors">
+            <span *ngFor="let color of product.colors" [style.backgroundColor]="color" class="color-dot"></span>
+          </div>
+
+          <div class="product-bottom">
+            <span class="product-price">R$ {{ product.price }}</span>
+            <button class="btn-outline" (click)="openProductModal(product)">+ Carrinho</button>
+          </div>
         </div>
       </div>
     </div>

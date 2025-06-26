@@ -1,8 +1,17 @@
 export const MOCK_DATA = {
   banners: [
-    { id: 1, image: 'assets/banners/bannertest.jpg' },
-    { id: 2, image: 'assets/banners/bannertest.jpg' },
-    { id: 3, image: 'assets/banners/bannertest.jpg' },
+    {
+      desktopImage: 'assets/banners/bannertest.jpg',
+      mobileImage: 'assets/banners/adaptationbanner.png',
+      tabletImage: 'assets/banners/adaptationbanner.png',
+      altText: 'Descrição do banner 1'
+    },
+    // {
+    //   desktopImage: 'assets/banners/bannertest.jpg',
+    //   mobileImage: 'assets/banners/adaptatiobanner.png',
+    //   tabletImage: 'assets/banners/adaptationbanner.png',
+    //   altText: 'Descrição do banner 2'
+    // }
   ],
 
   offers: {

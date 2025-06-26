@@ -61,24 +61,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = commonIsPlatformBrowser(platformId);
-    // if (this.isBrowser) {
-    //   this.loadCart();
-    //   window.addEventListener('cartUpdated', this.loadCart.bind(this));
-    // }
   }
-
-  // ngOnDestroy(): void {
-  //   this.stopAutoPlay();
-  //   if (this.isBrowser) {
-  //     window.removeEventListener('cartUpdated', this.loadCart.bind(this));
-  //   }
-  // }
 
   ngOnInit() {
     if (!this.isBrowser) return;
     this.loadMenuConfig();
     this.startAutoPlay();
-    // this.loadAll();
   }
 
   ngOnDestroy() {
@@ -118,41 +106,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       });
   }
-
-  // private loadAll() {
-  //   this.isLoading = true;
-
-  //   // 1) buscar produtos
-  //   this.productService
-  //     .getProducts()
-  //     .pipe(
-  //       // 2) para cada produto, buscar as imagens em base64
-  //       switchMap((products) => {
-  //         this.products = products;
-  //         const calls = products.map((p) =>
-  //           this.productService.getProductImagesBase64(p.id).pipe(
-  //             map((list) => ({
-  //               id: p.id,
-  //               images: list.map((b64) => `data:image/jpeg;base64,${b64}`),
-  //             })),
-  //             catchError(() => of({ id: p.id, images: [] }))
-  //           )
-  //         );
-  //         return forkJoin(calls);
-  //       })
-  //     )
-  //     .subscribe((allImages) => {
-  //       // 3) colocar as imageUrls em cada product
-  //       allImages.forEach((slot) => {
-  //         const p = this.products.find((x) => x.id === slot.id);
-  //         if (p) p.imageUrls = slot.images;
-  //       });
-
-  //       // 4) montar de uma vez os cardsproducts, aplicando homeConfig ou fallback
-  //       this.buildCards();
-  //       this.isLoading = false;
-  //     });
-  // }
 
   private buildCards() {
     const cfgRaw = this.storageService.getItem('homeConfig');
@@ -203,21 +156,12 @@ export class HomeComponent implements OnInit, OnDestroy {
             id: product.id,
             name: product.name,
             images: product.imageUrls || [],
-            overlayText: product.name, // or any other overlay text logic
+            overlayText: product.name,
           }));
         this.loadProductImages();
 
         this.isLoading = false;
       },
-      // error: (err) => {
-      //   console.error('Erro ao carregar os produtos:', err);
-      //   this.error = 'Falha ao carregar os produtos. Tente novamente mais tarde..';
-      //   this.isLoading = false;
-
-      //   // Fallback to mock data if API fails
-      //   this.products = this.mapMockDataToProducts(MOCK_DATA.products);
-      //   this.cardsproducts = this.mapMockDataToProducts(MOCK_DATA.cardsproducts);
-      // }
     });
   }
   loadProductImages(): void {
