@@ -1,65 +1,61 @@
 <div class="container-register">
   <div class="register-central">
     <div class="container-header">
-      <div class="titulo-register">Charmosa Plus</div>
+      <!-- <div class="titulo-register">Charmosa Plus</div> -->
+      <div class="subtitulo-register">Criar uma conta</div>
     </div>
 
     <div class="container-form">
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="form-row">
           <div class="group-input half">
-            <input class="text-info" type="text" formControlName="firstName" placeholder="PRIMEIRO NOME" />
+            <input class="text-info" type="text" formControlName="firstName" placeholder="Primeiro Nome" />
           </div>
           <div class="group-input half">
-            <input class="text-info" type="text" formControlName="lastName" placeholder="SOBRENOME" />
+            <input class="text-info" type="text" formControlName="lastName" placeholder="Sobrenome" />
           </div>
         </div>
 
         <div class="group-input">
-          <input class="text-info" type="text" formControlName="email" placeholder="E-MAIL" />
+          <input class="text-info" type="email" formControlName="email" placeholder="E-mail" />
         </div>
 
         <div class="group-input">
-          <input class="text-info" type="text" formControlName="username" placeholder="NOME DE USUÁRIO" />
+          <input class="text-info" type="text" formControlName="username" placeholder="Nome de Usuário" />
         </div>
 
         <div class="group-input">
-          <input class="text-info" type="password" formControlName="password" placeholder="SENHA" />
+          <input class="text-info" type="password" formControlName="password" placeholder="Senha" />
         </div>
 
         <div class="form-row">
-          <!-- <div class="group-input half">
-            <input class="text-info" type="text" formControlName="cpf" placeholder="CNPJ / CPF" />
-          </div> -->
           <div class="group-input half">
-            <input class="text-info" type="text" formControlName="phone" placeholder="TELEFONE" />
+            <input class="text-info" type="text" formControlName="phone" placeholder="Telefone" />
           </div>
-        </div>
-
-        <div class="form-row">
           <div class="group-input half">
             <input class="text-info" type="text" formControlName="cep" placeholder="CEP" />
           </div>
-          <div class="group-input half">
-            <select formControlName="gender" class="text-info">
-              <option value="" disabled selected>GÊNERO</option>
-              <option value="Male">Masculino</option>
-              <option value="Female">Feminino</option>
-              <option value="Other">Outro</option>
-            </select>
-          </div>
         </div>
 
         <div class="group-input">
-          <input class="text-info" type="text" formControlName="address" placeholder="ENDEREÇO" />
+          <select formControlName="gender" class="text-info">
+            <option value="" disabled selected>Gênero</option>
+            <option value="Male">Masculino</option>
+            <option value="Female">Feminino</option>
+            <option value="Other">Outro</option>
+          </select>
+        </div>
+
+        <div class="group-input">
+          <input class="text-info" type="text" formControlName="address" placeholder="Endereço" />
         </div>
 
         <div class="form-row">
           <div class="group-input half">
-            <input class="text-info" type="text" formControlName="city" placeholder="CIDADE" />
+            <input class="text-info" type="text" formControlName="city" placeholder="Cidade" />
           </div>
           <div class="group-input half">
-            <input class="text-info" type="text" formControlName="state" placeholder="ESTADO" />
+            <input class="text-info" type="text" formControlName="state" placeholder="Estado" />
           </div>
         </div>
 
@@ -67,7 +63,7 @@
           Já possui uma conta? <a href="/login">Iniciar sessão</a>
         </div>
 
-        <button type="submit" class="btn-register">
+        <button type="submit" class="btn-register" [disabled]="registerForm.invalid">
           Criar Conta
         </button>
       </form>

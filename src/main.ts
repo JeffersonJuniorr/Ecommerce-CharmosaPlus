@@ -29,40 +29,15 @@ import { ListProductsComponent } from './app/admin/products/list-products/list-p
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter([
-      // { path: '', redirectTo: 'home', pathMatch: 'full' }, erro na navegação admin - slidebar
       { path: 'home', component: HomeComponent },
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent },
-      // { path: '**', redirectTo: '/login', pathMatch: 'full' },
-      { path: 'refund-policy', component: RefundPolicyComponent },
-      { path: 'abount-us', component: AbountUsComponent },
-      { path: 'faq', component: FaqComponent },
-      { path: 'checkout/:id', component: CheckoutComponent },
-      { path: 'payment', component: PaymentComponent },
-      // { path: '**', redirectTo: 'home' },  erro na navegação admin - slidebar
-      // {
-      //   path: 'admin-dashboard',
-      //   component: AdminDashboardComponent,
-      //   canActivate: [AdminGuard],
-      //   children: [
-      //     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      //     // { path: 'admdashboard', component: AdminDashboardComponent },
-      //     // { path: 'admin-products', component: ProductManagementComponent },
-      //     //{ path: 'coupons', component: CouponsComponent },
-      //     // { path: 'list-products', component: ListProductsComponent },
-      //     { path: 'users', component: UsersComponent },
-      //   ],
-      // },
-      // {
-      //   path: 'list-products',
-      //   component: ListProductsComponent,
-      //   children: [
-      //     {
-      //       path: 'products-management',
-      //       component: ProductManagementComponent,
-      //     },
-      //   ],
-      // },
+      { path: 'login', component: LoginComponent, data: { hideCategories: true } },
+      { path: 'register', component: RegisterComponent, data: { hideCategories: true } },
+      { path: 'refund-policy', component: RefundPolicyComponent, data: { hideCategories: true } },
+      { path: 'abount-us', component: AbountUsComponent, data: { hideCategories: true } },
+      { path: 'faq', component: FaqComponent, data: { hideCategories: true } },
+      { path: 'checkout/:id', component: CheckoutComponent, data: { hideCategories: true } },
+      { path: 'payment', component: PaymentComponent, data: { hideCategories: true } },
+
       { path: 'admin-dashboard', component: AdminDashboardComponent, data: { hideCategories: true } },
       { path: 'admin-coupons', component: AdminCouponsComponent, data: { hideCategories: true } },
       { path: 'products-management', component: ProductManagementComponent, data: { hideCategories: true } },

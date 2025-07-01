@@ -4,8 +4,8 @@
   align-items: center;
   padding: 25px 5%;
   background-color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #eee;
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+  /* border-bottom: 1px solid #eee; */
   position: sticky;
   top: 0;
   z-index: 99;
@@ -132,6 +132,10 @@
   z-index: 99;
   transition: all 0.3s ease-in-out;
 }
+
+ .categories-nav.hidden {
+    display: none;
+  }
 
 .navbar.hidden + .categories-nav {
   top: 0;
@@ -336,9 +340,9 @@
     display: block;
   }
 
-  .categories-nav {
+  /* .categories-nav {
     display: none;
-  }
+  } */
   
   .search-container {
     margin: 0 15px;
