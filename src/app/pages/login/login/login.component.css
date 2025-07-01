@@ -133,6 +133,8 @@
 }
 
 .btn-login:disabled {
+  border: none;
+  background: #ccc;
   cursor: not-allowed;
 }
 

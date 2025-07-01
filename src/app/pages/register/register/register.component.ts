@@ -8,6 +8,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CustomSnackBarComponent } from '../../../components/custom/custom-snack-bar/custom-snack-bar.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { CommonModule } from '@angular/common';
+import { NumbersOnlyDirective } from '../../../directives/numbers-only.directive';
 
 
 @Component({
@@ -15,7 +17,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
-  imports: [ReactiveFormsModule, MatSnackBarModule, MatProgressBarModule],
+  imports: [ReactiveFormsModule, MatSnackBarModule, MatProgressBarModule, CommonModule, NumbersOnlyDirective],
 })
 export class RegisterComponent {
   registerForm: FormGroup;
@@ -27,19 +29,27 @@ export class RegisterComponent {
     private storageService: StorageService,
     private snackBar: MatSnackBar,
   ) {
-    this.registerForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      address: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      gender: ['', Validators.required],
-      cep: ['', Validators.required],
-    });
+     this.registerForm = this.fb.group({
+    firstName: ['', [Validators.required, Validators.minLength(2)]],
+    lastName: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    username: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+    phone: ['', [
+      Validators.required,
+      Validators.pattern('^[0-9]*$'),
+      Validators.minLength(10),
+      Validators.maxLength(11)
+    ]],
+    cep: ['', [
+      Validators.required,
+      Validators.pattern('^[0-9]{8}$'),
+    ]],
+    address: ['', Validators.required],
+    city: ['', Validators.required],
+    state: ['', Validators.required],
+    gender: ['', Validators.required],
+  });
   }
 
   showAlert(message: string, isError: boolean = false) {

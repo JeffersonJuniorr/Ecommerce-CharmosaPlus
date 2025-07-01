@@ -22,18 +22,43 @@
 
         <div class="group-input">
           <input class="text-info" type="text" formControlName="username" placeholder="Nome de Usuário" />
+          <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+            class="error-messages">
+            <small *ngIf="registerForm.get('username')?.errors?.['required']">Nome de usuário é obrigatório.</small>
+            <small *ngIf="registerForm.get('username')?.errors?.['pattern']">Nome de usuário não pode conter
+              espaços.</small>
+          </div>
         </div>
 
         <div class="group-input">
           <input class="text-info" type="password" formControlName="password" placeholder="Senha" />
+          <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+            class="error-messages">
+            <small *ngIf="registerForm.get('password')?.errors?.['required']">Senha é obrigatória.</small>
+            <small *ngIf="registerForm.get('password')?.errors?.['minlength']">A senha deve ter no mínimo 8
+              caracteres.</small>
+          </div>
         </div>
 
         <div class="form-row">
           <div class="group-input half">
-            <input class="text-info" type="text" formControlName="phone" placeholder="Telefone" />
+            <input class="text-info" type="text" formControlName="phone" placeholder="Telefone" appNumbersOnly />
+            <div *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched"
+              class="error-messages">
+              <small *ngIf="registerForm.get('phone')?.errors?.['required']">Telefone é obrigatório.</small>
+              <small *ngIf="registerForm.get('phone')?.errors?.['pattern']">Apenas números são permitidos.</small>
+              <small
+                *ngIf="registerForm.get('phone')?.errors?.['minlength'] || registerForm.get('phone')?.errors?.['maxlength']"> O
+                telefone deve ter 10 ou 11 dígitos.</small>
+            </div>
           </div>
           <div class="group-input half">
-            <input class="text-info" type="text" formControlName="cep" placeholder="CEP" />
+            <input class="text-info" type="text" formControlName="cep" placeholder="CEP"appNumbersOnly  />
+            <div *ngIf="registerForm.get('cep')?.invalid && registerForm.get('cep')?.touched" class="error-messages">
+              <small *ngIf="registerForm.get('cep')?.errors?.['required']">CEP é obrigatório.</small>
+              <small *ngIf="registerForm.get('cep')?.errors?.['pattern']">O CEP deve conter exatamente 8
+                números.</small>
+            </div>
           </div>
         </div>
 
