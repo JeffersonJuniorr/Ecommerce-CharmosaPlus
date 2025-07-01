@@ -1,75 +1,208 @@
-.footer {
-  background-color: #4F4F4F;
-  color: #FFFFFF;
-  font-family: Arial, sans-serif;
-  padding: 70px 5%;
-  margin-top: 18%;
+.new-footer {
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
 }
 
-h3 {
-  padding: 5px;
+.footer-newsletter {
+  background-color: #f5f5f5;
+  color: #333;
+  text-align: center;
+  padding: 40px 0;
 }
 
-p, a {
-  padding: 5px;
+.footer-newsletter h3 {
+  font-family: 'Marcellus', serif;
+  font-size: 2rem;
+  margin-bottom: 8px;
 }
 
-.footer-container {
+.footer-newsletter p {
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
+
+.newsletter-form {
+  display: flex;
+  justify-content: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.newsletter-form input {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+  font-size: 1rem;
+  transition: border 0.3s ease;
+}
+
+.newsletter-form input:hover {
+  border-color: #555;
+}
+
+.newsletter-form input:focus {
+  border-color: #333;
+}
+
+.newsletter-form button {
+  padding: 12px 24px;
+  border: none;
+  background-color: #EFBF04;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+  transition: background-color 0.3s;
+}
+
+.newsletter-form button:hover {
+  background-color: #dcae03;
+}
+
+.footer-main {
+  background-color: #222;
+  padding: 60px 0;
+}
+
+.footer-main-container {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-}
-
-.container-icon {
-  display: flex; 
-  align-items: center;
+  gap: 30px;
 }
 
 .footer-section {
   flex: 1;
-  margin: 0 10px;
-  min-width: 150px;
-}
-
-.icon-social {
-  width: 25px;
+  min-width: 200px;
 }
 
 .footer-section h3 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  color: #EFBF04;
 }
 
-.footer-section h4 {
-  font-size: 1rem;
-  margin-top: 40px;
-  margin-bottom: 10px;
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.footer-section p {
-  font-size: 0.9rem;
-  margin: 5px 0;
+.footer-section ul li {
+  margin-bottom: 12px;
 }
 
 .footer-section a {
-  color: #FFFFFF;
+  color: #ccc;
   text-decoration: none;
+  transition: color 0.3s, padding-left 0.3s;
 }
 
 .footer-section a:hover {
-  text-decoration: underline;
+  color: #fff;
+  padding-left: 5px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ccc;
+  margin-bottom: 15px;
+}
+
+.contact-item .material-symbols-outlined {
+  color: #EFBF04;
+}
+
+.footer-sub {
+  background-color: #1a1a1a;
+  padding: 30px 0;
+  border-top: 1px solid #333;
+}
+
+.footer-sub-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.footer-social h3,
+.footer-payment h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.social-icons a,
+.payment-methods img {
+  margin-right: 15px;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.social-icons a:hover {
+  opacity: 1;
+}
+
+.social-icons img {
+  width: 28px;
 }
 
 .payment-methods img {
-  width: 40px;
-  margin-right: 10px;
+  height: 28px;
+  width: auto;
+  /* background: #fff; */
+  padding: 4px;
+  border-radius: 3px;
 }
 
 .footer-bottom {
-  font-family: Arial, sans-serif;
+  background-color: #000;
+  padding: 15px 0;
   text-align: center;
-  background-color: #333333;
-  color: #FFFFFF;
-  width: 100%;
-  padding: 2px 0;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .footer-main-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .contact-item {
+    justify-content: center;
+  }
+
+  .footer-sub-container {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .newsletter-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .newsletter-form input,
+  .newsletter-form button {
+    border-radius: 4px;
+  }
+
+  .footer-newsletter h3 {
+    font-size: 1.5rem;
+  }
 }
