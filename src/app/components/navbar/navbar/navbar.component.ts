@@ -7,12 +7,11 @@ import { RouterModule } from '@angular/router';
 
 import { StorageService } from '../../../services/storage/storage.service';
 import { CartService } from '../../../services/cartservice/cartservice.service';
-import { CartComponent } from '../../cart/cartcomponent.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, CartComponent], 
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
@@ -22,6 +21,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   cartItemCount: number = 0;
 
+  isCategoriesHiddenOnScroll = false; // Controla o esconde/mostra na rolagem
+  isCategoriesHiddenOnPage = false;
+
   isNavHidden = false;
   private lastScrollPosition = 0;
   private scrollThreshold = 50;
@@ -29,7 +31,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isMobileSearchVisible = false;
   isMenuOpen = false;
   isCategoriesHidden = false;
-  
+
   private isBrowser: boolean;
   private storageEventListener: () => void;
 
@@ -68,21 +70,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.username = this.storageService.getItem('username') || 'Usuário';
     }
   }
-  
+
   private subscribeToCartUpdates(): void {
-    this.cartService.cartItems$.subscribe(items => {
+    this.cartService.cartItems$.subscribe((items) => {
       this.cartItemCount = items.length;
     });
   }
 
   private subscribeToRouteChanges(): void {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      const routeData = this.router.routerState.snapshot.root.firstChild?.data;
-      this.isCategoriesHidden = routeData?.['hideCategories'] || false;
-      this.isMenuOpen = false;
-    });
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        const routeData =
+          this.router.routerState.snapshot.root.firstChild?.data;
+        this.isCategoriesHidden = routeData?.['hideCategories'] || false;
+        this.isMenuOpen = false;
+      });
   }
 
   toggleMenu(): void {
@@ -98,7 +101,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.checkLoginStatus();
     this.router.navigate(['/home']);
   }
-  
+
   logoutAndCloseMenu(): void {
     this.logout();
     this.toggleMenu();
@@ -124,14 +127,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private onWindowScroll = (): void => {
     if (!this.isBrowser) return;
 
-    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    const currentScrollPosition =
+      window.pageYOffset || document.documentElement.scrollTop;
 
-    if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > this.scrollThreshold) {
-      this.isNavHidden = true;
-    } else {
-      this.isNavHidden = false;
+    if (currentScrollPosition < this.scrollThreshold) {
+      this.isCategoriesHiddenOnScroll = false;
+      this.lastScrollPosition = currentScrollPosition;
+      return;
     }
-    
-    this.lastScrollPosition = currentScrollPosition <= 0 ? 0 : currentScrollPosition;
-  }
+
+    if (currentScrollPosition > this.lastScrollPosition) {
+      this.isCategoriesHiddenOnScroll = true;
+    } else {
+      this.isCategoriesHiddenOnScroll = false;
+    }
+
+    this.lastScrollPosition =
+      currentScrollPosition <= 0 ? 0 : currentScrollPosition;
+  };
 }

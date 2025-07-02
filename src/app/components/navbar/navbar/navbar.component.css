@@ -1,15 +1,24 @@
+.main-navbar {
+  background-color: white;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  z-index: 99;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 25px 0;
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 25px 5%;
   background-color: white;
-  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
-  /* border-bottom: 1px solid #eee; */
   position: sticky;
   top: 0;
   z-index: 99;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out; */
 }
 
 .navbar.hidden {
@@ -27,7 +36,6 @@
   width: auto;
 }
 
-/* BARRA DE BUSCA */
 .search-container {
   display: flex;
   flex: 1;
@@ -57,9 +65,6 @@
   align-items: center;
   justify-content: center;
 }
-
-
-/* ÍCONES E USUÁRIO */
 
 .navbar-user {
   display: flex;
@@ -98,6 +103,7 @@
   color: #666;
   cursor: pointer;
 }
+
 .logout-link:hover {
   color: #F20000;
 }
@@ -122,22 +128,22 @@
   font-weight: bold;
 }
 
-/* BARRA DE CATEGORIAS (Desktop) */
 .categories-nav {
   background-color: white;
   padding: 12px 5%;
   border-bottom: 1px solid #eee;
   position: sticky;
-  top: 70px;
+  top: 0;
   z-index: 99;
   transition: all 0.3s ease-in-out;
+  transition: transform 0.4s ease-in-out;
 }
 
- .categories-nav.hidden {
-    display: none;
-  }
+.categories-nav.hidden {
+  transform: translateY(-100%);
+}
 
-.navbar.hidden + .categories-nav {
+.navbar.hidden+.categories-nav {
   top: 0;
 }
 
@@ -170,7 +176,7 @@
 
 /* MENU HAMBÚRGUER E LATERAL */
 .menu-toggle {
-  display: none; /* Escondido por padrão */
+  display: none;
   background: none;
   border: none;
   cursor: pointer;
@@ -179,7 +185,7 @@
 .side-menu {
   position: fixed;
   top: 0;
-  left: -400px; /* Começa fora da tela */
+  left: -400px;
   width: 280px;
   height: 100%;
   background-color: #fff;
@@ -191,7 +197,7 @@
 }
 
 .side-menu.open {
-  left: 0; /* Entra na tela */
+  left: 0;
 }
 
 .close-btn {
@@ -261,7 +267,7 @@
 
 /* OVERLAY DE BUSCA MOBILE */
 .search-icon-mobile {
-  display: none; /* Escondido por padrão */
+  display: none;
 }
 
 .mobile-search-overlay {
@@ -272,7 +278,7 @@
   height: 100%;
   background-color: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(5px);
-  z-index: 1010; /* Acima de tudo */
+  z-index: 1010;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -335,20 +341,20 @@
   .navbar {
     padding: 15px 20px;
   }
-  
+
   .menu-toggle {
     display: block;
   }
 
-  /* .categories-nav {
+  .categories-nav {
     display: none;
-  } */
-  
+  }
+
   .search-container {
     margin: 0 15px;
     max-width: 350px;
   }
-  
+
   .user-greeting,
   .icon-home-link {
     display: none;
@@ -360,7 +366,7 @@
    (Telas até 600px)
    ================================= */
 @media (max-width: 600px) {
- .navbar {
+  .navbar {
     padding: 0 15px;
     height: 70px;
   }
@@ -368,7 +374,7 @@
   .search-container {
     display: none;
   }
-  
+
   .search-icon-mobile {
     display: flex;
   }
@@ -388,4 +394,3 @@
     gap: 8px;
   }
 }
-

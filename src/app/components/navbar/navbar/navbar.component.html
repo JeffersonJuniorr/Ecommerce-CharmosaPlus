@@ -1,52 +1,53 @@
-<header class="main-header" [class.hidden]="isNavHidden">
-  <div class="app-container">
-    <nav class="navbar" [class.hidden]="isNavHidden">
-      <button class="menu-toggle" (click)="toggleMenu()">
-        <span class="material-symbols-outlined">menu</span>
-      </button>
-
-      <div class="navbar-logo">
-        <a routerLink="/home">
-          <img src="../../../../assets/logo/logoCharmosa.png" class="logo-image" alt="Logo Charmosa+">
-        </a>
-      </div>
-
-      <div class="search-container">
-        <input type="search" [(ngModel)]="searchQuery" (keyup.enter)="executeSearch()" placeholder="O que você procura?"
-          class="search-input">
-        <button class="search-button" (click)="executeSearch()">
-          <span class="material-symbols-outlined">search</span>
+<header>
+  <div class="main-navbar">
+    <div class="app-container">
+      <nav class="navbar">
+        <button class="menu-toggle" (click)="toggleMenu()">
+          <span class="material-symbols-outlined">menu</span>
         </button>
-      </div>
 
-      <div class="navbar-user">
-        <a (click)="toggleMobileSearch()" class="nav-link search-icon-mobile">
-          <span class="material-symbols-outlined">search</span>
-        </a>
-
-        <a routerLink="/home" routerLinkActive="active" aria-label="Home" class="nav-link icon-home-link">
-          <span class="material-symbols-outlined">home</span>
-        </a>
-
-        <a *ngIf="!isLoggedIn" routerLink="/login" routerLinkActive="active" aria-label="Minha conta" class="nav-link">
-          <span class="material-symbols-outlined">person</span>
-        </a>
-
-        <div *ngIf="isLoggedIn" class="user-greeting">
-          <a routerLink="/minha-conta" class="greeting-link">Olá, {{ username }}</a>
-          <span class="separator">|</span>
-          <a (click)="logout()" class="logout-link">Sair</a>
+        <div class="navbar-logo">
+          <a routerLink="/home">
+            <img src="../../../../assets/logo/logoCharmosa.png" class="logo-image" alt="Logo Charmosa+">
+          </a>
         </div>
 
-        <a (click)="openCart()" aria-label="Carrinho" class="cart-icon nav-link">
-          <span class="material-symbols-outlined">shopping_cart</span>
-          <span *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</span>
-        </a>
-      </div>
-    </nav>
+        <div class="search-container">
+          <input type="search" [(ngModel)]="searchQuery" (keyup.enter)="executeSearch()"
+            placeholder="O que você procura?" class="search-input">
+          <button class="search-button" (click)="executeSearch()">
+            <span class="material-symbols-outlined">search</span>
+          </button>
+        </div>
 
+        <div class="navbar-user">
+          <a (click)="toggleMobileSearch()" class="nav-link search-icon-mobile">
+            <span class="material-symbols-outlined">search</span>
+          </a>
+          <a routerLink="/home" routerLinkActive="active" aria-label="Home" class="nav-link icon-home-link">
+            <span class="material-symbols-outlined">home</span>
+          </a>
+          <a *ngIf="!isLoggedIn" routerLink="/login" routerLinkActive="active" aria-label="Minha conta"
+            class="nav-link">
+            <span class="material-symbols-outlined">person</span>
+          </a>
+          <div *ngIf="isLoggedIn" class="user-greeting">
+            <a routerLink="/minha-conta" class="greeting-link">Olá, {{ username }}</a>
+            <span class="separator">|</span>
+            <a (click)="logout()" class="logout-link">Sair</a>
+          </div>
+          <a (click)="openCart()" aria-label="Carrinho" class="cart-icon nav-link">
+            <span class="material-symbols-outlined">shopping_cart</span>
+            <span *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
 
-    <div class="categories-nav" [class.hidden]="isCategoriesHidden || isNavHidden">
+  <div class="categories-nav" [class.hidden]="isCategoriesHiddenOnScroll"
+    [class.page-hidden]="isCategoriesHiddenOnPage">
+    <div class="app-container">
       <ul class="categories-list">
         <li><a routerLink="/novidades">Novidades</a><span class="star-divider">★</span></li>
         <li><a routerLink="/roupas">Roupas</a><span class="star-divider">★</span></li>
@@ -60,42 +61,6 @@
 </header>
 
 <div class="mobile-search-overlay" [class.active]="isMobileSearchVisible">
-  <button class="close-search-btn" (click)="toggleMobileSearch()">
-    <span class="material-symbols-outlined">close</span>
-  </button>
-  <div class="mobile-search-container">
-    <input type="search" [(ngModel)]="searchQuery" (keyup.enter)="executeSearch()" placeholder="O que você procura?"
-      class="mobile-search-input">
-    <button class="mobile-search-button" (click)="executeSearch()">
-      <span class="material-symbols-outlined">search</span>
-    </button>
-  </div>
 </div>
-
 <div class="side-menu" [class.open]="isMenuOpen">
-  <button class="close-btn" (click)="toggleMenu()">
-    <span class="material-symbols-outlined">close</span>
-  </button>
-
-  <div class="side-menu-greeting" *ngIf="isLoggedIn">
-    <a routerLink="/minha-conta" (click)="toggleMenu()">Olá, {{ username }}</a>
-  </div>
-
-  <ul class="side-menu-links">
-    <li><a routerLink="/home" (click)="toggleMenu()">Início</a></li>
-    <li><a routerLink="/novidades" (click)="toggleMenu()">Novidades</a></li>
-    <li><a routerLink="/roupas" (click)="toggleMenu()">Roupas</a></li>
-    <li><a routerLink="/colecoes" (click)="toggleMenu()">Coleções</a></li>
-    <li><a routerLink="/moletom" (click)="toggleMenu()">Moletom</a></li>
-    <li><a routerLink="/acessorios" (click)="toggleMenu()">Acessórios</a></li>
-    <li><a routerLink="/outlet" (click)="toggleMenu()">Outlet</a></li>
-    <hr>
-    <li *ngIf="!isLoggedIn"><a routerLink="/login" (click)="toggleMenu()">Minha Conta</a></li>
-    <li *ngIf="isLoggedIn"><a routerLink="/minha-conta" (click)="toggleMenu()">Minha Conta</a></li>
-    <li *ngIf="isLoggedIn"><a (click)="logoutAndCloseMenu()">Sair</a></li>
-  </ul>
 </div>
-
-<div class="overlay" [class.active]="isMenuOpen" (click)="toggleMenu()"></div>
-
-<app-cartcomponent></app-cartcomponent>
