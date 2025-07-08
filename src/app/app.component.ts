@@ -21,14 +21,14 @@ import { StorageService } from './services/storage/storage.service';
 })
 export class AppComponent implements OnInit {
   title = 'CharmosaPlus';
-  isAdmin: boolean = false;
-  isSidebarCollapsed: boolean = false;
+  isAdminPage: boolean = false;
+  isSidebarCollapsed: boolean = true;
 
   constructor(private storageService: StorageService, private router: Router) {}
 
   ngOnInit() {
     const userRole = this.storageService.getItem('userRole');
-    this.isAdmin = userRole === 'ADMIN';
+    this.isAdminPage = userRole === 'ADMIN';
   }
 
   isAuthRoute(): boolean {

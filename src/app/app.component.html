@@ -1,6 +1,6 @@
 <div class="main-container">
-  <app-slidebar *ngIf="isAdmin"></app-slidebar>
-  <div class="main-content" [ngClass]="{'with-sidebar': isAdmin, 'collapsed': isSidebarCollapsed}">
+  <app-slidebar *ngIf="isAdminPage" (collapsedChange)="isSidebarCollapsed = $event"></app-slidebar>
+  <div class="main-content" [class.admin-view]="isAdminPage" [class.collapsed]="isSidebarCollapsed">
     <app-navbar></app-navbar>
     <router-outlet></router-outlet>
     <app-footer *ngIf="!isAuthRoute()"></app-footer>
