@@ -30,7 +30,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   isMobileSearchVisible = false;
   isMenuOpen = false;
-  isCategoriesHidden = false;
+  // isCategoriesHidden = false;
 
   private isBrowser: boolean;
   private storageEventListener: () => void;
@@ -80,10 +80,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private subscribeToRouteChanges(): void {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        const routeData =
-          this.router.routerState.snapshot.root.firstChild?.data;
-        this.isCategoriesHidden = routeData?.['hideCategories'] || false;
+      .subscribe(() => {
+        const routeData = this.router.routerState.snapshot.root.firstChild?.data;
+        this.isCategoriesHiddenOnPage = routeData?.['hideCategories'] || false;
         this.isMenuOpen = false;
       });
   }

@@ -139,6 +139,10 @@
   transition: transform 0.4s ease-in-out;
 }
 
+.categories-nav.page-hidden {
+  display: none;
+}
+
 .categories-nav.hidden {
   transform: translateY(-100%);
 }
