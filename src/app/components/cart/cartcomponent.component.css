@@ -6,7 +6,7 @@
   width: 100%;
   max-width: 450px;
   z-index: 1000;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out; 
 }
 
 .cart-modal.show {
@@ -26,10 +26,10 @@
   transition: all 0.3s ease;
 }
 
-/* .cart-overlay.active {
+.cart-modal.show .cart-overlay {
   opacity: 1;
   visibility: visible;
-} */
+}
 
 .cart-content {
   position: absolute;

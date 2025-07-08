@@ -3,9 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { CartService } from '../../services/cartservice/cartservice.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ProductService } from '../../services/products/products.service';
 
