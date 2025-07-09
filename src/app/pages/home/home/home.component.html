@@ -11,8 +11,8 @@
           </picture>
         </div>
       </div>
-      <button class="prev-btn" (click)="prevSlide()">&#10094;</button>
-      <button class="next-btn" (click)="nextSlide()">&#10095;</button>
+      <!-- <button class="prev-btn" (click)="prevSlide()">&#10094;</button>
+      <button class="next-btn" (click)="nextSlide()">&#10095;</button> -->
       <div class="dots">
         <span *ngFor="let banner of banners; let i = index" [class.active]="i === currentIndex" (click)="goToSlide(i)">
         </span>

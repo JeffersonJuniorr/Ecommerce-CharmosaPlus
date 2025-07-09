@@ -1,56 +1,126 @@
-<div class="container">
-    <div class="cards">
-        <div class="card">
-            <img src="../../../assets/dashboard/addbox.png">
-            <h2>{{ orderSummary?.novosPedidos }}</h2>
-            <p>Novos Pedidos</p>
-            <small>Total de Pedidos: {{ orderSummary?.totalPedidos }}</small>
-        </div>
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Dashboard</h1>
+        <p>Bem-vindo ao painel de controle da Charmosa Plus.</p>
+    </div>
 
+    <div class="summary-cards">
         <div class="card">
-            <img src="../../../assets/dashboard/searchbox.PNG">
-            <h2>{{ orderSummary?.processamento }}</h2>
-            <p>Processamento de Pedidos</p>
-            <small>Total de Processamento: {{ orderSummary?.totalProcessamento }}</small>
+            <div class="card-icon icon-new-orders">
+                <span class="material-symbols-outlined">add_shopping_cart</span>
+            </div>
+            <div class="card-content">
+                <p>Novos Pedidos</p>
+                <h2>{{ orderSummary.novosPedidos }}</h2>
+            </div>
         </div>
-
         <div class="card">
-            <img src="../../../assets/dashboard/van.png">
-            <h2>{{ orderSummary?.aCaminho }}</h2>
-            <p>A Caminho</p>
-            <small>Pronto para Enviar: {{ orderSummary?.prontoParaEnviar }}</small>
+            <div class="card-icon icon-processing">
+                <span class="material-symbols-outlined">pending_actions</span>
+            </div>
+            <div class="card-content">
+                <p>Em Processamento</p>
+                <h2>{{ orderSummary.processamento }}</h2>
+            </div>
         </div>
-
         <div class="card">
-            <img src="../../../assets/dashboard/checklist.png">
-            <h2>{{ orderSummary?.pedidosConcluidos }}</h2>
-            <p>Pedidos Concluídos</p>
-            <small>Total de Pedidos: {{ orderSummary?.totalPedidosConcluidos }}</small>
+            <div class="card-icon icon-shipping">
+                <span class="material-symbols-outlined">local_shipping</span>
+            </div>
+            <div class="card-content">
+                <p>A Caminho</p>
+                <h2>{{ orderSummary.aCaminho }}</h2>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon icon-completed">
+                <span class="material-symbols-outlined">task_alt</span>
+            </div>
+            <div class="card-content">
+                <p>Concluídos</p>
+                <h2>{{ orderSummary.pedidosConcluidos }}</h2>
+            </div>
         </div>
     </div>
 
-    <div class="graphics">
-        <app-charts></app-charts>
+    <div class="charts-grid">
+        <div class="chart-widget">
+            <div class="widget-header">
+                <h3>Vendas Totais</h3>
+                <select class="widget-filter" (change)="onSalesPeriodChange($event)">
+                    <option value="7d">Últimos 7 dias</option>
+                    <option value="1m">Último mês</option>
+                </select>
+            </div>
+            <div class="widget-body">
+                <app-dashboard-chart *ngIf="salesChartData" chartType="line" [chartData]="salesChartData"
+                    [chartOptions]="salesChartOptions">
+                </app-dashboard-chart>
+            </div>
+        </div>
+
+        <div class="chart-widget">
+            <div class="widget-header">
+                <h3>Status dos Pedidos</h3>
+            </div>
+            <div class="widget-body">
+                <app-dashboard-chart *ngIf="highlightsChartData" chartType="doughnut" [chartData]="highlightsChartData"
+                    [chartOptions]="highlightsChartOptions">
+                </app-dashboard-chart>
+            </div>
+        </div>
     </div>
+
+
+    <div class="bottom-section">
+        <div class="list-widget recent-purchases-widget">
+            <h3>Compras Recentes</h3>
+            <div class="table-container">
+                <table class="minimal-table">
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Cliente</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let purchase of recentPurchases">
+                            <td>#{{ purchase.id }}</td>
+                            <td>
+                                <div class="user-cell">
+                                    <!-- <img [src]="purchase.userImage || 'assets/icons/icon-user.png'" alt="{{ purchase.userName }}" class="user-avatar"> -->
+                                    <span>{{ purchase.userName }}</span>
+                                </div>
+                            </td>
+                            <td>{{ purchase.total | currency:'BRL' }}</td>
+                            <td>
+                                <span class="status-pill" [ngClass]="purchase.status.toLowerCase().replace(' ', '-')">{{
+                                    purchase.status }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="list-widget">
+            <h3>Atividade Recente</h3>
+            <ul class="activity-feed">
+                <li *ngFor="let activity of recentActivities">
+                    <div class="activity-icon" [ngClass]="activity.type">
+                        <span class="material-symbols-outlined">
+                            {{ activity.type === 'nova_compra' ? 'shopping_bag' : 'person_add' }}
+                        </span>
+                    </div>
+                    <div class="activity-details">
+                        <p><strong>{{ activity.userName }}</strong> {{ activity.description }}</p>
+                        <small>{{ activity.timestamp | date:'shortTime' }}</small>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
 </div>
-
-
-
-
-
-
-
-
-
-<!-- 
-    <header class="dashboard-header">
-      <h1>Admin Dashboard</h1>
-      <button (click)="toglleTheme()">
-        Switch to {{ isDarkMode ? 'Light' : 'Dark' }} Mode
-      </button>
-    </header>
-  
-    <div class="dashboard-content">
-        <app-statistics-cards></app-statistics-cards>
-        <app-transactions-table></app-transactions-table>
-      </div> -->

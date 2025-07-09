@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DashboardService } from './dashboard-services.service';
+import { MOCK_DASHBOARD_DATA } from './mock-dashboard.service';
 
-describe('DashboardServicesService', () => {
-  let service: DashboardService;
+describe('MOCK_DASHBOARD_DATA', () => {
+  let service: typeof MOCK_DASHBOARD_DATA;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(DashboardService);
+    service = MOCK_DASHBOARD_DATA;
   });
 
   it('should be created', () => {

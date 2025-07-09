@@ -1,0 +1,33 @@
+<div class="charts-grid">
+  <div class="chart-widget">
+    <div class="widget-header">
+      <h3>Vendas Totais</h3>
+      <select class="widget-filter" (change)="onSalesPeriodChange($event)">
+        <option value="7d">Últimos 7 dias</option>
+        <option value="1m">Último mês</option>
+      </select>
+    </div>
+    <div class="widget-body">
+      <app-dashboard-chart 
+        *ngIf="salesChartData"
+        chartType="bar"
+        [chartData]="salesChartData"
+        [chartOptions]="salesChartOptions">
+      </app-dashboard-chart>
+    </div>
+  </div>
+
+  <div class="chart-widget">
+    <div class="widget-header">
+      <h3>Status dos Pedidos</h3>
+    </div>
+    <div class="widget-body">
+      <app-dashboard-chart 
+        *ngIf="highlightsChartData"
+        chartType="doughnut"
+        [chartData]="highlightsChartData"
+        [chartOptions]="highlightsChartOptions">
+      </app-dashboard-chart>
+    </div>
+  </div>
+</div>

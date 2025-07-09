@@ -1,4 +1,15 @@
-<div class="main-container">
+<app-slidebar *ngIf="isAdminPage" (collapsedChange)="isSidebarCollapsed = $event"></app-slidebar>
+
+<main class="main-content" [class.with-sidebar]="isAdminPage" [class.collapsed]="isSidebarCollapsed">
+  
+  <app-navbar></app-navbar>
+
+  <router-outlet></router-outlet>
+  
+  <app-footer></app-footer>
+</main>
+
+<!-- <div class="main-container">
   <app-slidebar *ngIf="isAdminPage" (collapsedChange)="isSidebarCollapsed = $event"></app-slidebar>
   <div class="main-content" [class.admin-view]="isAdminPage" [class.collapsed]="isSidebarCollapsed">
     <app-navbar></app-navbar>
@@ -6,4 +17,4 @@
     <app-footer *ngIf="!isAuthRoute()"></app-footer>
   </div>
 </div>
-<app-cartcomponent></app-cartcomponent>
+<app-cartcomponent></app-cartcomponent> -->

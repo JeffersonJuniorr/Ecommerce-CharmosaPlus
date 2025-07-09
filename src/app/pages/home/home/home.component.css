@@ -97,7 +97,7 @@
 }
 
 .card-banner .overlay {
-  position: absolute;
+  /* position: absolute; */
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   opacity: 0;
