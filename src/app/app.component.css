@@ -5,7 +5,9 @@
 
 .main-container {
   display: flex;
+  width: 100%;
   /* min-height: 100vh; */
+   transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
 }
 
 .main-content {

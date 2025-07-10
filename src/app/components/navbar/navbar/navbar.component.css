@@ -1,15 +1,18 @@
 .main-navbar {
   background-color: white;
   border-bottom: 1px solid #eee;
-  position: relative;
-  z-index: 99;
+  /* position: relative;
+  z-index: 99; */
 }
 
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px 0;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto; 
+  padding: 25px 30px;
   /* display: flex;
   justify-content: space-between;
   align-items: center;
@@ -132,20 +135,20 @@
   background-color: white;
   padding: 12px 5%;
   border-bottom: 1px solid #eee;
-  position: sticky;
+  /* position: sticky; */
   top: 0;
   z-index: 99;
-  transition: all 0.3s ease-in-out;
-  transition: transform 0.4s ease-in-out;
+  /* transition: all 0.3s ease-in-out;
+  transition: transform 0.4s ease-in-out; */
 }
 
 .categories-nav.page-hidden {
   display: none;
 }
 
-.categories-nav.hidden {
+/* .categories-nav.hidden {
   transform: translateY(-100%);
-}
+} */
 
 .navbar.hidden+.categories-nav {
   top: 0;

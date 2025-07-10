@@ -5,6 +5,7 @@
   --accent-color: #EFBF04;
   --text-color: #ecf0f1;
   z-index: 101;
+  position: sticky;
 }
 
 .admin-layout {

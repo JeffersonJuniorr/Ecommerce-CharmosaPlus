@@ -5,6 +5,7 @@ import { NavbarComponent } from './components/navbar/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer/footer.component';
 import { SlidebarComponent } from './admin/slidebar/slidebar.component';
 import { StorageService } from './services/storage/storage.service';
+import { CartComponent } from './components/cart/cartcomponent.component';
 
 @Component({
   standalone: true,
@@ -15,6 +16,7 @@ import { StorageService } from './services/storage/storage.service';
     NavbarComponent,
     FooterComponent,
     SlidebarComponent,
+    CartComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
