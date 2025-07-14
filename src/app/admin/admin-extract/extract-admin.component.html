@@ -1,634 +1,90 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
-<div class="admin-dashboard">
-    <!-- Main Content -->
-    <div class="content">
-        <!-- Page Content -->
-        <main class="main-content">
-            <div class="page-header">
-                <h1>Extrato Financeiro</h1>
-                <div class="actions">
-                    <button class="btn btn-outline" (click)="exportReport()">
-                        <i class="fas fa-file-export"></i> Exportar
-                    </button>
-                    <button class="btn btn-primary" (click)="openWithdrawalModal()">
-                        <i class="fas fa-money-bill-wave"></i> Solicitar Saque
-                    </button>
-                </div>
-            </div>
-
-            <!-- Summary Cards -->
-            <div class="summary-cards">
-                <div class="card">
-                    <div class="card-icon green">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Saldo Disponível</h3>
-                        <div class="card-value">{{ formatCurrency(summary.availableBalance) }}</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon blue">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Vendas do Mês</h3>
-                        <div class="card-value">{{ formatCurrency(summary.monthSales) }}</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon purple">
-                        <i class="fas fa-box"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>Produtos Vendidos</h3>
-                        <div class="card-value">{{ summary.productsSold }}</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon orange" (click)="openCalendarModal()">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <div class="card-content clickable" (click)="openCalendarModal()">
-                        <h3>Calendário de Vendas</h3>
-                        <div class="card-value">Ver relatório <i class="fas fa-arrow-right"></i></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Data Visualization Section -->
-            <div class="data-visualization">
-                <div class="chart-container">
-                    <h3>Desempenho de Vendas</h3>
-                    <div class="chart">
-                        <canvas id="salesChart"></canvas>
-                    </div>
-                </div>
-                <div class="top-products">
-                    <h3>Produtos Mais Vendidos</h3>
-                    <div class="top-products-list">
-                        <div class="top-product" *ngFor="let product of topProducts; let i = index">
-                            <span class="rank">{{ i + 1 }}</span>
-                            <div class="product-image">
-                                <img [src]="product.image" [alt]="product.name">
-                            </div>
-                            <div class="product-info">
-                                <div class="product-name">{{ product.name }}</div>
-                                <div class="product-stats">{{ product.sold }} vendas | {{
-                                    formatCurrency(product.revenue) }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Advanced Filters -->
-            <div class="advanced-filters">
-                <div class="filter-header">
-                    <h3>Filtros Avançados</h3>
-                    <button class="btn-text" (click)="toggleAdvancedFilters()">
-                        {{ showAdvancedFilters ? 'Ocultar' : 'Mostrar' }} <i
-                            [class]="showAdvancedFilters ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
-                    </button>
-                </div>
-
-                <div class="filter-group" [ngClass]="{ 'hidden': !showAdvancedFilters }">
-                    <div class="filter-row">
-                        <div class="filter-group">
-                            <label>Período:</label>
-                            <div class="date-range-picker">
-                                    <input class="date-range-selector" type="date" [(ngModel)]="filters.startDate">
-                                <span >até</span>
-                                    <input class="date-range-selector" type="date" [(ngModel)]="filters.endDate">
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label>Status:</label>
-                            <div class="custom-select">
-                                <select [(ngModel)]="filters.status">
-                                    <option value="">Todos</option>
-                                    <option value="completed">Concluído</option>
-                                    <option value="pending">Pendente</option>
-                                    <option value="canceled">Cancelado</option>
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label>Produto:</label>
-                            <div class="custom-select">
-                                <select [(ngModel)]="filters.product">
-                                    <option value="">Todos</option>
-                                    <option *ngFor="let product of productList" [value]="product.id">{{ product.name }}
-                                    </option>
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="filter-row">
-                        <div class="filter-group">
-                            <label>Valor mín.:</label>
-                            <input type="number" [(ngModel)]="filters.minValue" placeholder="R$ 0,00">
-                        </div>
-                        <div class="filter-group">
-                            <label>Valor máx.:</label>
-                            <input type="number" [(ngModel)]="filters.maxValue" placeholder="R$ 1.000,00">
-                        </div>
-                        <div class="filter-group filter-client">
-                            <label>Cliente:</label>
-                            <input type="text" [(ngModel)]="filters.customer" placeholder="Nome do cliente">
-                        </div>
-                        <div class="filter-group btn-filter-actions">
-                            <button class="btn btn-primary" (click)="applyFilters()">
-                                <i class="fas fa-filter"></i> Aplicar Filtros
-                            </button>
-                            <button class="btn btn-outline" (click)="resetFilters()">
-                                <i class="fas fa-undo"></i> Limpar
-                            </button>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Search -->
-            <div class="search">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Pesquisar por pedido, produto ou cliente..." [(ngModel)]="searchQuery"
-                    (input)="search()">
-            </div>
-
-            <!-- Transactions Table -->
-            <div class="table-container">
-                <table class="transactions-table">
-                    <thead>
-                        <tr>
-                            <th (click)="sortBy('id')">
-                                Pedido
-                                <i class="fas" [ngClass]="getSortIcon('id')"></i>
-                            </th>
-                            <th (click)="sortBy('date')">
-                                Data
-                                <i class="fas" [ngClass]="getSortIcon('date')"></i>
-                            </th>
-                            <th (click)="sortBy('customer')">
-                                Cliente
-                                <i class="fas" [ngClass]="getSortIcon('customer')"></i>
-                            </th>
-                            <th>Produtos</th>
-                            <th (click)="sortBy('value')">
-                                Valor
-                                <i class="fas" [ngClass]="getSortIcon('value')"></i>
-                            </th>
-                            <th (click)="sortBy('status')">
-                                Status
-                                <i class="fas" [ngClass]="getSortIcon('status')"></i>
-                            </th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngFor="let transaction of filteredTransactions">
-                            <tr>
-                                <td>#{{ transaction.id }}</td>
-                                <td>{{ formatDate(transaction.date) }}</td>
-                                <td>{{ transaction.customer }}</td>
-                                <td>
-                                    <button class="btn-products" (click)="toggleProductDetails(transaction.id)">
-                                        {{ transaction.items }} {{ transaction.items === 1 ? 'item' : 'itens' }}
-                                        <i class="fas fa-chevron-down"></i>
-                                    </button>
-                                </td>
-                                <td class="value positive">{{ formatCurrency(transaction.value) }}</td>
-                                <td>
-                                    <span class="status" [ngClass]="transaction.status">
-                                        {{ getStatusLabel(transaction.status) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <button class="btn-icon" (click)="viewTransactionDetails(transaction)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn-icon" (click)="generateInvoice(transaction)">
-                                        <i class="fas fa-file-invoice"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="product-details" id="details-{{transaction.id}}">
-                                <td colspan="7">
-                                    <div class="products-list">
-                                        <div class="product-item" *ngFor="let product of transaction.products">
-                                            <div class="product-image">
-                                                <img [src]="product.image || '/api/placeholder/50/50'"
-                                                    [alt]="product.name">
-                                            </div>
-                                            <div class="product-info">
-                                                <div class="product-name">{{ product.name }}</div>
-                                                <div class="product-meta">
-                                                    SKU: {{ product.sku }} | Tamanho: {{ product.size }} | Quantidade:
-                                                    {{ product.quantity }}
-                                                </div>
-                                            </div>
-                                            <div class="product-price">{{ formatCurrency(product.price) }}</div>
-                                        </div>
-                                        <div class="view-more" *ngIf="transaction.products.length === 0">
-                                            <button class="btn btn-outline" (click)="loadProducts()">
-                                                <i class="fas fa-sync"></i> Carregar detalhes dos produtos
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </ng-container>
-                        <tr *ngIf="filteredTransactions.length === 0">
-                            <td colspan="7" class="no-results">
-                                <i class="fas fa-search"></i>
-                                <p>Nenhuma transação encontrada com os filtros aplicados.</p>
-                                <button class="btn btn-outline" (click)="resetFilters()">Limpar Filtros</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="pagination">
-                <button class="btn-page" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-
-                <ng-container *ngFor="let page of getPaginationRange()">
-                    <ng-container *ngIf="page !== '...'">
-                        <button class="btn-page" [class.active]="page === currentPage" (click)="goToPage(+page)">{{ page
-                            }}</button>
-                    </ng-container>
-                    <span *ngIf="page === '...'" class="page-separator">...</span>
-                </ng-container>
-
-                <button class="btn-page" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </main>
+<div class="admin-page-container">
+  <div class="admin-page-header">
+    <div class="header-text">
+      <h1>Extrato Financeiro</h1>
+      <p>Acompanhe suas vendas, saldo e transações.</p>
     </div>
-</div>
-
-<!-- Withdrawal Modal -->
-<div class="modal" id="withdrawalModal" [class.open]="modals.withdrawal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Solicitar Saque</h2>
-            <button class="btn-close" (click)="closeModal('withdrawal')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="withdrawal-info">
-                <div class="balance-summary">
-                    <div class="label">Saldo Disponível:</div>
-                    <div class="value">{{ formatCurrency(summary.availableBalance) }}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Valor para saque:</label>
-                <div class="input-with-icon">
-                    <i class="fas fa-dollar-sign"></i>
-                    <input class="withdraw-money" type="number" [(ngModel)]="withdrawalAmount" [max]="summary.availableBalance"
-                        placeholder="0,00">
-                </div>
-                <div class="error-message" *ngIf="withdrawalAmount > summary.availableBalance">
-                    O valor não pode exceder o saldo disponível.
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Conta para depósito:</label>
-                <div class="saved-accounts">
-                    <div class="account-option" *ngFor="let account of bankAccounts"
-                        [class.selected]="selectedAccount === account.id" (click)="selectAccount(account.id)">
-                        <div class="bank-icon">
-                            <i [class]="'fab fa-' + account.icon"></i>
-                        </div>
-                        <div class="account-details">
-                            <div class="bank-name">{{ account.bank }}</div>
-                            <div class="account-number">{{ account.number }}</div>
-                        </div>
-                        <div class="check-icon" *ngIf="selectedAccount === account.id">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                    </div>
-                    <div class="add-account">
-                        <button class="btn-text" (click)="openNewAccountForm()">
-                            <i class="fas fa-plus-circle"></i> Adicionar nova conta
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" (click)="closeModal('withdrawal')">Cancelar</button>
-            <button class="btn btn-primary" [disabled]="!isWithdrawalValid()" (click)="confirmWithdrawal()">
-                Confirmar Saque
-            </button>
-        </div>
+    <div class="header-actions">
+      <button class="btn btn-outline"><span class="material-symbols-outlined">download</span>Exportar</button>
+      <button class="btn btn-primary"><span class="material-symbols-outlined">paid</span>Solicitar Saque</button>
     </div>
-</div>
+  </div>
 
-<!-- Calendar Modal -->
-<div class="modal" id="calendarModal" [class.open]="modals.calendar">
-    <div class="modal-content modal-lg">
-        <div class="modal-header">
-            <h2>Calendário de Vendas</h2>
-            <button class="btn-close" (click)="closeModal('calendar')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="calendar-view-options">
-                <button class="btn-view" [class.active]="calendarView === 'day'"
-                    (click)="changeCalendarView('day')">Dia</button>
-                <button class="btn-view" [class.active]="calendarView === 'week'"
-                    (click)="changeCalendarView('week')">Semana</button>
-                <button class="btn-view" [class.active]="calendarView === 'month'"
-                    (click)="changeCalendarView('month')">Mês</button>
-                <button class="btn-view" [class.active]="calendarView === 'year'"
-                    (click)="changeCalendarView('year')">Ano</button>
-            </div>
-
-            <div class="calendar-navigation">
-                <button class="btn-icon" (click)="navigateCalendar('prev')">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <h3 class="calendar-title">{{ getCalendarTitle() }}</h3>
-                <button class="btn-icon" (click)="navigateCalendar('next')">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <button class="btn-text" (click)="navigateCalendar('today')">Hoje</button>
-            </div>
-
-            <div class="calendar-container">
-                <!-- Calendar grid would be rendered here based on the selected view -->
-                <div class="calendar-grid" [ngClass]="calendarView">
-                    <!-- This would be dynamically generated based on view -->
-                    <div class="calendar-day" *ngFor="let day of calendarDays" [class.today]="day.isToday"
-                        [class.has-sales]="day.hasSales">
-                        <div class="day-header">
-                            <span class="day-number">{{ day.day }}</span>
-                            <span class="day-name" *ngIf="calendarView === 'month'">{{ day.weekday }}</span>
-                        </div>
-                        <div class="day-content">
-                            <div class="day-sales">
-                                <span *ngIf="day.sales > 0">{{ day.sales }} {{ day.sales === 1 ? 'venda' : 'vendas'
-                                    }}</span>
-                                <span class="day-amount" *ngIf="day.amount > 0">{{ formatCurrency(day.amount) }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="calendar-summary">
-                <div class="summary-card">
-                    <div class="summary-title">Total de Vendas</div>
-                    <div class="summary-value">{{ calendarSummary.totalSales }}</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-title">Faturamento</div>
-                    <div class="summary-value">{{ formatCurrency(calendarSummary.totalAmount) }}</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-title">Média Diária</div>
-                    <div class="summary-value">{{ formatCurrency(calendarSummary.dailyAverage) }}</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-title">Melhor Dia</div>
-                    <div class="summary-value">{{ calendarSummary.bestDay }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" (click)="exportCalendarData()">
-                <i class="fas fa-file-export"></i> Exportar Dados
-            </button>
-            <button class="btn btn-primary" (click)="closeModal('calendar')">Fechar</button>
-        </div>
+ 
+  <div class="admin-summary-cards">
+    <div class="admin-stat-card">
+      <p class="stat-title">Saldo Disponível</p>
+      <h2 class="stat-value text-success">{{ summary.availableBalance | currency:'BRL' }}</h2>
+      <p class="stat-description">Pronto para saque</p>
     </div>
-</div>
-
-<!-- Product Analytics Modal -->
-<div class="modal" id="productAnalyticsModal" [class.open]="modals.productAnalytics">
-    <div class="modal-content modal-lg">
-        <div class="modal-header">
-            <h2>Análise de Produto</h2>
-            <button class="btn-close" (click)="closeModal('productAnalytics')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="product-header">
-                <div class="product-image">
-                    <img [src]="selectedProduct?.image || '/api/placeholder/80/80'" [alt]="selectedProduct?.name">
-                </div>
-                <div class="product-details">
-                    <h3 class="product-title">{{ selectedProduct?.name }}</h3>
-                    <div class="product-meta">
-                        <span class="sku">SKU: {{ selectedProduct?.sku }}</span>
-                        <span class="price">{{ formatCurrency(selectedProduct?.price) }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="analytics-cards">
-                <div class="analytics-card">
-                    <div class="analytics-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="analytics-content">
-                        <div class="analytics-label">Total Vendido</div>
-                        <div class="analytics-value">{{ productAnalytics?.totalSold }}</div>
-                    </div>
-                </div>
-                <div class="analytics-card">
-                    <div class="analytics-icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="analytics-content">
-                        <div class="analytics-label">Receita Total</div>
-                        <div class="analytics-value">{{ formatCurrency(productAnalytics?.totalRevenue) }}</div>
-                    </div>
-                </div>
-                <div class="analytics-card">
-                    <div class="analytics-icon">
-                        <i class="fas fa-percentage"></i>
-                    </div>
-                    <div class="analytics-content">
-                        <div class="analytics-label">% das Vendas</div>
-                        <div class="analytics-value">{{ productAnalytics?.percentageOfSales }}%</div>
-                    </div>
-                </div>
-                <div class="analytics-card">
-                    <div class="analytics-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="analytics-content">
-                        <div class="analytics-label">Avaliação</div>
-                        <div class="analytics-value">{{ productAnalytics?.rating }}/5</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <h4>Vendas no Tempo</h4>
-                <div class="chart">
-                    <canvas id="productSalesChart"></canvas>
-                </div>
-            </div>
-
-            <div class="split-view">
-                <div class="variants-section">
-                    <h4>Variantes Mais Vendidas</h4>
-                    <div class="variants-list">
-                        <div class="variant-item" *ngFor="let variant of productAnalytics?.topVariants">
-                            <div class="variant-color" *ngIf="variant.color"
-                                [style.background-color]="variant.colorHex"></div>
-                            <div class="variant-info">
-                                <div class="variant-name">{{ variant.name }}</div>
-                                <div class="variant-meta">Tamanho: {{ variant.size }} | Vendidos: {{ variant.sold }}
-                                </div>
-                            </div>
-                            <div class="variant-percentage">{{ variant.percentage }}%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="customers-section">
-                    <h4>Perfil dos Compradores</h4>
-                    <div class="chart">
-                        <canvas id="customerDemographicsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" (click)="exportProductAnalytics()">
-                <i class="fas fa-file-export"></i> Exportar Análise
-            </button>
-            <button class="btn btn-primary" (click)="closeModal('productAnalytics')">Fechar</button>
-        </div>
+    <div class="admin-stat-card">
+      <p class="stat-title">Saldo Pendente</p>
+      <h2 class="stat-value">{{ summary.pendingBalance | currency:'BRL' }}</h2>
+      <p class="stat-description">A ser liberado</p>
     </div>
-</div>
+    <div class="admin-stat-card">
+      <p class="stat-title">Faturamento no Mês</p>
+      <h2 class="stat-value">{{ summary.monthRevenue | currency:'BRL' }}</h2>
+      <p class="stat-description">Total de vendas em Julho</p>
+    </div>
+    <div class="admin-stat-card">
+      <p class="stat-title">Total Sacado</p>
+      <h2 class="stat-value">{{ summary.totalWithdrawals | currency:'BRL' }}</h2>
+      <p class="stat-description">Saques neste mês</p>
+    </div>
+  </div>
 
-<!-- Transaction Details Modal -->
-<div class="modal" id="transactionModal" [class.open]="modals.transactionDetails">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Detalhes do Pedido #{{ selectedTransaction?.id }}</h2>
-            <button class="btn-close" (click)="closeModal('transactionDetails')">
-                <i class="fas fa-times"></i>
-            </button>
+  <div class="main-section">
+    <div class="chart-widget">
+      <div class="widget-header">
+        <h3>Fluxo de Caixa (Últimos 6 meses)</h3>
+      </div>
+      <div class="widget-body">
+        <app-dashboard-chart *ngIf="cashFlowChartData" chartType="bar" [chartData]="cashFlowChartData" [chartOptions]="cashFlowChartOptions"></app-dashboard-chart>
+      </div>
+    </div>
+
+    <div class="list-widget">
+      <div class="widget-header">
+        <h3>Últimas Transações</h3>
+        <div class="filter-group">
+          <span class="material-symbols-outlined">filter_list</span>
+          <select class="widget-filter">
+            <option value="all">Todos os tipos</option>
+            <option value="credit">Entradas</option>
+            <option value="debit">Saídas</option>
+          </select>
         </div>
-        <div class="modal-body">
-            <div class="transaction-status">
-                <div class="status-label">Status:</div>
-                <span class="status" [ngClass]="selectedTransaction?.status">
-                    {{ getStatusLabel(selectedTransaction?.status) }}
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tx of transactions">
+              <td>{{ tx.date | date:'dd/MM/yyyy' }}</td>
+              <td>{{ tx.description }}</td>
+              <td>
+                <span [ngClass]="{'text-success': tx.type === 'credit', 'text-danger': tx.type === 'debit'}">
+                  {{ tx.value | currency:'BRL' }}
                 </span>
-            </div>
-
-            <div class="transaction-info">
-                <div class="info-column">
-                    <div class="info-group">
-                        <label>Data:</label>
-                        <div>{{ formatDate(selectedTransaction?.date) }}</div>
-                    </div>
-                    <div class="info-group">
-                        <label>Valor Total:</label>
-                        <div class="value positive">{{ formatCurrency(selectedTransaction?.value) }}</div>
-                    </div>
-                    <div class="info-group">
-                        <label>Forma de Pagamento:</label>
-                        <div>{{ selectedTransaction?.paymentMethod || 'Cartão de Crédito' }}</div>
-                    </div>
-                </div>
-
-                <div class="info-column">
-                    <div class="info-group">
-                        <label>Cliente:</label>
-                        <div>{{ selectedTransaction?.customer }}</div>
-                    </div>
-                    <div class="info-group">
-                        <label>E-mail:</label>
-                        <div>{{ selectedTransaction?.email || 'email@exemplo.com' }}</div>
-                    </div>
-                    <div class="info-group">
-                        <label>Telefone:</label>
-                        <div>{{ selectedTransaction?.phone || '(11) 98765-4321' }}</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="address-info">
-                <h4>Endereço de Entrega</h4>
-                <div class="address-content">
-                    <p>{{ selectedTransaction?.address?.street }}, {{ selectedTransaction?.address?.number }}</p>
-                    <p>{{ selectedTransaction?.address?.neighborhood }}, {{ selectedTransaction?.address?.city }} - {{
-                        selectedTransaction?.address?.state }}</p>
-                    <p>CEP: {{ selectedTransaction?.address?.zipCode }}</p>
-                </div>
-            </div>
-
-            <div class="order-products">
-                <h4>Produtos</h4>
-                <div class="products-list">
-                    <div class="product-item" *ngFor="let product of selectedTransaction?.products">
-                        <div class="product-image">
-                            <img [src]="product.image || '/api/placeholder/50/50'" [alt]="product.name">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-name">{{ product.name }}</div>
-                            <div class="product-meta">
-                                SKU: {{ product.sku }} | Tamanho: {{ product.size }} | Quantidade: {{ product.quantity
-                                }}
-                            </div>
-                        </div>
-                        <div class="product-price">{{ formatCurrency(product.price) }}</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="order-summary">
-                <div class="summary-row">
-                    <div class="summary-label">Subtotal</div>
-                    <div class="summary-value">{{ formatCurrency(getSubtotal(selectedTransaction?.products)) }}</div>
-                </div>
-                <div class="summary-row">
-                    <div class="summary-label">Frete</div>
-                    <div class="summary-value">{{ formatCurrency(selectedTransaction?.shipping || 0) }}</div>
-                </div>
-                <div class="summary-row">
-                    <div class="summary-label">Desconto</div>
-                    <div class="summary-value">{{ formatCurrency(selectedTransaction?.discount || 0) }}</div>
-                </div>
-                <div class="summary-row total">
-                    <div class="summary-label">Total</div>
-                    <div class="summary-value">{{ formatCurrency(selectedTransaction?.value) }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" (click)="generateInvoice(selectedTransaction)">
-                <i class="fas fa-file-invoice"></i> Gerar Fatura
-            </button>
-            <button class="btn btn-outline" *ngIf="selectedTransaction?.status !== 'canceled'"
-                (click)="openCancelConfirmation()">
-                <i class="fas fa-ban"></i> Cancelar Pedido
-            </button>
-            <button class="btn btn-primary" (click)="closeModal('transactionDetails')">Fechar</button>
-        </div>
+              </td>
+              <td>
+                <span class="status-pill" [ngClass]="tx.status">
+                  {{ tx.status === 'completed' ? 'Concluído' : 'Pendente' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- Backdrop -->
-<div class="backdrop" [class.show]="isAnyModalOpen()" (click)="closeAllModals()"></div>
+</div>
