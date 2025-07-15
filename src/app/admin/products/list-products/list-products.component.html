@@ -1,132 +1,120 @@
-<body>
-    <div class="admin-products">
-        <div class="header-row">
-            <h1>Meus produtos</h1>
-            <div class="header-actions">
-                <button class="btn-customize" (click)="openCustomizer()">
-                    <!-- <span class="material-icons">tune</span> -->
-                    Personalizar Página
-                </button>
-                <button class="btn-manage" routerLink="/products-management">
-                    Adicionar produto
-                </button>
-            </div>
+<div class="admin-page-container">
+    <div class="admin-page-header">
+        <div class="header-text">
+            <h1>Meus Produtos</h1>
+            <p>Gerencie seu inventário, status e preços.</p>
         </div>
+        <div class="header-actions">
+            <!-- <button class="btn btn-primary" (click)="openCustomizer()">
+                <span class="material-icons">tune</span>
+                Personalizar Página
+            </button> -->
+            <button class="btn btn-primary" routerLink="/products-management">
+                <span class="material-symbols-outlined">add</span>
+                Adicionar Produto
+            </button>
+        </div>
+    </div>
 
-        <div *ngIf="loading" class="loading">Carregando produtos…</div>
-        <div *ngIf="error" class="error">{{ error }}</div>
+    <div class="list-widget">
+        <div class="list-controls">
+            <div class="tabs">
+                <button (click)="setFilter('all')" [class.active]="filterStatus === 'all'">Todos</button>
+                <button (click)="setFilter('active')" [class.active]="filterStatus === 'active'">Ativos</button>
+                <button (click)="setFilter('inactive')" [class.active]="filterStatus === 'inactive'">Inativos</button>
+            </div>
 
-        <div *ngIf="!loading && !error" class="products-list">
-            <!-- Controles de filtro e busca -->
-            <div class="controls">
-                <div class="tabs">
-                    <button (click)="setFilter('all')" [class.active]="filterStatus==='all'">
-                        Todos
-                    </button>
-                    <button (click)="setFilter('active')" [class.active]="filterStatus==='active'">
-                        Ativos
-                    </button>
-                    <button (click)="setFilter('inactive')" [class.active]="filterStatus==='inactive'">
-                        Inativos
-                    </button>
-                </div>
-
-                <!-- Bulk actions -->
+            <div class="search-and-actions">
                 <div class="bulk-actions" *ngIf="someSelected || allSelected">
-                    <select [(ngModel)]="bulkStatusAction" class="status-select">
-                        <option [ngValue]="null">Ação em massa</option>
+                    <span>{{ getSelectedCount() }} selecionado(s)</span>
+                    <select [(ngModel)]="bulkStatusAction" class="widget-filter">
+                        <option [ngValue]="null" disabled>Ação em massa...</option>
                         <option value="active">Marcar como Ativo</option>
                         <option value="inactive">Marcar como Inativo</option>
                     </select>
-                    <button class="btn-apply" (click)="confirmBulkStatusChange()" [disabled]="!bulkStatusAction">
+                    <button class="btn btn-primary btn-sm" (click)="confirmBulkStatusChange()"
+                        [disabled]="!bulkStatusAction">
                         Aplicar
                     </button>
                 </div>
-            </div>
-
-            <div class="search-pagination">
-                <th class="checkbox-header">
-                    <input type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()"
-                        [indeterminate]="someSelected && !allSelected" />
-                </th>
-                <button class="btn-reload" (click)="reloadProducts()" title="Recarregar">
-                    <span class="material-symbols-outlined">refresh</span>
-                </button>
-
                 <div class="input-icon">
                     <span class="material-symbols-outlined">search</span>
-                    <input type="text" placeholder="Procurar registros" class="search-bar"
-                        (input)="onSearch($any($event.target).value)" />
-                </div>
-
-                <div class="sort-control">
-                    <select [(ngModel)]="sortField" (change)="applySort()" class="sort-select">
-                        <option value="name">Ordenar por</option>
-                        <option value="name-asc">Nome (A-Z)</option>
-                        <option value="name-desc">Nome (Z-A)</option>
-                        <option value="quantity-asc">Estoque (Menor-Maior)</option>
-                        <option value="quantity-desc">Estoque (Maior-Menor)</option>
-                        <option value="price-asc">Preço (Menor-Maior)</option>
-                        <option value="price-desc">Preço (Maior-Menor)</option>
-                    </select>
-                </div>
-
-                <div class="pagination">
-                    <span>Itens por página:</span>
-                    <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                        <option [ngValue]="null">Todos</option>
-                    </select>
-
-                    <span *ngIf="!showAll"> {{ currentPage }} de {{ totalPages }}</span>
-                    <button *ngIf="!showAll" (click)="goToPage(currentPage-1)" [disabled]="currentPage===1">‹</button>
-                    <button *ngIf="!showAll" (click)="goToPage(currentPage+1)"
-                        [disabled]="currentPage===totalPages">›</button>
+                    <input type="text" placeholder="Procurar produtos..." #searchInput
+                        (input)="onSearch(searchInput.value)">
                 </div>
             </div>
+        </div>
 
-            <!-- Tabela de produtos -->
+
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th class="line-header"> </th>
-                        <th class="th-capa line-header">Capa</th>
-                        <th class="clickable line-header">Nome</th>
-                        <th class="line-header">ID</th>
-                        <th class="clickable line-header">Estoque</th>
-                        <th class="line-header">Preço</th>
-                        <th class="line-header">Status</th>
-                        <th class="line-header">Ações</th>
+                        <th class="checkbox-col"><input type="checkbox" [checked]="allSelected"
+                                (change)="toggleSelectAll()" [indeterminate]="someSelected && !allSelected"></th>
+                        <th class="image-col">Produto</th>
+                        <th>Estoque</th>
+                        <th>Preço</th>
+                        <th>Status</th>
+                        <th class="actions-col">Ações</th>
                     </tr>
                 </thead>
+
                 <tbody>
+                    <tr *ngIf="loading">
+                        <td colspan="6" class="state-cell">Carregando produtos...</td>
+                    </tr>
+                    <tr *ngIf="error">
+                        <td colspan="6" class="state-cell error">{{ error }}</td>
+                    </tr>
+                    <tr *ngIf="!loading && pagedProducts.length === 0">
+                        <td colspan="6" class="state-cell">Nenhum produto encontrado.</td>
+                    </tr>
+
                     <tr *ngFor="let p of pagedProducts">
-                        <td class="checkbox-cell">
-                            <input type="checkbox" [checked]="p.selected" (change)="toggleProductSelection(p)" />
+                        <td class="checkbox-col"><input type="checkbox" [checked]="p.selected"
+                                (change)="toggleProductSelection(p)"></td>
+                        <td>
+                            <div class="product-cell">
+                                <img [src]="p.thumbnailUrl || 'assets/images/placeholder.jpg'" [alt]="p.name"
+                                    class="product-thumbnail">
+                                <span class="product-name">{{ p.name }}</span>
+                            </div>
                         </td>
-                        <td class="thumb">
-                            <img *ngIf="p.thumbnailUrl" [src]="p.thumbnailUrl" alt="{{ p.name }}" />
-                        </td>
-                        <td class="name-cell">{{ p.name }}</td>
-                        <td class="id-cell">{{ p.id }}</td>
-                        <td class="quantity-cell">{{ p.quantity ?? '–' }}</td>
-                        <td class="price-cell">R$ {{ p.price | number:'1.2-2' }}</td>
-                        <td class="status-cell">
-                            <span [class.active]="p.active" [class.inactive]="!p.active">
+                        <td>{{ p.quantity ?? 'N/D' }}</td>
+                        <td>{{ p.price | currency:'BRL' }}</td>
+                        <td>
+                            <span class="status-pill" [ngClass]="p.active ? 'active' : 'inactive'">
                                 {{ p.active ? 'Ativo' : 'Inativo' }}
                             </span>
                         </td>
-                        <td class="actions-cell">
-                            <button class="btn-status" (click)="toggleProductStatus(p)">
-                                {{ p.active ? 'Inativar' : 'Ativar' }}
+                        <td class="actions-col btn-group">
+                            <button class="btn-icon btn-icon-edit" title="Editar Produto" (click)="editProduct(p.id)">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                            <button class="btn-icon btn-icon-delete" title="Excluir Produto"
+                                (click)="deleteProduct(p.id)">
+                                <span class="material-symbols-outlined">delete</span>
                             </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <div class="list-pagination">
+            <span class="pagination-info">Mostrando {{ pagedProducts.length }} de {{ filteredProducts.length }}
+                itens</span>
+            <div class="pagination-controls">
+                <button class="btn-icon" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <span>Página {{ currentPage }} de {{ totalPages }}</span>
+                <button class="btn-icon" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+            </div>
+        </div>
+
     </div>
-</body>
+</div>

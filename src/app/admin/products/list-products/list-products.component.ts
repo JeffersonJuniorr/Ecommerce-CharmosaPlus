@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ProductService, Product } from '../../../services/products/products.service';
@@ -50,8 +50,8 @@ export class ListProductsComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private storageService: StorageService,
     private productService: ProductService,
-     private changeDetectorRef: ChangeDetectorRef,
-     private dialog: MatDialog
+    private changeDetectorRef: ChangeDetectorRef,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -77,27 +77,13 @@ export class ListProductsComponent implements OnInit {
   }
 
   openCustomizer() {
-  this.dialog.open(PageCustomizerComponent, {
-    width: '800px',
-    data: { /* se precisar passar algo */ }
+    this.dialog.open(PageCustomizerComponent, {
+      width: '800px',
+      data: {
+        /* se precisar passar algo */
+      },
     });
   }
-
-  // ngOnInit(): void {
-  //   this.productService.getProducts().subscribe({
-  //     next: (prods) => {
-  //       // inicializa array estendido
-  //       this.products = prods.map((p) => ({ ...p }));
-  //       // para cada produto, carrega a thumbnail
-  //       this.products.forEach((p) => this.loadThumbnail(p));
-  //       this.loading = false;
-  //     },
-  //     error: () => {
-  //       this.error = 'Erro ao carregar produtos.';
-  //       this.loading = false;
-  //     },
-  //   });
-  // }
 
   private generateImageUrl(productId: number, imageId: number): string {
     const token = this.storageService.getItem('authToken') || '';
@@ -128,19 +114,19 @@ export class ListProductsComponent implements OnInit {
     imageId: number
   ): Observable<Blob> {
     return new Observable((observer) => {
-      this.products.forEach(p => {
-  this.productService.getProductImagesBase64(p.id).subscribe({
-    next: base64List => {
-      if (base64List.length) {
-        const uri = `data:image/jpeg;base64,${base64List[0]}`;
-        p.thumbnailUrl = this.sanitizer.bypassSecurityTrustUrl(uri);
-      }
-    },
-    error: () => {
-      // sem imagem → deixa p.thumbnailUrl undefined
-    }
-  });
-});
+      this.products.forEach((p) => {
+        this.productService.getProductImagesBase64(p.id).subscribe({
+          next: (base64List) => {
+            if (base64List.length) {
+              const uri = `data:image/jpeg;base64,${base64List[0]}`;
+              p.thumbnailUrl = this.sanitizer.bypassSecurityTrustUrl(uri);
+            }
+          },
+          error: () => {
+            // sem imagem → deixa p.thumbnailUrl undefined
+          },
+        });
+      });
     });
   }
 
@@ -248,12 +234,12 @@ export class ListProductsComponent implements OnInit {
   }
 
   toggleSelectAll(): void {
-  this.allSelected = !this.allSelected;
-  this.products.forEach(product => {
-    product.selected = this.allSelected;
-  });
-  this.updateSelectionState();
-}
+    this.allSelected = !this.allSelected;
+    this.products.forEach((product) => {
+      product.selected = this.allSelected;
+    });
+    this.updateSelectionState();
+  }
 
   toggleProductSelection(product: Product & { selected?: boolean }): void {
     product.selected = !product.selected;
@@ -266,13 +252,14 @@ export class ListProductsComponent implements OnInit {
   }
 
   updateSelectionState(): void {
-  const selectedCount = this.products.filter(p => p.selected).length;
-  this.allSelected = selectedCount === this.products.length && this.products.length > 0;
-  this.someSelected = selectedCount > 0 && !this.allSelected;
-  
-  // Força a atualização da view
-  this.changeDetectorRef.detectChanges();
-}
+    const selectedCount = this.products.filter((p) => p.selected).length;
+    this.allSelected =
+      selectedCount === this.products.length && this.products.length > 0;
+    this.someSelected = selectedCount > 0 && !this.allSelected;
+
+    // Força a atualização da view
+    this.changeDetectorRef.detectChanges();
+  }
 
   // Métodos de alteração de status
   setBulkStatus(status: 'active' | 'inactive'): void {
@@ -309,5 +296,20 @@ export class ListProductsComponent implements OnInit {
         product.active ? 'Ativo' : 'Inativo'
       }`
     );
+  }
+
+  editProduct(productId: number): void {
+    console.log(
+      `Redirecionar para a página de edição do produto: ${productId}`
+    );
+  }
+
+  deleteProduct(productId: number): void {
+    console.log(`Abrir confirmação para deletar o produto: ${productId}`);
+  }
+
+  getSelectedCount(): number {
+    if (!this.filteredProducts) return 0;
+    return this.filteredProducts.filter((p: any) => p.selected).length;
   }
 }
