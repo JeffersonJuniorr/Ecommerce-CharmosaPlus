@@ -1,141 +1,119 @@
-.header {
+:host {
+  display: block;
+  background-color: #f8f9fa;
+  font-family: 'Inter', sans-serif;
+}
+
+.list-widget {
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  min-height: 400px;
+}
+
+.btn-primary {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-}
-
-.header button {
-  background-color: #555;
-  color: white;
-  border: none;
-  padding: 8px 16px;
+  padding: 0.4rem 0.6rem;
   border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.header button:hover {
-  background-color: #444;
-}
-
-.coupons-container {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-top: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.empty-state h1 {
-  margin-bottom: 20px;
-}
-.empty-state button {
   background-color: #555;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
+  color: #fff;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-.empty-state button:hover {
+.btn-primary:hover {
   background-color: #333;
-}
-
-.empty-state .description {
-  margin-top: 24px;
-  color: #666;
-  line-height: 1.6;
-  font-size: 16px;
 }
 
 .table-container {
   overflow-x: auto;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-table {
+.admin-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
-th {
+.admin-table th, .admin-table td {
   text-align: left;
-  padding: 12px 16px;
-  background-color: #f5f5f5;
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f3f5;
+  white-space: nowrap;
+}
+.admin-table th {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.coupon-code {
   font-weight: 500;
-  color: #333;
-  border-bottom: 1px solid #ddd;
+  /* background-color: #ebf8ff; */
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
 }
 
-td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eee;
-  color: #444;
+/* .value-cell {
+  font-weight: 600;
+} */
+
+.actions-col {
+  text-align: right;
+  width: 100px;
 }
 
-tr:hover td {
-  background-color: #f9f9f9;
+.btn-icon {
+  background: none; border: none; cursor: pointer; color: #e53e3e;
+  padding: 6px; border-radius: 50%; line-height: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.actions button {
-  background: none;
-  border: none;
-  color: #d32f2f;
-  cursor: pointer;
-  padding: 4px;
+.btn-icon:hover {
+  background-color: #e53e3e;
+  color: #fff;
 }
 
-.actions button:hover {
-  color: #b71c1c;
-}
-
-.loading-state {
+.widget-state {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 40px;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #718096;
+  min-height: 300px;
 }
 
-.loading-state .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #1976d2;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.widget-state .material-symbols-outlined {
+  font-size: 4rem;
+  color: #e2e8f0;
 }
 
-.button-delete button {
-  color : #c00;
-  background: none;
-  border: 1px solid #c00;
-  border-radius: 4px;
-  transition: color 0.3s, background-color 0.3s;
+.widget-state h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
-.button-delete button:hover {
-  background-color: #c00;
-  color: white;
+.widget-state.error p {
+  color: #e53e3e;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
+.widget-state .btn { margin-top: 1.5rem; }

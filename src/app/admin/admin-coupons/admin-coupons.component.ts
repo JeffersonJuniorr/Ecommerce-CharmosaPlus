@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CouponService, Coupon } from '../../services/coupons/coupon.service';
-import { ProductService } from '../../services/products/products.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddCouponModalComponent } from '../../components/add-coupon-modal/add-coupon-modal.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -15,7 +13,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,
     MatFormFieldModule,
     MatIconModule,
     MatProgressSpinnerModule,
@@ -28,17 +25,6 @@ export class AdminCouponsComponent implements OnInit {
   coupons: Coupon[] = [];
   isLoading = true;
   errorMessage = '';
-
-  displayedColumns: string[] = [
-    'code',
-    'type',
-    'value',
-    'minAmount',
-    'product',
-    'expiration',
-    'uses',
-    'actions',
-  ];
 
   constructor(
     private couponService: CouponService,
@@ -75,17 +61,13 @@ export class AdminCouponsComponent implements OnInit {
       if (result) {
         this.loadCoupons();
       }
-      // if (result === 'success') {
-      //   this.snackBar.open('Cupom criado com sucesso!', 'Fechar', { duration: 3000 });
-      //   this.loadCoupons();
-      // }
     });
   }
 
   async deleteCoupon(couponId: number, couponCode: string): Promise<void> {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px', // Tamanho pequeno
-      data: { couponCode }, // Passa o código do cupom para exibir no modal
+      width: '400px',
+      data: { couponCode },
     });
 
     const result = await dialogRef.afterClosed().toPromise();
